@@ -1,0 +1,105 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 16, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 16, 2015</h1></header><div class="content"><h2 id="css">CSS</h2>
+<ul>
+<li><a href="http://css4-selectors.com/browser-selector-test/">Browser CSS-Selector-Test</a></li>
+<li><a href="https://flukeout.github.io/">CSS Diner - Where we feast on CSS Selectors!</a><ul>
+<li>Passed all 26 levels...super fun!</li>
+</ul>
+</li>
+<li><a href="http://mono.company/journal/frontend/learning-to-love-bem/?utm_source=CSS-Weekly&amp;utm_campaign=Issue-162&amp;utm_medium=web">Learning to Love BEM</a></li>
+</ul>
+<h2 id="rust">Rust</h2>
+<ul>
+<li><a href="http://blog.rust-lang.org/2015/05/15/Rust-1.0.html">Announcing Rust 1.0</a></li>
+<li><a href="https://hacks.mozilla.org/2015/05/diving-into-rust-for-the-first-time/">Diving into Rust for the first time</a><ul>
+<li>Hardware and IoT</li>
+<li>High performance computing</li>
+<li>Multi-core</li>
+</ul>
+</li>
+</ul>
+<h3 id="tutorials">Tutorials</h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=O5vzLKg7y-k">Stanford Seminar - Aaron Turon of Mozilla </a></li>
+<li><a href="http://rustbyexample.com/">Rust by Example</a></li>
+<li><a href="http://doc.rust-lang.org/book/">The Rust Programming Language</a></li>
+<li><a href="https://www.youtube.com/watch?v=3CwJ0MH-4MA">Dan Callahan - My Python&#39;s a little Rust-y - PyCon 2015 </a></li>
+<li><a href="https://github.com/ctjhoa/rust-learning">A bunch of links to blog posts, articles, videos, etc for learning Rust</a></li>
+</ul>
+<h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-template-strings-https-hacks-mozilla-org-2015-05-es6-in-depth-template-strings-2-"><a href="https://hacks.mozilla.org/2015/05/es6-in-depth-template-strings-2/">ES6 In Depth: Template strings</a></h3>
+<ul>
+<li>Offers<ul>
+<li>Backticks and <code>${expr}</code></li>
+<li>Lexical scope, can be expression</li>
+<li>Nestable</li>
+<li><code>toString()</code></li>
+<li>Backslash escape</li>
+</ul>
+</li>
+<li>Lacks<ul>
+<li>No auto-escaping, XSS risk</li>
+<li>No built-in i18 support</li>
+<li>Not powerful enough to replace template libraries</li>
+</ul>
+</li>
+</ul>
+<h4 id="tagged-template">Tagged template</h4>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> sender = <span class="hljs-string">'&lt;black &amp; white&gt;'</span>;
+<span class="hljs-keyword">let</span> message =
+  SaferHTML<span class="hljs-string">`&lt;p&gt;<span class="hljs-subst">${sender}</span> has sent you a bonk.&lt;/p&gt;`</span>;
+</code></pre>
+<p>is equivalent to</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> <span class="hljs-variable">sender =</span> '&lt;black &amp; white&gt;';
+<span class="hljs-keyword">let</span> <span class="hljs-variable">message =</span>
+  SaferHTML(templateData, sender);
+</code></pre>
+<p>and you can implement the function like this</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SaferHTML</span><span class="hljs-params">(templateData, ...values)</span> </span>{
+  <span class="hljs-keyword">let</span> s = templateData[<span class="hljs-number">0</span>];
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; values.length; i++) {
+    <span class="hljs-keyword">let</span> value = <span class="hljs-built_in">String</span>(values[i]);  <span class="hljs-comment">// value to interpolate</span>
+
+    <span class="hljs-comment">// Escape special characters in the substitution.</span>
+    <span class="hljs-comment">// Actually you can use Weakmap to do this.</span>
+
+    <span class="hljs-keyword">var</span> escapeDict = <span class="hljs-keyword">new</span> <span class="hljs-built_in">WeakMap</span>([
+      [<span class="hljs-regexp">/&amp;/g</span>, <span class="hljs-string">"&amp;amp;"</span>], [<span class="hljs-regexp">/&lt;/g</span>, <span class="hljs-string">"&amp;lt;"</span>], [<span class="hljs-regexp">/&gt;/g</span>, <span class="hljs-string">"&amp;gt;"</span>]
+      ]);
+    s += value.replace(<span class="hljs-regexp">/&amp;/g</span>, <span class="hljs-string">"&amp;amp;"</span>)
+              .replace(<span class="hljs-regexp">/&lt;/g</span>, <span class="hljs-string">"&amp;lt;"</span>)
+              .replace(<span class="hljs-regexp">/&gt;/g</span>, <span class="hljs-string">"&amp;gt;"</span>);
+
+    <span class="hljs-comment">// Don't escape special characters in the template.</span>
+    s += templateData[i + <span class="hljs-number">1</span>];  <span class="hljs-comment">// next piece of plain string</span>
+  }
+  <span class="hljs-keyword">return</span> s;
+}
+</code></pre>
+<p>You can use WeakMaps and add i18n support this way, and you can use this to implement a more powerful templating library.</p>
+<h4 id="gotcha">Gotcha</h4>
+<p>If the string will be passed to markdown, use double backticks.</p>
+<h3 id="-javascript-at-20-brendan-eich-http-brendaneich-github-io-modernweb-tw-2015-"><a href="http://brendaneich.github.io/ModernWeb.tw-2015/">JavaScript at 20 - Brendan Eich</a></h3>
+<h2 id="frontend">Frontend</h2>
+<ul>
+<li><a href="http://firstdoit.com/react-1/">How I learned to stop worrying and love React</a></li>
+<li><a href="http://dailyjs.com/2015/05/15/interview-the-future-of-web-animation-with-julian-shapiro/">Interview: The Future of Web Animation with Julian Shapiro</a>
+*　AE-style animations, react for the future<ul>
+<li>CSS is more suitable for simple, element-wise, state-based animations</li>
+<li>Anti-patterns<ul>
+<li>Not following convention</li>
+<li>Large duration</li>
+<li>Unnecessary motion</li>
+<li>Lacks of experimentation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Check <a href="http://www.amazon.com/Web-Animation-using-JavaScript-Develop/dp/0134096665?tag=vglnkc5435-20">this</a> out, and <a href="http://www.smashingmagazine.com/2014/11/18/the-state-of-animation-2014/">this</a></li>
+<li><a href="http://blog.webkid.io/replacing-jquery-with-d3/">Replacing jQuery with D3</a></li>
+</ul>
+</div></body></html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 4, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 4, 2015</h1></header><div class="content"><h2 id="dev-tools">Dev Tools</h2>
+<h3 id="google-i-o-2013-chrome-devtools-revolutions-2013">Google I/O 2013 - Chrome DevTools Revolutions 2013</h3>
+<ul>
+<li>Profiling<ul>
+<li>Chart dropdown to see the profile better</li>
+<li><a href="https://developer.chrome.com/devtools/docs/demos/too-much-layout">Timeline demo: Diagnosing forced synchronous layouts</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="-the-breakpoint-ep-8-memory-profiling-with-chrome-devtools-https-www-youtube-com-watch-v-l3ugr9bjqis-"><a href="https://www.youtube.com/watch?v=L3ugr9BJqIs">The Breakpoint Ep. 8: Memory Profiling with Chrome DevTools</a></h3>
+<ul>
+<li>Generations: young pool<ul>
+<li>Becomes old when the pool run out of memory</li>
+<li>Garbage: objects that cannot be referenced by the root</li>
+<li>Better not do any <code>new</code> in per-frame operations</li>
+</ul>
+</li>
+<li>A few tips<ul>
+<li>Incognito window to avoid interference from extensions</li>
+<li>Ignore dimmed and parenthesed stuff in heap snapshot</li>
+<li>GC takes place before taking snapshot</li>
+</ul>
+</li>
+<li>Paterns<ul>
+<li><strong>Sign of memory leak</strong>: you click the GC button, and the memory usage still stays up</li>
+<li>Compare snapshots before and after some operation, and pay attention to the number of <strong>deleted</strong> objects -- if they are not deleted as you expected, you got a leak.</li>
+<li>Normal background = <strong>not yellow</strong> = cannot be acessed from JS handles -- though you might be able to access them by walking the DOM</li>
+<li><strong>Red</strong> = in detached DOM, cannot be accessed by walking the DOM</li>
+<li>Pay attention to event handlers</li>
+</ul>
+</li>
+<li>Gotchas<ul>
+<li>The <strong>integer tagging</strong> of V8 might make some intergers invisible in the containment graph(should have been references/pointers, but V8 turns them into memories storing integers)</li>
+<li>Sometimes things disapper in the heap snapshot beacause their <strong>getters</strong> are very expensive to call</li>
+</ul>
+</li>
+</ul>
+<h3 id="-extending-chrome-devtools-for-fun-and-profit-https-www-youtube-com-watch-v-yo-tfkt2o_4-"><a href="https://www.youtube.com/watch?v=yO-TfKT2O_4&amp;">Extending Chrome DevTools for fun and profit...</a></h3>
+<h3 id="-advanced-debugging-techniques-with-chrome-scale-2014-web-https-www-youtube-com-watch-v-b63jnjsvebq-"><a href="https://www.youtube.com/watch?v=B63jNjSVEbQ">Advanced Debugging Techniques with Chrome - @Scale 2014 - Web</a></h3>
+<h3 id="-google-i-o-2014-how-we-built-chrome-dev-editor-with-the-chrome-platform-https-www-youtube-com-watch-v-nnlntz6yic4-"><a href="https://www.youtube.com/watch?v=NNLnTz6yIc4">Google I/O 2014 - How we built Chrome Dev Editor with the Chrome platform</a></h3>
+<h3 id="-chrome-developer-tools-in-an-evening-https-www-youtube-com-watch-v-urw4-yyvmaq-"><a href="https://www.youtube.com/watch?v=uRw4-yyvMAQ">Chrome Developer Tools in an Evening</a></h3>
+<h2 id="ms-edge">MS Edge</h2>
+<h3 id="-what-s-new-in-f12-for-project-spartan-https-channel9-msdn-com-events-build-2015-3-638-"><a href="https://channel9.msdn.com/events/Build/2015/3-638">What’s New in F12 for &quot;Project Spartan&quot;</a></h3>
+<h3 id="-project-spartan-introducing-the-new-browser-and-web-app-platform-for-windows-10-https-channel9-msdn-com-events-build-2015-2-656-"><a href="https://channel9.msdn.com/Events/Build/2015/2-656">&quot;Project Spartan&quot;: Introducing the New Browser and Web App Platform for Windows 10</a></h3>
+<h2 id="c-template-metaprogramming">C++ Template Metaprogramming</h2>
+<ul>
+<li><a href="https://en.wikibooks.org/wiki/C%2B%2B_Programming/Templates/Template_Meta-Programming">C++ Programming/Templates/Template Meta-Programming</a></li>
+</ul>
+</div></body></html>

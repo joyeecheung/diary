@@ -1,0 +1,69 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 2, 2015</h1></header><div class="content"><h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-iterators-and-the-for-of-loop-https-hacks-mozilla-org-2015-04-es6-in-depth-iterators-and-the-for-of-loop-"><a href="https://hacks.mozilla.org/2015/04/es6-in-depth-iterators-and-the-for-of-loop/">ES6 In Depth: Iterators and the for-of loop</a></h3>
+<ul>
+<li>for-of are for Arrays, not old Objects</li>
+<li><p>Use <code>[Symbol.iterator]</code> to define how to loop an Object (like <code>__iter__()</code> in python)</p>
+<ul>
+<li><p>This is awesome:</p>
+<pre><code class="lang-javascript">jQuery.prototype[<span class="hljs-type">Symbol</span>.<span class="hljs-keyword">iterator</span>] = <span class="hljs-type">Array</span>.prototype[<span class="hljs-type">Symbol</span>.<span class="hljs-keyword">iterator</span>];
+</code></pre>
+</li>
+</ul>
+</li>
+<li>Implement <code>Iter.next</code> as function who returns <code>{done: Boolean, value: xxx}</code></li>
+<li>for-of is basically calling <code>Obj.next()</code> on something returned by <code>Obj[Symbol.iterator]()</code> repeatedly and stop when <code>next</code> return <code>done: true</code></li>
+<li>destructuring + Map makes you feel like you are writing python LOL</li>
+</ul>
+<h3 id="-es6-and-es7-the-future-of-javascript-https-www-youtube-com-watch-v-6aytbsdwbkg-"><a href="https://www.youtube.com/watch?v=6AytbSdWBKg">ES6 and ES7 the future of Javascript</a></h3>
+<ul>
+<li>Some history about ECMA and ECMAScript<ul>
+<li>&lt; 2011 still pretty closed, &gt;= 2011 open and up on GitHub</li>
+<li>Why word document: ISO want it... plan to switch to Markdown</li>
+</ul>
+</li>
+<li>Hard to find names for new built-ins<ul>
+<li>Engines can JIT them</li>
+<li>Example: <code>String.prototype.includes</code> instead of <code>String.prototype.contains</code> because it can break Mootools</li>
+</ul>
+</li>
+<li>Templates<ul>
+<li>Me: ugh...won&#39;t this cause problems for minification?</li>
+</ul>
+</li>
+<li><code>isFinite</code> -&gt; <code>Number.isFinite</code>, <code>isNaN</code> -&gt; <code>Number.isNaN</code>, they don&#39;t do coersions!</li>
+<li><code>var</code> comes from the era when people think global scope and local scope is enough for scripting languages...now we konw that is a miskate, so we have <code>let</code> with block scope.</li>
+<li>Arrow function<ul>
+<li>Lexical <code>this</code>, handy for <code>setTimeout</code> etc.</li>
+<li>Not <code>new</code>able(not constructors)</li>
+<li>No <code>arguments</code></li>
+<li>Classes are just sugar<ul>
+<li>No implicit <code>super</code> call because in dynamic languages it is error-prone</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Modules<ul>
+<li>Browserify is doing what the interpreter supposed to do</li>
+</ul>
+</li>
+</ul>
+<h2 id="reactive-functional-programming">Reactive &amp; functional programming</h2>
+<ul>
+<li><a href="https://github.com/paldepind/flyd">paldepind/flyd</a></li>
+<li><a href="http://elm-lang.org/Learn.elm">elm</a></li>
+</ul>
+<h2 id="anders-hejlsberg-typesciprt">Anders Hejlsberg &amp; TypeSciprt</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=K68NVae-PBs">Introducing TypeScript by Anders Hejlsberg </a></li>
+<li><a href="https://www.youtube.com/watch?v=Ut694dsIa8w">Evolving JavaScript with TypeScript</a></li>
+</ul>
+<h2 id="meteor-customize-registeration">Meteor customize registeration</h2>
+<ul>
+<li><a href="https://stackoverflow.com/questions/20833631/how-to-create-custom-login-fields-in-meteor">How to create Custom Login Fields in Meteor?</a></li>
+</ul>
+</div></body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 28, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 28, 2015</h1></header><div class="content"><h2 id="finally-got-the-time-to-watch-it-">Finally got the time to watch it..</h2>
+<p><a href="https://vimeo.com/44182484">How browsers work internally - Tali Garsiel - Front-Trends 2012</a></p>
+<h2 id="defer-v-s-async">defer v.s. async</h2>
+<ul>
+<li><a href="https://stackoverflow.com/questions/10808109/script-tag-async-defer">Script Tag - async &amp; defer</a></li>
+<li><a href="http://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html">async vs defer attributes</a></li>
+<li>Normal <code>&lt;script&gt;</code><ul>
+<li>Downloading and execution blocks HTML parsing</li>
+</ul>
+</li>
+<li><code>async</code> downloading<ul>
+<li>Downloading doesn&#39;t block HTML parsing</li>
+<li>Doesn&#39;t gaurantee order of execution for different <code>&lt;script&gt;</code></li>
+<li>Blocks when being executed</li>
+<li>Use case: Google Analytics script</li>
+</ul>
+</li>
+<li><code>defer</code> downloading and execution<ul>
+<li>Downloading doesn&#39;t block HTML parsing</li>
+<li>Gaurantee order of execution for different <code>&lt;script&gt;</code></li>
+<li>Only executed <strong>after the HTML is parsed</strong></li>
+<li>Use case: libraries &amp; frameworks, scripts that needs a loaded DOM, or any normal script</li>
+</ul>
+</li>
+<li>In many cases, they have no effect on inline scripts</li>
+<li>IE10+, IE4+ supports <code>defer</code> but may <a href="https://github.com/h5bp/lazyweb-requests/issues/42">interleave execution of scripts</a><ul>
+<li>If you need to support IE9-, don&#39;t use <code>defer</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="2-way-data-binding">2-way data binding</h2>
+<ul>
+<li>DOM -&gt; JS, check out <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver">Mutation Observer</a><ul>
+<li>IE11+</li>
+<li><a href="http://updates.html5rocks.com/2012/02/Detect-DOM-changes-with-Mutation-Observers">Detect DOM changes with Mutation Observers</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Mutation_events">Deprecated: Mutation events</a></li>
+</ul>
+</li>
+<li>JS -&gt; DOM, checkout <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe">Object.observe</a><ul>
+<li>Currenly only in Chrome and Opera. Proposal in ES7</li>
+<li><a href="http://www.html5rocks.com/en/tutorials/es7/observe/">Data-binding Revolutions with Object.observe()</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="file-api">File API</h2>
+<ul>
+<li>Working draft, IE 10+</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/File">MDN</a></li>
+<li><a href="http://www.html5rocks.com/tutorials/file/dndfiles/">Reading files in JavaScript using the File APIs</a></li>
+</ul>
+<h2 id="more-about-js-objects-values-in-engines">More about JS objects/values in engines</h2>
+<ul>
+<li><a href="https://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations">value representation in javascript implementations</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Internals">SpiderMonkey Internals</a><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/JSAPI_Reference/JS::Value">JS::Value</a></li>
+</ul>
+</li>
+<li><a href="http://jayconrod.com/posts/52/a-tour-of-v8-object-representation">A tour of V8: object representation</a><ul>
+<li><a href="https://code.google.com/p/v8/source/browse/branches/bleeding_edge/src/objects.h">V8 source code</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="some-old-videos">Some old videos</h2>
+<ul>
+<li>2008, Mozilla engineer in Google Tech Talks...lol: <a href="https://www.youtube.com/watch?v=a2_6bGNZ7bA">Faster HTML and CSS: Layout Engine Internals for Web Developers</a></li>
+<li><a href="https://www.youtube.com/watch?v=hWhMKalEicY">V8: an open source JavaScript engine</a> by Lars Bak</li>
+<li>Dead funny...LMAO: <a href="https://www.youtube.com/watch?v=UzyoT4DziQ4">Scott Hanselman, &quot;Virtual Machines, JavaScript and Assembler&quot; - Fluent 2014 Keynote </a></li>
+<li><a href="https://www.youtube.com/watch?v=R8W_6xWphtw">Paul Irish, &quot;Delivering the goods&quot; - Fluent 2014 Keynote </a></li>
+</ul>
+<h2 id="old-quora-answers">Old quora answers</h2>
+<ul>
+<li><a href="https://www.quora.com/What-are-the-use-cases-for-RequireJS-vs-Yepnope-vs-LABjs">Alex Sexton and Kyle Simpson on script loaders</a></li>
+</ul>
+<h2 id="hybrid-frameworks">Hybrid frameworks</h2>
+<ul>
+<li><a href="https://www.airpair.com/ionic-framework/posts/hybrid-apps-ionic-famous-f7-onsen">Hybrid UI framework shootout: Ionic vs. Famo.us vs. F7 vs. OnsenUI</a></li>
+<li><a href="http://ionicframework.com/">Ionic</a></li>
+<li><a href="http://www.idangero.us/framework7/">Framework7 - Full Featured Mobile HTML Framework For Building iOS Apps</a></li>
+</ul>
+<h2 id="about-implementing-a-wysiwyg-editor">About implementing a WYSIWYG editor</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Rich-Text_Editing_in_Mozilla">Rich-Text Editing in Mozilla</a></li>
+<li><a href="https://medium.com/medium-eng/why-contenteditable-is-terrible-122d8a40e480">Why ContentEditable is Terrible</a></li>
+</ul>
+<h2 id="cash-busting">Cash busting</h2>
+<ul>
+<li><a href="http://blog.risingstack.com/automatic-cache-busting-for-your-css/">Automatic Cache Busting for Your CSS</a></li>
+<li><a href="http://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/">Revving Filenames: don’t use querystring</a></li>
+</ul>
+</div></body></html>

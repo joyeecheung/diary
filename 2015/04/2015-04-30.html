@@ -1,0 +1,75 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 30, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 30, 2015</h1></header><div class="content"><h2 id="typescript-and-dart">TypeScript and Dart</h2>
+<p><a href="https://www.youtube.com/watch?v=5AqbCQuK0gM">Anders Hejlsberg and Lars Bak: TypeScript, JavaScript, and Dart</a></p>
+<h3 id="relationships-with-js">Relationships with JS</h3>
+<ul>
+<li>A: TypeScript tries to follow ES6(e.g. the class)</li>
+<li>L: Dart is different. Semantics &amp; performance.</li>
+</ul>
+<h3 id="structure">Structure</h3>
+<ul>
+<li>L: Google uses guidelines and comments to make maintainable JS, it all comes down to types.</li>
+<li>A: OO does help to structure the code, it also helps building tools(refactor, hints, warnings), which is especially helpful when building large apps, though you don&#39;t have to use it.</li>
+<li>A: TypeScript is very conscious about the existing libraries and runtimes, they have written static type information for some of them. The static typing is gradual and non-mandatory.</li>
+</ul>
+<h3 id="static-typing">Static Typing</h3>
+<ul>
+<li>L: The ability to monkey patching libraries is very disturbing. Dart has a simpler optic(dynamic types need maps). The lack of integers is a big problem.</li>
+<li>A: The problem is whether JS is broken <strong>enough</strong> to be replaced.</li>
+<li>L: Change of optic will degrade JS performance in most VMs, but in Dart, the type system makes the performance predictable. There will be guarantees.</li>
+</ul>
+<h3 id="evolution-of-js-and-the-need-for-a-new-language">Evolution of JS and the need for a new language</h3>
+<ul>
+<li>L: There wasn&#39;t enough time to wait for a better JS. Most JS code on the Web are still ES3. The web and JS need to beat proprietary platforms on mobiles.<ul>
+<li>(Note by me: This is another reason why we need web app instead of having only native app -- JS and the Web are not controlled by any single big player)</li>
+</ul>
+</li>
+<li>A: There must be something that can be done (hinting) to help JS run faster.</li>
+<li>L: That&#39;s like #pragma in C</li>
+<li>L: We can always make it run faster, it&#39;s just a matter of resources</li>
+</ul>
+<h3 id="optional-type">Optional Type</h3>
+<ul>
+<li>L: Type can be optional in Dart because of th importance of REPL</li>
+<li>A: There is a dial on typing. It can be more typeless like JS, but as the typing comes in, the tooling lights up</li>
+<li>L: Dart (with flags) will check types at runtime which will be harder for somethin like TypeScript</li>
+<li>A: For TypeScript the checking(in complied JS) does cost very much.</li>
+<li>L: That would be cheaper in Dart.</li>
+<li>A: But in JS, the consequence of type violation is less dangerous than in something like (ancient) C, because all the behaviors are defined.</li>
+<li>L: Types in interfaces can help debugging in multi-team environment. Spelling error in JS fails silently, which is annoying. In Dart, there won&#39;t be this kind of problems.</li>
+<li>A: Static typing is a dial between the pain of developers and the cost of runtime.</li>
+</ul>
+<h3 id="libraries-and-tree-shaking">Libraries and Tree Shaking</h3>
+<ul>
+<li>A: Today JS development is very ad-hoc when it comes to API and documentation(e.g. you have to go though the online documentation to check the APIs and compatibilities of jQuery). Type and document annnotation can be very helpful. TypeScript tries very hard to mirror the runtime type system of JS.</li>
+<li>L: Dart can eliminate unused code(tree-shaking), JS (or compiled Dart interfacing with JS) can&#39;t (because keyed access is hard to predict). So the deployment can be better.</li>
+<li>A: When compiling to JS, TypeScript/Dart is just part of the tool chain, other tools can do tree-shaking(e.g. RequireJS)</li>
+<li>(Note by me: ES6 modules might help on that issue)</li>
+<li>(Note by me: Acutally...ES6 modules might be much more helpful than the RequireJS lot because its built in to the language, so the engines can be much more certain about what it says and use the knowledge to do optimization)</li>
+</ul>
+<h2 id="more-videos">More videos</h2>
+<p><a href="https://www.youtube.com/watch?v=JhWGSD_TY2Y">Interview with Paul Irish</a>
+<a href="https://www.youtube.com/watch?v=iH1D31YHsgY">Introducing Microsoft Edge: The New Windows 10 Browser </a></p>
+<h2 id="wow-">Wow...</h2>
+<p><a href="https://www.quora.com/How-does-a-visually-impaired-computer-programmer-do-programming">How does a visually impaired computer programmer do programming?</a></p>
+<h2 id="unwatched">Unwatched</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Ut694dsIa8w">Evolving JavaScript with TypeScript</a></li>
+</ul>
+<h2 id="new-project">New Project</h2>
+<ul>
+<li>GetOffer(Mian Jin): A platform where intern-to-bes talk about interviews, salaries and workplaces.</li>
+</ul>
+<h2 id="number-prototype-tofixed-">Number.prototype.toFixed()</h2>
+<ul>
+<li><a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.7.4.5">ES5 spec</a></li>
+<li><code>1.555.toFixed(2)</code> is <code>1.55</code>, <code>1.555.toFixed(1)</code> is <code>1.6</code><ul>
+<li>Because usually in floating point numbers <code>1.55 - 1.555 &gt; 1.56 - 1.555</code></li>
+</ul>
+</li>
+</ul>
+</div></body></html>

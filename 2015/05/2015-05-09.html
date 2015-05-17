@@ -1,0 +1,231 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 9, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 9, 2015</h1></header><div class="content"><h2 id="-the-future-of-typescript-ecmascript-6-async-await-and-richer-libraries-https-channel9-msdn-com-events-build-2015-3-644-"><a href="https://channel9.msdn.com/Events/Build/2015/3-644">The Future of TypeScript: ECMAScript 6, Async/Await and Richer Libraries</a></h2>
+<ul>
+<li>Static types and future ES</li>
+<li>Optional typing, tooling lights up during annotation, completion, documentaton, refectoring, definitions and references</li>
+<li>TSD files(like .h files) and <a href="https://github.com/borisyankov/DefinitelyTyped">Definitely types</a></li>
+<li>Angular 2 and AtScript</li>
+<li>Different compile targets: ES3, ES5, ES6</li>
+<li>Infers types and recognizes type guards</li>
+<li>Type checking goes away in compiled code</li>
+<li>TS Server(using node) talks to editors/plugins with a JSON protocol. You don&#39;t need to write the parser and semantics analyzer youself.</li>
+<li>TS 2.0: later this year, 100% ES6 compliance</li>
+</ul>
+<h2 id="-what-s-new-in-javascript-for-fast-and-scalable-apps-https-channel9-msdn-com-events-build-2015-2-763-"><a href="https://channel9.msdn.com/Events/Build/2015/2-763">What’s New in JavaScript for Fast and Scalable Apps</a></h2>
+<h3 id="arrow-functions">Arrow functions</h3>
+<ul>
+<li>lexical <code>this</code>, <code>arguments</code> and <code>super</code></li>
+<li><p>Gotcha: Blocks(<code>let</code>+curly braces) needs explicit <code>return</code>(inside the curly braces)</p>
+<ul>
+<li><p>This</p>
+<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>};
+<span class="hljs-built_in">console</span>.log(wat());
+</code></pre>
+<p>will give you <code>undefined</code>, you need to <code>return</code>:</p>
+<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {<span class="hljs-keyword">return</span> {<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>}};
+<span class="hljs-built_in">console</span>.log(wat());
+</code></pre>
+<p>or use parentheses to tell the interpreter that you are giving an expression:</p>
+<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>});
+<span class="hljs-built_in">console</span>.log(wat());
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="iterators">Iterators</h3>
+<p>Lazy evaluations! Yay!</p>
+<p>You need to implement:</p>
+<ol>
+<li><code>[Symbol.iterator]()</code></li>
+<li><code>next()</code>, <code>throw()</code>, <code>catch()</code> for the thing returned by <code>[Symbol.iterator]()</code>(usually it is <code>this</code> so that you can access the data in the object)</li>
+<li><code>next()</code>, <code>throw()</code>, <code>catch()</code> need to return an object that has <code>done</code> and <code>value</code>;</li>
+</ol>
+<p>My Example:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// ------------ Implement it!</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Stack</span><span class="hljs-params">(arr)</span> </span>{
+  <span class="hljs-keyword">this</span>.storage = arr ? arr.slice(<span class="hljs-number">0</span>) : [];
+}
+
+Stack.prototype.push = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+  <span class="hljs-keyword">this</span>.storage.push(value);
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+}
+
+Stack.prototype.pop = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.storage.pop();
+}
+
+Stack.prototype[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+}
+
+Stack.prototype.next = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">var</span> done = (<span class="hljs-keyword">this</span>.storage.length === <span class="hljs-number">0</span>);
+  <span class="hljs-keyword">if</span> (done) <span class="hljs-keyword">return</span> {done: done};
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> {value: <span class="hljs-keyword">this</span>.pop(), done: done}
+}
+
+<span class="hljs-comment">// ---------- Use it!</span>
+<span class="hljs-comment">// for-of</span>
+<span class="hljs-keyword">var</span> foo = <span class="hljs-keyword">new</span> Stack([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]);
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> foo) {
+  <span class="hljs-built_in">console</span>.log(i);  <span class="hljs-comment">// 4,3,2,1</span>
+}
+
+<span class="hljs-comment">// spread operator</span>
+<span class="hljs-keyword">var</span> bar = <span class="hljs-keyword">new</span> Stack([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]);
+<span class="hljs-keyword">var</span> baz = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, ...bar];  <span class="hljs-comment">// [ 1, 2, 4, 3, 2, 1 ]</span>
+
+<span class="hljs-comment">// Array.from</span>
+<span class="hljs-keyword">var</span> barfoo = <span class="hljs-keyword">new</span> Stack([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]);
+<span class="hljs-keyword">var</span> foobar = <span class="hljs-built_in">Array</span>.from(barfoo); <span class="hljs-comment">// [ 4, 3, 2, 1 ]</span>
+</code></pre>
+<ul>
+<li><code>Map</code> and <code>Set</code> accept iterables in their constructor.</li>
+<li><code>Array.prototype.values()</code> returns iterable</li>
+<li><code>Map.prototype.values()</code>, <code>Map.prototype.keys()</code>,<code>Map.prototype.entries()</code>  return iterable</li>
+<li><code>Set.prototype.values()</code> returns iterable</li>
+</ul>
+<h3 id="generators">Generators</h3>
+<p>Suspend on <code>yield</code>, like python.</p>
+<pre><code class="lang-javascript">
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncOperation</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; {
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      resolve(<span class="hljs-built_in">Math</span>.random());
+    }, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">3000</span>);
+  });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">syncOperation</span><span class="hljs-params">(value)</span> </span>{
+  <span class="hljs-built_in">console</span>.log(value);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span><span class="hljs-params">(gen)</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; { 
+    <span class="hljs-keyword">let</span> iter = gen();  <span class="hljs-comment">// get the iterator out of the generator</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span><span class="hljs-params">(v)</span> </span>{
+      <span class="hljs-keyword">let</span> cur = iter.next(v);  <span class="hljs-comment">// spread it out</span>
+      <span class="hljs-keyword">if</span> (cur.done) {
+        resolve(cur.value);
+      } <span class="hljs-keyword">else</span> {
+        cur.value.then(tick);  <span class="hljs-comment">// pass the async result to tick</span>
+      }
+    }
+
+    tick();
+  });
+}
+
+spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-params">()</span> </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"start"</span>);
+
+  <span class="hljs-comment">// what passed to next() will be yielded here</span>
+  <span class="hljs-keyword">let</span> a = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"first async result: "</span> + a);
+  <span class="hljs-keyword">let</span> b = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"second async result: "</span> + b);
+  <span class="hljs-keyword">let</span> c = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"second async result: "</span> + c);
+
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"done"</span>);
+  <span class="hljs-keyword">return</span> a + b + c;  <span class="hljs-comment">// this will be resolved</span>
+}).then(result =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Final result: "</span> + result));
+</code></pre>
+<p>async/await sugars will be in ES7.</p>
+<h3 id="asm-js">asm.js</h3>
+<ul>
+<li>Tight, optimizable, low-level subset of JavaScript</li>
+<li>Not suitable for hand writing but as a compiler target</li>
+<li>Compile AOT, no JIT, not bailouts</li>
+<li>Aggressive optmizations, close to native performance</li>
+</ul>
+<h3 id="simd">SIMD</h3>
+<p>Single Instruction, Multiple Data: Hardware instructions for batch calculations</p>
+<p>Good at RGB/A and  XYZW coordinates opeartions, map-like operations on array, etc.</p>
+<p>Better performance, lower power cosumption</p>
+<h2 id="-chakra-the-javascript-engine-that-powers-microsoft-edge-https-channel9-msdn-com-events-webplatformsummit-2015-chakra-the-javascript-engine-that-powers-microsoft-edge-"><a href="https://channel9.msdn.com/Events/WebPlatformSummit/2015/Chakra-The-JavaScript-Engine-that-powers-Microsoft-Edge">Chakra: The JavaScript Engine that powers Microsoft Edge</a></h2>
+<ul>
+<li>From mshtml.dll + jscript9.dll (IE11) to edgehtml.dll + chakra.dll<ul>
+<li>No more document modes, MS extensions(e.g. ActiveX)</li>
+<li>Standard compliant, rolling update, much faster</li>
+</ul>
+</li>
+<li><p>Pipeline</p>
+<ol>
+<li><p>The first time:</p>
+<pre><code>[<span class="hljs-constant">Source]</span> -&gt; <span class="hljs-constant">Parser </span>-&gt;
+[<span class="hljs-constant">AST]</span>    -&gt; <span class="hljs-constant">Bytecode </span>generator -&gt;
+[<span class="hljs-constant">Bytecode]</span> -&gt; <span class="hljs-constant">Profiling Interpreter </span>(<span class="hljs-constant">Starts </span>interpretation/execution)
+</code></pre></li>
+<li><p>Later:</p>
+<pre><code>[<span class="hljs-constant">Bytecode </span>+ profiling data] -&gt; <span class="hljs-constant">Full JIT Compiler </span>-&gt;
+[<span class="hljs-constant">Machine </span>code] -&gt; <span class="hljs-constant">Run </span>machine code
+</code></pre><p>Profiling data contains type information.</p>
+</li>
+<li><p>Bailout: type validation fails</p>
+<pre><code>[Machine code]<span class="hljs-function"> -&gt;</span> bailout
+[Bytecode]<span class="hljs-function"> -&gt;</span> Profiling Interpreter <span class="hljs-function"><span class="hljs-params">(the IE11 way)</span>
+          -&gt;</span> Simple JIT (<span class="hljs-keyword">new</span> <span class="hljs-keyword">in</span> Edge!)
+</code></pre><p>Simple JIT doesn&#39;t use profiling data, so it runs faster, but generate a bit slower machine code</p>
+</li>
+</ol>
+</li>
+<li>Multithread concurrent JITs</li>
+<li>30% faster for TypeScript compiler</li>
+</ul>
+<h3 id="optimiztion">Optimiztion</h3>
+<ul>
+<li>Object representation<ul>
+<li>Objects with the same properties but different property types are considered has the same internal type (WTF?). This means <code>{a: 1, b: 2}</code> and <code>{a: &quot;s1&quot;, b: &quot;s2&quot;}</code> has the same internal type.</li>
+<li>However, the order and property names matters (WTF?)</li>
+</ul>
+</li>
+<li>Equivalent Object Type Specialization<ul>
+<li>&quot;like&quot; objects doesn&#39;t need redundant type checks<ul>
+<li>e.g. <code>{a: 1, b: 2}</code> and <code>{a: 1, b: 2, c: 3}</code> are alike</li>
+</ul>
+</li>
+<li>20% faster</li>
+</ul>
+</li>
+<li>Functions in cross-file scripts can now be inlined</li>
+<li>Bounds checking Elimination<ul>
+<li>Chakra will cache <code>len = array.length</code> in for-loops for you now, and can pre-calculate and eliminate bounds checking when it is safe(skip that <code>i &lt; array.length</code> thing)</li>
+<li>lo-dash and underscore.js can benefit from this</li>
+<li>40%</li>
+</ul>
+</li>
+<li>Only JIT hot code</li>
+</ul>
+<h3 id="minified-code">Minified code</h3>
+<ul>
+<li>Minification can be in the way of optimization</li>
+<li>UglifyJS and jQuery</li>
+</ul>
+<h3 id="gc">GC</h3>
+<ul>
+<li>Background thread helps to mark when GC is invoked</li>
+<li>Not generational GC because it doesn&#39;t fit the Web that well(the page might not survive to next generation)</li>
+</ul>
+<h3 id="es6-overview">ES6 Overview</h3>
+<ul>
+<li>Syntatic Sugar: Arrow functions, enhanced object literals, templates, destructuring, rest/spread, default, new APIs, classes</li>
+<li>Scalable Apps: let, const, block scopes, promises, iterators, generators, typed arrays, modules</li>
+<li>Library builders: map, set, weakmap, <code>__proto__</code>, proxies, symbols, sub-classable builtins</li>
+</ul>
+<h2 id="jit">JIT</h2>
+<ul>
+<li><a href="https://trac.webkit.org/wiki/JavaScriptCore">JavaScriptCore – WebKit</a></li>
+<li><a href="http://mrale.ph/blog/2012/06/03/explaining-js-vms-in-js-inline-caches.html">Explaining JavaScript VMs in JavaScript - Inline Caches</a></li>
+<li><a href="http://www.memorymanagement.org/glossary/c.html#copying.garbage.collection">Copying GC</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Inline_caching">Inline caching</a></li>
+<li><a href="http://hllvm.group.iteye.com/group/topic/37596">[资料] [链接帖] 各JavaScript引擎的简介，及相关资料/博客收集帖</a></li>
+</ul>
+</div></body></html>

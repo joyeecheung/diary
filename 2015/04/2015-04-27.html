@@ -1,0 +1,142 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 27, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 27, 2015</h1></header><div class="content"><h2 id="new-css-layout-techniques">New CSS Layout Techniques</h2>
+<ul>
+<li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">A Complete Guide to Flexbox</a></li>
+<li><a href="https://css-tricks.com/guide-responsive-friendly-css-columns/">Guide to Responsive-Friendly CSS Columns</a></li>
+<li><a href="http://philipwalton.github.io/solved-by-flexbox/">Solved by Flexbox</a></li>
+<li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/">A Complete Guide to Grid</a></li>
+</ul>
+<p>Hmm...maybe I should write a few demos and toying with them...</p>
+<h2 id="cool-c-magic">Cool C++ Magic</h2>
+<ul>
+<li><a href="https://github.com/facebook/folly/blob/master/folly/Conv.h"><code>to&lt;T&gt;</code></a></li>
+</ul>
+<h2 id="ecmascript">ECMAScript</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=PlmsweSNhTw">ECMAScript Harmony: Rise of the Compilers - Brendan Eich keynote </a><ul>
+<li>History and future of ES</li>
+<li>ES7<ul>
+<li>observe, wait, comprehensions, gaurds</li>
+</ul>
+</li>
+<li>ES8<ul>
+<li>Macro?! Wow...hello, Scheme?</li>
+</ul>
+</li>
+<li>Faster release cycle to avoid specs that no one implements</li>
+<li>Static typing: TypeScript, Flow, Closure, SoundScript</li>
+<li>Seems that &quot;JS as assembly&quot; is going to be big...&quot;When we actually have all the affordances in the standard language that allow anybody to compile any language to it, then we&#39;ll know that we are done.&quot;</li>
+<li>Things in proposal: typed arrays, shared memory threads, locks...<ul>
+<li>for asm.js coz C++ uses them a lot</li>
+<li>Web Workers can&#39;t share memory</li>
+<li>Me: ...WTF?!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="kinda-ancient-but-interesting">Kinda ancient...but interesting</h2>
+<ul>
+<li><a href="https://www.cs.purdue.edu/sss/projects/dynjs/browser-test-results/behavior.html">Timing behavior of optimization faults in popular browsers</a></li>
+<li><a href="https://www.cs.purdue.edu/sss/projects/dynjs/eval-TR.pdf">The Eval that Men Do</a></li>
+<li><a href="https://www.cs.purdue.edu/homes/gkrichar/papers/pldi2010-richards-dynjs.pdf">An Analysis of the Dynamic Behavior of JavaScript Program</a></li>
+<li><a href="https://www.cs.purdue.edu/sss/projects/dynjs/jsbench-oopsla-2011.pdf">Automated Construction of JavaScript Benchmarks</a></li>
+</ul>
+<h2 id="blink">Blink</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=Lpk1dYdo62o">Compositing in Blink and WebKit </a><ul>
+<li>Compositing<ul>
+<li>Use multiple backing stores to cache and group chunks of the render tree </li>
+<li>Less repainting</li>
+<li>Repainting(every pixel) v.s. redrawing(already know colors)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="linear-regression">Linear Regression</h2>
+<ul>
+<li><a href="http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&amp;doc=exercises/ex2/ex2.html">Machine Learning by Andrew Ng Exercise 2: Linear Regression </a></li>
+<li><a href="http://aimotion.blogspot.com/2011/10/machine-learning-with-python-linear.html">Machine Learning with Python - Linear Regression</a></li>
+</ul>
+<h2 id="nginx-aosa2-">Nginx (AOSA2)</h2>
+<h3 id="background">Background</h3>
+<ul>
+<li>Bottleneck is usally speed of the network(I/O), not the speed of generating content</li>
+<li>Apache allocates too much memory per connection<ul>
+<li>For persistant connection, it is even worse</li>
+<li>Web server should scale <strong>non-linearly</strong>!</li>
+</ul>
+</li>
+</ul>
+<h3 id="apache-s-history">Apache&#39;s history</h3>
+<ul>
+<li>Born to be run as a single instance on a single machine</li>
+<li>One copy per connection(thread/process), scales <strong>linearly</strong></li>
+<li>C10K problem</li>
+</ul>
+<h3 id="birth-of-nginx">Birth of nginx</h3>
+<ul>
+<li>Event-based (the <strong>model</strong> makes the difference)</li>
+<li>Born to handle <strong>static content</strong>, offload concurrency and lantency processing for Apache(side by side)</li>
+<li>Then added<ul>
+<li>FastCGI, uswgi, SCGI, etc</li>
+<li>Caching system(e.g. memcached/redis)</li>
+<li>Reverse proxy, load balancing</li>
+</ul>
+</li>
+<li>Becomes powerful enough to be used without Apache</li>
+<li>Usually, nginx is a <strong>component</strong> in the architecture</li>
+</ul>
+<h3 id="architecture-of-nginx">Architecture of nginx</h3>
+<ul>
+<li>C-based</li>
+<li>Port to multiple platforms<ul>
+<li>The Windows port (by 2012) is more like a proof-of-concept, it doesn&#39;t perform as well as on other platforms</li>
+</ul>
+</li>
+</ul>
+<h4 id="traditional-architecture">Traditional architecture</h4>
+<ul>
+<li>Process/thread per connection</li>
+<li>Blocks network or I/O</li>
+<li>Overhead for spawning new process/thread<ul>
+<li>Allocate memory(stack/heap)</li>
+<li>New execution context(initialization)</li>
+<li>CPU time(thrashing on excessive context switching)</li>
+</ul>
+</li>
+</ul>
+<h4 id="model-of-nginx">Model of nginx</h4>
+<ul>
+<li>Modular</li>
+<li>Event-driven (run-loop)</li>
+<li>Asynchronous</li>
+<li><strong>Single-threaded</strong> (processes)<ul>
+<li>Limited number of processes called <em>workers</em></li>
+</ul>
+</li>
+<li>Non-blocking</li>
+</ul>
+<h3 id="code-structure">Code Structure</h3>
+<ul>
+<li>Core<ul>
+<li>Maintains the run-loop</li>
+<li>Executes sections of modules for each stage of request process</li>
+</ul>
+</li>
+<li>Modules<ul>
+<li>Presentation and application layer</li>
+<li>I/O(network, storage)</li>
+<li>Proxy</li>
+<li>Transform content</li>
+<li>Outbound filtering(things that should&#39;t be sent out)</li>
+</ul>
+</li>
+</ul>
+<p>...To Be Continued</p>
+</div></body></html>

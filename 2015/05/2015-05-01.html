@@ -1,0 +1,105 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 1, 2015</h1></header><div class="content"><h2 id="how-browsers-recognizes-css-shorthand-properties">How Browsers recognizes CSS shorthand properties</h2>
+<p>Dug through the source code of Gecko and wrote an answer for this(Chinese): <a href="http://www.zhihu.com/question/29973122/answer/46405754">CSS中属性的快捷写法是如何被识别的？</a></p>
+<h2 id="visual-studio-code">Visual Studio Code</h2>
+<ul>
+<li><a href="http://dailyjs.com/2015/04/30/visual-studio-code/">Visual Studio Code</a></li>
+<li><a href="https://github.com/borisyankov/DefinitelyTyped">The repository for high quality TypeScript type definitions</a></li>
+<li><a href="https://code.visualstudio.com/Docs/nodejs">Developing Node Applications</a></li>
+</ul>
+<h2 id="history">History</h2>
+<ul>
+<li>IE10+</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history">Manipulating the browser history</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history/Example">Ajax navigation example</a></li>
+</ul>
+<h2 id="meteor">Meteor</h2>
+<p>*<a href="https://stackoverflow.com/questions/14074434/how-do-you-conditionally-send-data-to-the-client-in-meteor">How do you conditionally send data to the client in Meteor?</a></p>
+<h2 id="playing-with-webkit">Playing with WebKit</h2>
+<ul>
+<li><a href="https://blogs.adobe.com/webplatform/2013/02/05/a-visual-method-for-understanding-webkit-layout/">A Visual Method for Understanding WebKit Layout</a></li>
+</ul>
+<h2 id="type-rendering">Type Rendering</h2>
+<h3 id="-a-closer-look-at-font-rendering-http-www-smashingmagazine-com-2012-04-24-a-closer-look-at-font-rendering-"><a href="http://www.smashingmagazine.com/2012/04/24/a-closer-look-at-font-rendering/">A Closer Look At Font Rendering</a></h3>
+<h4 id="rasterization">Rasterization</h4>
+<ul>
+<li>Black-and-white(bi-rendering), still used in prints, but not good in low-resolution screens</li>
+<li>Grayscale rendering -- antialiasing, smooth contour</li>
+<li>Colored pixels(subpixels) -- resolution is trippled in horizontal direction</li>
+</ul>
+<h4 id="implementations">Implementations</h4>
+<ul>
+<li>Browsers uses system rasterizers<ul>
+<li>On windows: GDI ClearType, GDI grayscale, or DirectWrite<ul>
+<li>Format matters</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>WOFF is a wrapper type</li>
+<li>TrueType(.eot, .ttf) and PostScript(.otf) differ in<ul>
+<li>Curve representation (doesn&#39;t matter that much to rasterizer)</li>
+<li>Hinting representation<ul>
+<li>PostScript contains <strong>abstract</strong> info about hinting</li>
+<li>TrueType contains <strong>specific</strong> instructions that controls the rendering</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="gdi-grayscale">GDI Grayscale</h4>
+<ul>
+<li>XP has only grayscale rendering</li>
+<li>Applies to both TrueType and PostScript</li>
+<li>Good at hinting in PostScript</li>
+<li>Suprisingly good without hinting</li>
+</ul>
+<h4 id="cleartype">ClearType</h4>
+<ul>
+<li>Vista and Win7 have ClearType</li>
+<li>Only applies to <strong>TrueType</strong> fonts</li>
+<li>Subpixel in horizontal direction, black-and-white in vertical direction<ul>
+<li>No anti-aliasing in vertical direction!</li>
+<li>Wired jaggies at curves</li>
+<li>Worse in large sizes</li>
+</ul>
+</li>
+<li>Without hinting, there will be &quot;warts&quot;... :(</li>
+</ul>
+<h4 id="directwrite">DirectWrite</h4>
+<ul>
+<li>IE9+</li>
+<li>ClearType + vertical smoothing</li>
+<li>Applies to <strong>PostScript</strong> fonts too</li>
+<li>Contours will be aligned to full pixel heights, which can give good results when hinting is provided, but also means wired results without hinting(in vertical direction)</li>
+<li>Allows subpixel positioning</li>
+</ul>
+<h4 id="mac-os-x-quartz">Mac OS X Quartz</h4>
+<ul>
+<li>Hinting is ignored, so TrueType and PostScript are rendered in the same way.</li>
+<li>Good subpixel rendering</li>
+<li>Doesn&#39;t try that hard</li>
+<li>Does not enforce full pixel height alignement</li>
+</ul>
+<h4 id="ios">iOS</h4>
+<ul>
+<li>Almost the same as OS X, but without subpixel rendering(grayscale only, doesn&#39;t enforce full height, doesn&#39;t care about hinting)</li>
+</ul>
+<h4 id="conclusion">Conclusion</h4>
+<ul>
+<li>Mac OS and iOS: reliable, but sometimes too heavy</li>
+<li>Windows: hinting matters, especially for TrueType. PostScript &gt; TrueType.</li>
+<li>IE8- = ClearType(if installed) = jaggies, needs good hinting to come in rescue</li>
+<li>DirectWrite is good with hinting, but you need IE9+.</li>
+<li>In my experience, in China XP might not even have grayscale...? Just terrible black-and-white.</li>
+</ul>
+<h4 id="other-reference">Other reference</h4>
+<ul>
+<li><a href="https://css-tricks.com/font-rendering-differences-firefox-vs-ie-vs-safari/">Font Rendering Differences: Firefox vs. IE vs. Safari</a></li>
+<li><a href="http://blog.typekit.com/2010/10/21/type-rendering-web-browsers/">Type rendering: web browsers</a></li>
+</ul>
+</div></body></html>

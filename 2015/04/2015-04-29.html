@@ -1,0 +1,98 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 29, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 29, 2015</h1></header><div class="content"><h2 id="videos">Videos</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=VkTCL6Nqm6Y">OSCON 2014: How Instagram.com Works; Pete Hunt</a><ul>
+<li>The point about Web App: on-demand(I agree.)</li>
+<li>React &amp; webpack<ul>
+<li>Entry points</li>
+<li>Not only js</li>
+</ul>
+</li>
+<li>CSS<ul>
+<li>Namespace is very important in SPA</li>
+<li>No cascading</li>
+<li>No overwriting</li>
+</ul>
+</li>
+<li>Web at its strength, mobile at its strength</li>
+<li>Hundreds of react modules per page, each has its js and css(siting next to each other in the same directory), the optimizer takes care of bundling them</li>
+<li>Testing<ul>
+<li>Do prototype first, only start to test when the pieces come together</li>
+<li><a href="https://github.com/facebookarchive/huxley">Huxley</a> takes screenshots and pixel-compare to test CSS</li>
+<li>Integration test on shapes of JSON coming out of the backend</li>
+</ul>
+</li>
+<li>Bundling<ul>
+<li>Webpack loaders compiles JSX to vanilla JS, then optimize<ul>
+<li>Incremental compilation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Static assets<ul>
+<li>In development, grab from django</li>
+<li>In production, configure django to use CDN</li>
+<li>Upload to CDN first, then update the database to switch to the new configuration</li>
+</ul>
+</li>
+<li>Reference<ul>
+<li><a href="https://en.bem.info/">BEM</a></li>
+<li><a href="https://www.lucidchart.com/techblog/2014/01/31/atomic-css-tool-set/">Atomic CSS</a></li>
+<li><a href="https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md">SUIT CSS</a></li>
+<li><a href="http://oocss.org/">OOCSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://www.youtube.com/watch?v=hWhMKalEicY">V8: an open source JavaScript engine </a><ul>
+<li>Use hidden classes to generate code that uses offsets instead of doing look-ups</li>
+<li>Inline cache will validate the hidden class first though. If the validation fails, uses runtime routine.</li>
+<li>Two-generation garbage collector, reclaim resources incrementally</li>
+</ul>
+</li>
+<li><a href="https://www.youtube.com/watch?v=JGmO7Oximw8">The story behind Google Chrome </a></li>
+</ul>
+<h2 id="not-wachted">Not wachted</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ANMN9M9LhNQ">MountainWest JavaScript 2015 - Gift Wrap Your Code with Webpack by Jeremy Lund </a></li>
+<li><a href="https://www.youtube.com/watch?v=5AqbCQuK0gM">Anders Hejlsberg and Lars Bak: TypeScript, JavaScript, and Dart</a></li>
+<li><a href="https://www.youtube.com/watch?v=Ut694dsIa8w">Evolving JavaScript with TypeScript </a></li>
+</ul>
+<h2 id="books">Books</h2>
+<ul>
+<li><a href="https://book.discovermeteor.com/">Discover Meteor</a></li>
+</ul>
+<h2 id="bundlers">Bundlers</h2>
+<ul>
+<li><a href="https://lincolnloop.com/blog/speedy-browserifying-multiple-bundles/">Speedy Browserifying with Multiple Bundles</a></li>
+<li><a href="https://github.com/petehunt/webpack-howto">webpack-howto</a></li>
+</ul>
+<h2 id="style-guides">Style Guides</h2>
+<ul>
+<li><a href="http://downloads.bbc.co.uk/guidelines/mobile_guide_v1.1_compressed.pdf">BBC Mobile Style Guides</a></li>
+</ul>
+<h2 id="wheels">Wheels</h2>
+<ul>
+<li>jQuery-like</li>
+<li>WYSIWYG</li>
+<li>Module loader</li>
+<li>MV* framework</li>
+<li>UI library</li>
+</ul>
+<h2 id="google-chrome-comic">Google Chrome Comic</h2>
+<p><a href="https://www.google.com/googlebooks/chrome/big_00.html">The Google Chrome Comic</a></p>
+<ul>
+<li>Fragmentation is also one of the motivations for a multi-process model</li>
+<li>Plugins also have seperate processes</li>
+<li>Crawlers help to build test cases based on ranking in Google Search</li>
+<li>Schematic UI test</li>
+<li>All pointers are known, no need to poke around<ul>
+<li>Other browsers(at 2008) will search for pointers</li>
+</ul>
+</li>
+</ul>
+</div></body></html>

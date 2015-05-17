@@ -1,0 +1,179 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 13, 2015</h1></header><div class="content"><h2 id="edge">Edge</h2>
+<h3 id="-javascript-moves-forward-in-microsoft-edge-with-ecmascript-6-and-beyond-http-blogs-windows-com-msedgedev-2015-05-12-javascript-moves-forward-in-microsoft-edge-with-ecmascript-6-and-beyond-"><a href="http://blogs.windows.com/msedgedev/2015/05/12/javascript-moves-forward-in-microsoft-edge-with-ecmascript-6-and-beyond/">JavaScript moves forward in Microsoft Edge with ECMAScript 6 and beyond</a></h3>
+<h4 id="class">Class</h4>
+<p>Spec changed late in the process...well, wait for update.</p>
+<h4 id="default-parameters">Default parameters</h4>
+<p>Intermediate scope of default parameter initializers are particularly hard to implement.</p>
+<p>Chakra can handle this:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span> }
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span><span class="hljs-params">(a = fn<span class="hljs-params">()</span>)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"inside"</span> }
+  <span class="hljs-keyword">return</span> a;
+}
+
+outer();  <span class="hljs-comment">// should return "outside"</span>
+</code></pre>
+<p>But not this (yet):</p>
+<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> x = <span class="hljs-string">"outside"</span>;
+
+<span class="hljs-reserved">function</span> outer(a = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> eval(<span class="hljs-string">"x"</span>)) {
+  <span class="hljs-reserved">let</span> x = <span class="hljs-string">"inside"</span>;
+  <span class="hljs-keyword">return</span> a();
+}
+
+outer();  <span class="hljs-regexp">//</span> should <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span>
+</code></pre>
+<p>(Wow...May I say that the second one is just pure evil....)</p>
+<h4 id="generators">Generators</h4>
+<p>The spec later added <code>return()</code> to the iterator interface, which would alter behaviors of other language features. They need time to catch up on that.</p>
+<h3 id="-microsoft-edge-building-a-safer-browser-http-blogs-windows-com-msedgedev-2015-05-11-microsoft-edge-building-a-safer-browser-"><a href="http://blogs.windows.com/msedgedev/2015/05/11/microsoft-edge-building-a-safer-browser/">Microsoft Edge: Building a safer browser</a></h3>
+<h4 id="trickery">Trickery</h4>
+<ol>
+<li>Phishing<ul>
+<li>Old: HTTPS lock symbol, EV Cert green bar</li>
+<li>New: Windows 10 Microsoft Passport, no need to send plain-text password</li>
+</ul>
+</li>
+<li>Malicious Websites and Downloads<ul>
+<li>SmartScreen: reputation check</li>
+</ul>
+</li>
+<li>Fake Sites<ul>
+<li>Certificate reputation</li>
+</ul>
+</li>
+<li>Web Standards<ul>
+<li><a href="https://tools.ietf.org/id/draft-ietf-websec-strict-transport-sec-14.txt">IETF HTTP Strict Transport Security</a></li>
+<li><a href="http://www.w3.org/TR/2012/CR-CSP-20121115/">W3C Content Security Policy 1.0</a></li>
+</ul>
+</li>
+</ol>
+<h4 id="hacking">Hacking</h4>
+<ol>
+<li>A new extension model, get rid of ActiveX</li>
+<li>Microsoft Edge as a Universal Windows App<ul>
+<li>New process model</li>
+<li>App container sandbox by default(since ActiveX is gone)</li>
+<li>64-bit by default, stronger Windows ASLR</li>
+</ul>
+</li>
+</ol>
+<h3 id="-a-break-from-the-past-part-2-saying-goodbye-to-activex-vbscript-attachevent-http-blogs-windows-com-msedgedev-2015-05-06-a-break-from-the-past-part-2-saying-goodbye-to-activex-vbscript-attachevent-"><a href="http://blogs.windows.com/msedgedev/2015/05/06/a-break-from-the-past-part-2-saying-goodbye-to-activex-vbscript-attachevent/">A break from the past, part 2: Saying goodbye to ActiveX, VBScript, attachEvent…</a></h3>
+<h4 id="why-these-are-gone-in-edge">Why these are gone in Edge</h4>
+<ul>
+<li>ActiveX and BHO<ul>
+<li>HTML5 is powerful enough</li>
+<li>PDF viewer and Flash will be built in</li>
+<li>A new extension model is coming</li>
+</ul>
+</li>
+<li>Document modes<ul>
+<li>Living mode</li>
+<li>Just use <code>about://flags</code> for experimental feature, the stable ones will be turned on by default</li>
+</ul>
+</li>
+<li>VML<ul>
+<li>We have SVG now</li>
+</ul>
+</li>
+<li>VBScript<ul>
+<li>JavaScript is enough</li>
+</ul>
+</li>
+<li><code>attachEvent</code> / <code>removeEvent</code><ul>
+<li>DOM Level 3 <code>addEventListener</code>/<code>removeEventListener</code> since IE9</li>
+</ul>
+</li>
+<li><code>currentStyle</code><ul>
+<li>DOM Level 2 <code>getComputedStyle</code> since IE9</li>
+</ul>
+</li>
+<li>Conditional comments<ul>
+<li>Feature detection is the right way to go</li>
+</ul>
+</li>
+<li>IE8 layout quirks<ul>
+<li>(It sucks)</li>
+</ul>
+</li>
+<li>DirectX Filters and Transitions<ul>
+<li>We have CSS3 and SVG</li>
+</ul>
+</li>
+</ul>
+<h4 id="vender-prefixes">Vender prefixes</h4>
+<ul>
+<li>Remove many <code>-ms</code>, added many <code>-webkit</code> (...WTF)</li>
+<li>Only for compatibility</li>
+<li>Prefer <code>about:flags</code></li>
+<li>Maybe <a href="https://air.mozilla.org/web-compatibility-summit-talks/">API trials</a></li>
+</ul>
+<h3 id="-building-vorlon-js-with-the-help-of-the-developer-community-and-what-s-next-http-blogs-windows-com-msedgedev-2015-05-08-building-vorlon-js-with-the-help-of-the-developer-community-and-whats-next-"><a href="http://blogs.windows.com/msedgedev/2015/05/08/building-vorlon-js-with-the-help-of-the-developer-community-and-whats-next/">Building vorlon.JS with the help of the developer community and what’s next</a></h3>
+<p><a href="http://www.vorlonjs.com/">This looks AWESOME!!</a></p>
+<h2 id="-deku-how-we-built-our-functional-alternative-to-react-https-segment-com-blog-deku-our-functional-alternative-to-react-"><a href="https://segment.com/blog/deku-our-functional-alternative-to-react/">Deku: How we built our functional alternative to React</a></h2>
+<ul>
+<li>Doesn&#39;t support old browsers, smaller codebase (&lt; 10kb)</li>
+<li>Initially a rendering loop with dirty checks</li>
+<li>An optimized <a href="https://github.com/segmentio/deku/blob/master/lib/render.js#L492">diffing algorithm</a></li>
+<li><a href="https://github.com/segmentio/deku/blob/master/docs/guides/components.md">Uses ES6 modules</a> instead of classes and <code>this</code> (WOW!) </li>
+</ul>
+<h2 id="-the-microsoft-edge-rendering-engine-that-makes-the-web-just-work-https-channel9-msdn-com-events-webplatformsummit-2015-the-microsoft-edge-rendering-engine-that-makes-the-web-just-work-"><a href="https://channel9.msdn.com/Events/WebPlatformSummit/2015/The-Microsoft-Edge-Rendering-Engine-that-makes-the-Web-just-work">The Microsoft Edge Rendering Engine that makes the Web just work</a></h2>
+<h3 id="what-we-can-do">What we can do</h3>
+<ol>
+<li>Avoid UA sniffing if you can. Do feature detection.</li>
+<li>If you are isolating a bug, sniff for <strong>a specific browser version</strong>(so that the updated browser won&#39;t be affected)</li>
+<li>Make sure the <strong>default path</strong>(meaning unknown browser) assumes <strong>correct behavior</strong></li>
+</ol>
+<p>So prefer this:</p>
+<pre><code class="lang-javascript"><span class="hljs-regexp">//</span> prefer <span class="hljs-keyword">this</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.someFeature)
+  ...
+</code></pre>
+<p>and when you have to do browser sniffing, do something like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (goodBrowsers.<span class="hljs-keyword">includes</span>(browser)) {
+  useWhatYouNeed();
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (browser === aBuggyOne &amp;&amp; browserVersion === aBuggyVersion)
+  fixThings();
+} <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// unkonwn browser</span>
+  useWhatYouNeed();
+}
+</code></pre>
+<h3 id="priority">Priority</h3>
+<ol>
+<li>Regression from IE11</li>
+<li>What is used by real sites, which works in other browsers(might not be standardized yet)</li>
+<li>What they guess would be needed for the websites to work properly</li>
+<li>W3C standards which don&#39;t receive much popularity</li>
+</ol>
+<h4 id="examples">Examples</h4>
+<ol>
+<li>Font resource handling<ul>
+<li>W3C spec says that browsers need to check CORS and installibility of the font before using web fonts</li>
+<li>Icon fonts might not work, which could be a big problem</li>
+<li>IE and Firefox do that, but WebKit doesn&#39;t. Edge follows WebKit.</li>
+</ul>
+</li>
+<li>Implement <code>-webkit-appearance</code></li>
+<li>Gradients</li>
+<li><code>innerHTML</code>/<code>children</code> of orphans</li>
+</ol>
+<h3 id="data-driven-design">Data-driven design</h3>
+<ul>
+<li>Insiders program, send :( or :)</li>
+<li>Bing crawler: EdgeHTML + Instrumentation -&gt; Crawler<ul>
+<li>Detect popular usages(like <code>-webkit-apperance</code>)</li>
+<li>Rewriting XPath in CSS selectors fixes 94%, with tweaks 97%, with wicked-good-xpath 100%</li>
+</ul>
+</li>
+</ul>
+<h2 id="wtf-">WTF??!!!</h2>
+<ul>
+<li><a href="https://github.com/Microsoft/node">Enable Node.js to use Chakra as its JavaScript engine</a></li>
+</ul>
+</div></body></html>

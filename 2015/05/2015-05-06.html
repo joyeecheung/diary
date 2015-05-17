@@ -1,0 +1,98 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 6, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 6, 2015</h1></header><div class="content"><h2 id="-what-s-new-in-f12-for-project-spartan-https-channel9-msdn-com-events-build-2015-3-638-"><a href="https://channel9.msdn.com/events/Build/2015/3-638">What’s New in F12 for &quot;Project Spartan&quot;</a></h2>
+<ul>
+<li>Tools for IE 11 on Win10+ are going to be <strong>frozen</strong>!!</li>
+<li>Edge will cover much more features common in browsers</li>
+<li>Unique features in Edge:<ul>
+<li>Track changes (uh...Chrome has that (workspace) since, like, two years ago?)</li>
+<li>Just my code (well...Both Chrome and Firefox already have some sort of blackbox thing in the JS debugger...)</li>
+</ul>
+</li>
+</ul>
+<h3 id="demos">Demos</h3>
+<h4 id="f12-for-embedded-ie">F12 for embedded IE</h4>
+<ul>
+<li><code>F12Chooser.exe</code> will enumerate all IE instances to let you choose between them</li>
+<li>Also available in VS</li>
+<li>These tools are built with HTML-CSS-TypeScript</li>
+<li>You can debug F12 with F12 LOL</li>
+<li>Keep shortcuts the same as other browsers</li>
+</ul>
+<h4 id="brand-new-network-tool">Brand new network tool</h4>
+<ul>
+<li>Network tool is on without F12</li>
+<li>Plan to add cookie editor(for now it is read-only)</li>
+<li>HAR Support</li>
+</ul>
+<h4 id="typescript-goodies">TypeScript goodies</h4>
+<ul>
+<li><strong>This is awesome</strong></li>
+<li>Go to definition</li>
+<li>Find references</li>
+</ul>
+<h4 id="some-not-so-new-features">Some not-so-new features</h4>
+<ul>
+<li>Event breakpoints(finally!)</li>
+<li>Async call stack</li>
+<li>Source maps</li>
+<li>Source file reminder for console.log(also works for source maps)</li>
+<li>CSS pre/postprocessors with source maps will also have <strong>go to definition</strong> (uh..without ctags?)</li>
+</ul>
+<h4 id="brand-new-profiling-tool-finally-">Brand new profiling tool (finally)</h4>
+<ul>
+<li><a href="http://www.html5rocks.com/en/tutorials/webperformance/usertiming/">User Timing API</a>(Yeah I am looking at you, FireFox!)</li>
+<li>Jump from performance tool to DOM inspector(with highlights)</li>
+<li>Uses CPU sampling instead of instrumented page to reduce overhead on profiling</li>
+<li>First time is always slower because the JIT didn&#39;t take effects</li>
+<li>F12 turns on debug mode for JS so it affects the data recorded by <code>window.performance</code>, this is a problem when you are sending performance statistics from users&#39; machine to your server. Plan to add a control to disable debug mode.</li>
+<li>Snapshots (nah...other browsers have it already)<ul>
+<li><code>console.takeHeapSnapshot()</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="-project-spartan-introducing-the-new-browser-and-web-app-platform-for-windows-10-https-channel9-msdn-com-events-build-2015-2-656-"><a href="https://channel9.msdn.com/Events/Build/2015/2-656">&quot;Project Spartan&quot;: Introducing the New Browser and Web App Platform for Windows 10</a></h2>
+<ul>
+<li>Will be updated frequently</li>
+<li>No more ActiveX and VBScript</li>
+<li><p>Hosted Web Apps(have a URL in the manifest) can access <strong>Universal Windows API</strong> via JavaScript (device, etc. things that are not in the standard)</p>
+<ul>
+<li>Feature detect <code>window.Windows</code></li>
+<li><p>e.g. Create an appointment</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.Windows) {
+  Windows.ApplicationModel.Appointments.Appointment();
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>Rolling releases</strong> like Windows 10</li>
+<li>Certification: a team working on regular reviews, focusing on apps with many customer complaints</li>
+</ul>
+<h2 id="-the-project-spartan-rendering-engine-that-makes-the-web-just-work-https-channel9-msdn-com-events-build-2015-3-682-"><a href="https://channel9.msdn.com/Events/Build/2015/3-682">The &quot;Project Spartan&quot; Rendering Engine That Makes the Web Just Work</a></h2>
+<p>Pretty much nothing new. They are playing with WebGL most of the time...</p>
+<h2 id="atom-shell">Atom-shell</h2>
+<ul>
+<li><a href="https://github.com/atom/electron/blob/master/docs/development/atom-shell-vs-node-webkit.md">Technical differences to NW.js (formerly node-webkit)</a></li>
+</ul>
+<h2 id="zero-mq">Zero-mq</h2>
+<ul>
+<li><a href="http://zguide.zeromq.org/page:all">ØMQ - The Guide </a></li>
+</ul>
+<h2 id="browsers">Browsers</h2>
+<ul>
+<li><a href="http://www.phpied.com/rendering-repaint-reflowrelayout-restyle/">Rendering: repaint, reflow/relayout, restyle</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Introduction_to_Layout_in_Mozilla">Introduction to Layout in Mozilla</a></li>
+<li><a href="https://blogs.adobe.com/webplatform/2014/03/18/css-animations-and-transitions-performance/">CSS animations and transitions performance: looking inside the browser</a></li>
+<li><a href="https://www.webkit.org/coding/technical-articles.html">The WebKit Open Source Project - WebKit Technical Articles</a></li>
+</ul>
+<h2 id="css">CSS</h2>
+<ul>
+<li><a href="http://www.w3.org/Style/CSS/read">Understanding the CSS Specifications</a></li>
+<li><a href="http://www.dbaron.org/css/2000/01/dibm">David&#39;s Inline Box Model</a></li>
+<li><a href="http://www.dbaron.org/css/">CSS Playground</a></li>
+</ul>
+</div></body></html>

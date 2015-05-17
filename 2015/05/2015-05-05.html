@@ -1,0 +1,58 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 5, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 5, 2015</h1></header><div class="content"><h2 id="postcss">PostCSS</h2>
+<ul>
+<li><a href="https://github.com/postcss/postcss">postcss/postcss</a></li>
+<li><a href="https://github.com/cssnext/cssnext">cssnext/cssnext</a></li>
+<li><a href="https://ai.github.io/about-postcss/en/">PostCSS: the Future after Sass and Less</a><ul>
+<li><a href="https://www.youtube.com/watch?v=73dl5dk9z4Q">Frontend.fi - Andrey Sitnik: PostCSS the Future after Sass and Less </a></li>
+<li>Ugh...Russian accent is really hard to understand...</li>
+</ul>
+</li>
+<li><a href="https://github.com/cssdream/cssgrace">cssdream/cssgrace</a><ul>
+<li>The English README....LOL</li>
+</ul>
+</li>
+</ul>
+<h2 id="css">CSS</h2>
+<p><a href="https://github.com/cssdream/css-creating">Another CSS style guide...looks good</a></p>
+<h2 id="modular-js">Modular JS</h2>
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, definition)</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;
+
+  <span class="hljs-keyword">var</span> hasDefine = (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span>),
+      hasExports = (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports);
+
+  <span class="hljs-keyword">if</span> (hasDefine) {
+    define(name, definition);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (hasExports) { <span class="hljs-comment">// CommonJS</span>
+    <span class="hljs-built_in">module</span>.exports = definition(<span class="hljs-built_in">require</span>);
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">this</span>[name] = definition;  <span class="hljs-comment">// mount to root, e.g. window.mymodule</span>
+  }
+
+})(<span class="hljs-string">'module-name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(require)</span> </span>{
+  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// module code goes here</span>
+  }
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+});
+</code></pre>
+<h2 id="mark">Mark</h2>
+<p>Maybe I should try <a href="https://github.com/hakobera/nvmw">nvmw</a> for io.js support on my windows...well I need to <a href="https://github.com/marcelklehr/nodist#uninstall">uninstall nodist</a> first.</p>
+<h2 id="what-i-needed-to-do-">What I needed to do...</h2>
+<ul>
+<li>Rewrite MyHomeworks in Backbone and React, then I will have a fairly complicated app written in:<ul>
+<li>MongoDB + Express + Multipage</li>
+<li>MongoDB + Express + Restful API + Backbone (MVC)</li>
+<li>MongoDB + Express + Restful API + Angular (MV*)</li>
+<li>MongoDB + Express + Restful API + React (Virtual DOM)</li>
+<li>Meteor (The whole package)</li>
+</ul>
+</li>
+<li>Emm...Maybe I should try to switch the backend to Koa</li>
+</ul>
+</div></body></html>

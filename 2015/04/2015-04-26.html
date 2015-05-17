@@ -1,0 +1,74 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 26, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 26, 2015</h1></header><div class="content"><h2 id="webkit-and-blink">Webkit and Blink</h2>
+<p><a href="https://events.linuxfoundation.org/sites/events/files/slides/slides.pdf">Slides</a></p>
+<h3 id="mini-browser-in-python">Mini Browser in python</h3>
+<pre><code class="lang-python"><span class="hljs-comment">#!/usr/bin/env python</span>
+<span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<span class="hljs-keyword">import</span> gtk
+<span class="hljs-keyword">import</span> webkit
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">entry_activated_cb</span><span class="hljs-params">(entry, embed)</span>:</span>
+    embed.load_uri(entry.get_text())
+
+<span class="hljs-comment"># Widgets and signals</span>
+window = gtk.Window()
+window.set_default_size(<span class="hljs-number">800</span>, <span class="hljs-number">600</span>)
+window.set_title(<span class="hljs-string">"Mini browser written in Python"</span>)
+embed = webkit.WebView(); <span class="hljs-comment"># WebKit embed</span>
+entry = gtk.Entry()
+entry.connect(’activate’, entry_activated_cb, embed)
+scroller = gtk.ScrolledWindow()
+scroller.add(embed)
+
+<span class="hljs-comment"># Pack everything up and show</span>
+vbox = gtk.VBox(<span class="hljs-keyword">False</span>, <span class="hljs-number">5</span>)
+vbox.pack_start(entry, <span class="hljs-keyword">False</span>, <span class="hljs-keyword">False</span>)
+vbox.pack_start(scroller)
+window.add(vbox)
+window.show_all()
+
+<span class="hljs-comment"># Load a default URI and run</span>
+embed.load_uri(<span class="hljs-string">"http://www.webkit.org"</span>)
+gtk.main()
+</code></pre>
+<h2 id="gecko">Gecko</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Gecko">MDN</a></li>
+<li><a href="https://wiki.mozilla.org/Gecko:Overview">Gecko:Overview</a></li>
+<li><a href="https://fullyoptimized.files.wordpress.com/2011/11/concrete_architecture.pdf">Concrete Architecture of Mozilla Firefox 6 Gecko Subsystem</a></li>
+<li><a href="https://people.mozilla.org/~roc/Samsung/MozillaArchitectures.pdf">Mozilla Browser Architecture</a></li>
+</ul>
+<h2 id="servo">Servo</h2>
+<ul>
+<li><a href="https://github.com/servo/servo/wiki/Design">Design · servo/servo Wiki</a></li>
+<li><a href="http://www.lars.com/presentations/LinuxConUS2014.pdf">STEALING CHROMIUM: EMBEDDING HTML5 WITH THE SERVO BROWSER ENGINE</a></li>
+<li><a href="https://github.com/larsbergstrom/papers">Experience Report: Developing the Servo Web Browser Engine using Rust</a></li>
+</ul>
+<h2 id="spidermonkey">SpiderMonkey</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey">MDN</a></li>
+</ul>
+<h2 id="ie">IE</h2>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/aa741311%28v=vs.85%29.aspx">Internet Explorer Architecture (MSDN)</a></li>
+</ul>
+<h2 id="browser-architecture">Browser Architecture</h2>
+<ul>
+<li><a href="https://programmers.stackexchange.com/questions/117786/high-level-design-of-a-browser-layout-engine">high level design of a browser layout engine</a></li>
+<li><a href="http://web.uvic.ca/~chunchiu/seng422/intro.html">University of Victoria SENG 422/522: Software Architecture </a></li>
+<li><a href="http://grosskurth.ca/papers/browser-refarch.pdf">A Reference Architecture for Web Browsers</a></li>
+<li><a href="http://grosskurth.ca/papers/browser-archevol-20060619.pdf">Architecture and evolution of the modern web browser</a></li>
+</ul>
+<h2 id="books">Books</h2>
+<ul>
+<li><a href="http://beej.us/guide/bgnet/">Beej&#39;s Guide to Network Programming</a></li>
+<li><a href="https://en.wikipedia.org/wiki/The_Practice_of_Programming">The Practice of Programming</a></li>
+</ul>
+<h2 id="cross-browser-wheel-event">Cross-browser wheel event</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Events/wheel">MDN wheel Event Documentation</a></li>
+</ul>
+</div></body></html>

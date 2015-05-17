@@ -1,0 +1,124 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>April 23, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>April 23, 2015</h1></header><div class="content"><h2 id="idea">Idea</h2>
+<ul>
+<li>A mobile Web App managing files on the computer<ul>
+<li>Server run by the computer, phone connects to 192.168.xx.xxx:yyyy and use the dashboard to CRUD files</li>
+<li>Node.js as backend</li>
+<li>Try some cool toys on the frontend, maybe react?</li>
+<li>Actually...deleted files should be moved to trash...how?</li>
+</ul>
+</li>
+</ul>
+<h2 id="v8">V8</h2>
+<ul>
+<li><a href="https://developers.google.com/v8">Chrome V8</a></li>
+<li><a href="https://code.google.com/p/v8-wiki/wiki/BuildingWithGYP">Building V8 with GYP</a></li>
+<li><a href="https://www.youtube.com/watch?v=UJPdhx5zTaw">Google I/O 2012 - Breaking the JavaScript Speed Limit with V8 </a></li>
+</ul>
+<h3 id="notes-on-google-i-o-2012-v8-talk">Notes on Google I/O 2012 V8 talk</h3>
+<p><a href="https://www.youtube.com/watch?v=UJPdhx5zTaw">Google I/O 2012 - Breaking the JavaScript Speed Limit with V8 </a></p>
+<h4 id="hidden-class">Hidden Class</h4>
+<ul>
+<li>Weak types makes JS optimization difficult, so V8 use the hidden class trick</li>
+<li>Hidden class &lt;-&gt; Backing store</li>
+<li>Each time you assign a member, a new hidden class is created</li>
+<li>If you create a member later at run time, the generated &amp; optimized hidden class created before <em>cannot be reused</em></li>
+<li><strong>TL;DR</strong>: Initialize all your memebrs in the constructor</li>
+</ul>
+<h4 id="tagging-numbers">Tagging numbers</h4>
+<ul>
+<li>31-bit for value/pointer, 1 bit as flag</li>
+<li>Integer -- flag is 0, signed integer stored in that 31-bit</li>
+<li>If the number is larger than 31-bit(signed), flag turns to 1, the value turns to a pointer to a double(boxing)</li>
+<li><strong>TL;DR</strong>: keep the numbers smaller than 31-bit(signed)</li>
+</ul>
+<h4 id="arrays">Arrays</h4>
+<ul>
+<li>Two storage mode<ul>
+<li>Compact key sets -&gt; linear buffer</li>
+<li>Sparse arrays -&gt; Hash table!</li>
+</ul>
+</li>
+<li><strong>TL;DR</strong><ul>
+<li>Don&#39;t make V8 switch to dictionary mode!</li>
+<li>Avoid empty holes(undefined, etc.)</li>
+<li>Start at 0</li>
+<li>Don&#39;t pre-allocate a large array that you won&#39;t fill in very soon -&gt; big dictionary!</li>
+<li>Don&#39;t load/delete elements not yet initialized, especially the one-pass-end element(e.g. accessing a[0] in an empty array)<ul>
+<li>access usually = rvalue</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="double-array">Double array</h4>
+<ul>
+<li>V8 will unbox a double array if it is certain that the array only has doubles<ul>
+<li>The hidden class of elements will change</li>
+<li>Integer elements -&gt; 31-bit value + 1-bit flag</li>
+<li>Double elements -&gt; 31-bit pointer to double + 1-bit flag</li>
+<li>Double arrays/Integer mixed with doubles -&gt; elements truns into IEEE representations of doubles</li>
+</ul>
+</li>
+<li>Unbox: take out the IEEE representation of the doubles, store them in a linear buffer<ul>
+<li>This &quot;realize -&gt; unbox&quot; process comes with a cost</li>
+<li>If you add something that&#39;s not double later, the array will be boxed back -&gt; cost!</li>
+<li><strong>TL;DR</strong><ul>
+<li>Use literals can avoid this cost for transition</li>
+<li>Don&#39;t mix numbers with non-numerical values in the array</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="full-compiler-not-that-fast">Full compiler, not that fast</h4>
+<ul>
+<li>Assumes little about types</li>
+<li>Inline Caches to refine knowledge at run time<ul>
+<li>Validate type(by checking hidden classes) first, then do the work</li>
+<li><strong>TL;DR</strong><ul>
+<li>Try to keep the hidden class of your objects the same at runtime<ul>
+<li>If the class changes, there will be overhead(no more inlining)</li>
+</ul>
+</li>
+<li>Monomorphic types are much more easier to optimize</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="optimizing-compiler">Optimizing compiler</h4>
+<ul>
+<li>Recompile hot functions</li>
+<li>Use types tkaen from IC and <strong>inline</strong> function calls and operations(No calls and unecessary preparations!)</li>
+<li>Some features(e.g. try-catch in 2012) can not be optimized</li>
+<li><strong>TL;DR</strong>:<ul>
+<li><code>d8 --trace-opt xx.js</code> to see what is optimized</li>
+<li><code>d8 --trace-bailout xx.js</code> to see what is not optimized</li>
+<li>Wrap code that can be optimized into functions first, <strong>then</strong> mix it with the code that cannot be optimized<ul>
+<li>If you just mix them normally, no one can be optimized</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Optimization is speculative<ul>
+<li>Invalid assumptions lead to deoptimization<ul>
+<li>Throws away optimized code and use the code generated by the full compiler</li>
+<li>Recompilation is possible, but it will be slow for a short time before recompilation</li>
+<li><code>d8 --trace-deopt xx.js</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Pass <code>--js-flags=&quot;--trace-* ...&quot;</code> to Chrome</li>
+<li>Use <code>--prof</code></li>
+</ul>
+<h2 id="webkit">WebKit</h2>
+<ul>
+<li><a href="http://www.paulirish.com/2013/webkit-for-developers/">WebKit for Developers</a></li>
+</ul>
+</div></body></html>
