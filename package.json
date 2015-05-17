@@ -25,7 +25,11 @@
     "gulp-layout": "0.0.3",
     "gulp-livereload": "^3.8.0",
     "gulp-markdown": "^1.0.0",
+    "gulp-postcss": "^5.1.6",
     "gulp-sourcemaps": "^1.5.2",
     "st": "^0.5.3"
+  },
+  "dependencies": {
+    "fast-path": "^1.1.0"
   }
 }

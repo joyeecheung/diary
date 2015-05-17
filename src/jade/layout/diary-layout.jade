@@ -1,0 +1,15 @@
+extends ./layout.jade
+
+block header
+  header.header
+    h1!=title
+
+block title
+  title!=title
+
+block style
+  link(rel='stylesheet', href="/diary/css/tomorrow.css")
+
+block content
+  .content
+    !=contents

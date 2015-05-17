@@ -1,0 +1,90 @@
+body {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+  color: #333;
+}
+
+header {
+  font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.content {
+  width: 45rem;
+  margin: 0 auto;
+}
+
+.content p {
+  text-indent: 2rem;
+  line-height: 1.5rem;
+}
+
+.header h1,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5 {
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
+}
+
+.content h2 {
+  font-size: 2rem;
+  margin-top: 4rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 0.1rem solid #D7D7D7;
+}
+
+.content h3 {
+  font-size: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1.4rem;
+}
+
+.content h4 {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.content pre {
+  width: 80%;
+  margin: auto auto;
+  background-color: #F9F9F9;
+  padding: 1rem;
+  border-left: 0.4rem solid #008080;
+}
+
+.content code {
+  font-family: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace
+}
+
+.content ul li {
+  padding: 0.4rem;
+}
+
+a {
+  text-decoration: underline;
+  transition: all 0.2s ease-out;
+}
+
+a:link {
+  color: #333;
+}
+
+a:visited {
+  color: teal;
+}
+
+a:hover {
+  color: #5C5C5C;
+}
+
+a:active {
+  color: #5C5C5C;
+}
