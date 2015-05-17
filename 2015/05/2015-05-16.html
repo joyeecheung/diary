@@ -54,8 +54,8 @@
   SaferHTML<span class="hljs-string">`&lt;p&gt;<span class="hljs-subst">${sender}</span> has sent you a bonk.&lt;/p&gt;`</span>;
 </code></pre>
 <p>is equivalent to</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> <span class="hljs-variable">sender =</span> '&lt;black &amp; white&gt;';
-<span class="hljs-keyword">let</span> <span class="hljs-variable">message =</span>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> sender = <span class="hljs-string">'&lt;black &amp; white&gt;'</span>;
+<span class="hljs-keyword">let</span> message =
   SaferHTML(templateData, sender);
 </code></pre>
 <p>and you can implement the function like this</p>

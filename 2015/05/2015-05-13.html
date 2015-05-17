@@ -10,24 +10,24 @@
 <h4 id="default-parameters">Default parameters</h4>
 <p>Intermediate scope of default parameter initializers are particularly hard to implement.</p>
 <p>Chakra can handle this:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span> }
+<pre><code class="lang-javascript">function fn() { return &quot;outside&quot; }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span><span class="hljs-params">(a = fn<span class="hljs-params">()</span>)</span> </span>{
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"inside"</span> }
-  <span class="hljs-keyword">return</span> a;
+function outer(a = fn()) {
+  function fn() { return &quot;inside&quot; }
+  return a;
 }
 
-outer();  <span class="hljs-comment">// should return "outside"</span>
+outer();  // should return &quot;outside&quot;
 </code></pre>
 <p>But not this (yet):</p>
-<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> x = <span class="hljs-string">"outside"</span>;
+<pre><code class="lang-javascript">let x = "outside";
 
-<span class="hljs-reserved">function</span> outer(a = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> eval(<span class="hljs-string">"x"</span>)) {
-  <span class="hljs-reserved">let</span> x = <span class="hljs-string">"inside"</span>;
-  <span class="hljs-keyword">return</span> a();
+function outer(a = () =&gt; eval("x")) {
+  let x = "inside";
+  return a();
 }
 
-outer();  <span class="hljs-regexp">//</span> should <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span>
+outer();  // should return "outside"
 </code></pre>
 <p>(Wow...May I say that the second one is just pure evil....)</p>
 <h4 id="generators">Generators</h4>
@@ -131,12 +131,12 @@ outer();  <span class="hljs-regexp">//</span> should <span class="hljs-keyword">
 <li>Make sure the <strong>default path</strong>(meaning unknown browser) assumes <strong>correct behavior</strong></li>
 </ol>
 <p>So prefer this:</p>
-<pre><code class="lang-javascript"><span class="hljs-regexp">//</span> prefer <span class="hljs-keyword">this</span>
+<pre><code class="lang-javascript"><span class="hljs-comment">// prefer this</span>
 <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.someFeature)
   ...
 </code></pre>
 <p>and when you have to do browser sniffing, do something like this:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (goodBrowsers.<span class="hljs-keyword">includes</span>(browser)) {
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (goodBrowsers.includes(browser)) {
   useWhatYouNeed();
 } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (browser === aBuggyOne &amp;&amp; browserVersion === aBuggyVersion)
   fixThings();

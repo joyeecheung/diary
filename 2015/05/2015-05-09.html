@@ -22,15 +22,15 @@
 <li><p>Gotcha: Blocks(<code>let</code>+curly braces) needs explicit <code>return</code>(inside the curly braces)</p>
 <ul>
 <li><p>This</p>
-<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>};
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> wat = () =&gt; {name: <span class="hljs-string">'blah'</span>};
 <span class="hljs-built_in">console</span>.log(wat());
 </code></pre>
 <p>will give you <code>undefined</code>, you need to <code>return</code>:</p>
-<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {<span class="hljs-keyword">return</span> {<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>}};
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> wat = () =&gt; {<span class="hljs-keyword">return</span> {name: <span class="hljs-string">'blah'</span>}};
 <span class="hljs-built_in">console</span>.log(wat());
 </code></pre>
 <p>or use parentheses to tell the interpreter that you are giving an expression:</p>
-<pre><code class="lang-javascript"><span class="hljs-reserved">let</span> wat = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({<span class="hljs-attribute">name</span>: <span class="hljs-string">'blah'</span>});
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> wat = () =&gt; ({name: <span class="hljs-string">'blah'</span>});
 <span class="hljs-built_in">console</span>.log(wat());
 </code></pre>
 </li>

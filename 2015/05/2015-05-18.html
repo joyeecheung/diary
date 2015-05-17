@@ -1,0 +1,128 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 18, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 18, 2015</h1></header><div class="content"><h2 id="node-js">Node.js</h2>
+<h3 id="-diving-into-c-internals-of-node-https-blog-indutny-com-c-cpp-in-node-"><a href="https://blog.indutny.com/c.cpp-in-node">Diving into C++ internals of node</a></h3>
+<ul>
+<li>Talked about some V8 optimization...well I already know them.</li>
+<li>Commit history of node:<ul>
+<li><code>git log deps/v8</code> and <code>git log src/</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="start-61890720-https-github-com-nodejs-io-js-commit-61890720-">Start: <a href="https://github.com/nodejs/io.js/commit/61890720">61890720</a></h4>
+<ul>
+<li>Dependencies<ul>
+<li>libebb: HTTP parser</li>
+<li>liboi: TCP server framework on top of libev</li>
+</ul>
+</li>
+<li>New Structure:<ul>
+<li><code>server.cc</code>: setup V8, pass CLI arguments to JS</li>
+<li><code>js_http_request_processor.cc</code>: invokes HTTP request handler</li>
+</ul>
+</li>
+<li>One C++ instance per request, maps HTTP fields to JS object</li>
+</ul>
+<h4 id="api-wrapper-064c8f02-https-github-com-nodejs-io-js-commit-064c8f02-">API wrapper: <a href="https://github.com/nodejs/io.js/commit/064c8f02">064c8f02</a></h4>
+<ul>
+<li>API<ul>
+<li><code>ObjectWrap</code> base class, maps between C++ and JS</li>
+</ul>
+</li>
+<li>Dependencies<ul>
+<li>Uses libev.</li>
+</ul>
+</li>
+<li>New Structure:<ul>
+<li><code>src/node.cc</code>: setup C++ libraries, invoke <code>src/main.js</code> for initialization<ul>
+<li>From this point, things started to be written in JS as possible</li>
+</ul>
+</li>
+<li><code>src/http.cc</code>: <code>http</code> module</li>
+<li><code>src/file.cc</code>, <code>src/file.js</code>: <code>fs</code> module</li>
+<li><code>src/process.cc</code>: later the <code>process</code> object</li>
+<li><code>src/timers.cc</code>: timers</li>
+</ul>
+</li>
+</ul>
+<h4 id="v0-2">v0.2</h4>
+<ul>
+<li>Seperate JS and C++, added CommonJS, lots of new modules.</li>
+<li>API<ul>
+<li><code>ObjectWrap</code> became public API</li>
+<li>C++ interfaces no longer global, wrapped in <code>process.binding</code>
+New structure:</li>
+<li><code>lib/</code> for CommonJS core modules</li>
+<li><code>src/</code> their C++ counterparts</li>
+<li><code>deps/</code>: V8, http-parser, c-ares(async DNS), libeio(async FS), libev(async networking and other stuff)</li>
+</ul>
+</li>
+</ul>
+<h4 id="milestone-v0-6">Milestone: v0.6</h4>
+<ul>
+<li>Dependencies<ul>
+<li>libev -&gt; libuv</li>
+</ul>
+</li>
+<li>Support for Windows</li>
+<li>Single event-loop for both async fs and async networking</li>
+</ul>
+<h4 id="v0-12-and-io-js">v0.12 and io.js</h4>
+<ul>
+<li>Transition from <code>ObjectWrap</code>(<code>src/node_object_wrap.h</code>) to <code>AsyncWrap</code>(<code>src/async-wrap.h</code>)</li>
+</ul>
+<h4 id="walk-through">Walk-through</h4>
+<ul>
+<li><code>lib/fs.js</code>: nothing interesting, just passing the file descriptor between C++ and JS</li>
+<li><code>lib/net.js</code>:  <code>tcp_wrap</code> and <code>stream_wrap</code> binding<ul>
+<li><code>TCP</code>: holds the socket, r/w stuff</li>
+<li><code>TCPConnectWrap</code>, <code>WriteWrap</code>, <code>ShutdownWrap</code> will be passed to <code>TCP</code> methods to do async operation and invoke callbacks</li>
+</ul>
+</li>
+</ul>
+<p>Check <a href="https://github.com/nodejs/io.js/blob/master/lib/net.js#L763">this</a> out:</p>
+<blockquote>
+<p>the normal workflow for <code>net.connect()</code> follows:</p>
+<ol>
+<li>Create <code>TCP</code> instance in <code>lib/net.js</code>, store it in the <code>_handle</code> property of the <code>net.Socket</code> object</li>
+<li>Parse all arguments to <code>net.connect()</code></li>
+<li>Create <code>TCPConnectWrap</code> instance (usually named <code>req</code>)</li>
+<li>Invoke <code>.connect()</code> method with <code>req</code>, <code>port</code>, <code>host</code></li>
+<li>Get <code>req.oncomplete</code> function invoked eventually, once the connection was established, or once the kernel reported an error</li>
+</ol>
+</blockquote>
+<p>C++ classes are mostly handles(live longer) or requests(lives no longer than handles).</p>
+<h4 id="c-structure">C++ structure</h4>
+<ul>
+<li><p><code>node.cc</code> register bindings using <code>NODE_MODULE_CONTEXT_AWARE_BUILTIN</code></p>
+<ul>
+<li>Each time <code>process.binding(&#39;moduleName&#39;)</code> is invoded, <code>node.cc</code> will look it up and initialize it</li>
+<li><p>Note this:</p>
+<pre><code class="lang-javascript">process.binding = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(moduleName)</span> </span>{
+  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = modules[moduleName];
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">module</span>.initialized)
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>.exports;
+
+  <span class="hljs-built_in">module</span>.exports = {};
+  <span class="hljs-built_in">module</span>.initFn(<span class="hljs-built_in">module</span>.exports);
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>.exports;
+};
+</code></pre>
+</li>
+</ul>
+</li>
+<li>Exported classes are bound to some C++ classes, usually derived from <code>AsyncWrap</code></li>
+<li>Handles are GC&#39;ed by V8, <code>*Wrap</code>s goes with the handle</li>
+<li>Two type of references from C++ to JS: normal and weak<ul>
+<li><code>AysncWrap</code>s by default are normally referenced, V8 won&#39;t GC them until C++ dispose the reference</li>
+<li>Weak reference are created by <code>MakeWeak</code> in C++</li>
+</ul>
+</li>
+</ul>
+<h2 id="linux">Linux</h2>
+<h3 id="-linux-internals-http-0xax-gitbooks-io-linux-insides-content-index-html-"><a href="http://0xax.gitbooks.io/linux-insides/content/index.html">Linux internals</a></h3>
+<p>Looks nice, but it seems not finished yet.</p>
+</div></body></html>
