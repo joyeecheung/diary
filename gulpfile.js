@@ -29,8 +29,9 @@ gulp.task('markup', function() {
 
   return gulp.src('./diary/**/*.md').pipe(plugins.markdown({
       highlight: function (code, lang) {
+        console.log(lang)
         if (lang) {
-          return require('highlight.js').highlight(lang, code).value;
+          return require('highlight.js').highlight(lang, code, true).value;
         } else {
           return require('highlight.js').highlightAuto(code).value;
         }
@@ -39,7 +40,7 @@ gulp.task('markup', function() {
     .pipe(plugins.layout(function(file) {
       var name = path.parse(file.path).name;
       var date = moment(new Date(name));
-      
+      console.log(name);
       if (!date.isValid()) {
         return {
           layout: './src/jade/layout/plain-layout.jade',
