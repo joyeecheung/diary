@@ -67,7 +67,7 @@ gulp.task('server', ['build'], function(done) {
 
 gulp.task('deploy', ['build'], function() {
   return gulp.src('./dist/**/*')
-    .pipe(deploy());
+    .pipe(plugins.ghPages());
 });
 
 gulp.task('default', ['server', 'watch']);
