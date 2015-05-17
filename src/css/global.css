@@ -1,3 +1,7 @@
+html {
+  font-size: 18px;
+}
+
 body {
   font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
   color: #333;
@@ -8,13 +12,22 @@ header {
 }
 
 .content {
-  width: 45rem;
-  margin: 0 auto;
+  width: 40rem;
+  margin: 3rem auto;
 }
 
 .content p {
   text-indent: 2rem;
   line-height: 1.5rem;
+}
+
+.content li p {
+  text-indent: inherit;
+}
+
+.content li {
+  padding-left: 0.5rem;
+  line-height: 2rem;
 }
 
 .header h1,
@@ -41,7 +54,7 @@ header {
 }
 
 .content h3 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin-top: 3rem;
   margin-bottom: 1.4rem;
 }
@@ -49,23 +62,22 @@ header {
 .content h4 {
   font-size: 1.4rem;
   margin-top: 2rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 1rem;
 }
 
 .content pre {
-  width: 80%;
-  margin: auto auto;
+  width: 90%;
+  margin: 1.5rem auto 1.5rem auto;
   background-color: #F9F9F9;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   border-left: 0.4rem solid #008080;
+  white-space: pre-wrap;
 }
 
 .content code {
+  font-size: 0.8rem;
+  line-height: 1.3rem;
   font-family: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace
-}
-
-.content ul li {
-  padding: 0.4rem;
 }
 
 a {
