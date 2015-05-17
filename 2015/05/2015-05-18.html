@@ -122,7 +122,129 @@ New structure:</li>
 </ul>
 </li>
 </ul>
+<h3 id="-accelerating-oz-with-v8-follow-the-yellow-brick-road-to-javascript-performance-https-developers-google-com-events-io-sessions-324908972-"><a href="https://developers.google.com/events/io/sessions/324908972">Accelerating Oz with V8: Follow the Yellow Brick Road to JavaScript Performance</a></h3>
+<ul>
+<li>Jank if you can&#39;t finish the calculation within 60ms</li>
+<li>GC stop the world</li>
+</ul>
+<h4 id="generations">Generations</h4>
+<ul>
+<li>Allocation is cheap until the memory pool is exhausted</li>
+<li>Young generation<ul>
+<li>Allocates  &amp; collects fastly</li>
+<li>Frequently collected</li>
+<li>High death-reate</li>
+</ul>
+</li>
+<li>Old genreation<ul>
+<li>Allocates fastly but collects slowly</li>
+<li>Not frequently collected</li>
+<li>Long life-time</li>
+</ul>
+</li>
+<li><strong>Usually it&#39;s the young generation that causes the janking</strong>, cause old generation tends to live long</li>
+</ul>
+<h4 id="young-generation-gc">Young generation GC</h4>
+<ul>
+<li>To-space and from-space, splited equally</li>
+<li>To-space provide memory for <code>new</code></li>
+<li>From-space is used during GC</li>
+<li>When to-space runs out of memory, collection is triggered<ol>
+<li>To and from <strong>swaps</strong> their space</li>
+<li><strong>Mark</strong> live variables in from-space(swapped in in 1), and <strong>copy</strong> them to the to-space(this is where the cost goes)</li>
+<li>To-space now has more memory for allocation since dead variables are not in it</li>
+</ol>
+</li>
+</ul>
+<h4 id="optimization-and-depotimization">Optimization and depotimization</h4>
+<ol>
+<li><strong>Allocation</strong> draws you closer to collection, so <strong>pre-allocate</strong> as possible<ul>
+<li>Audit your code, make sure there is as few <code>new</code> or <code>var</code>(implicit <code>new</code>) in frames as possible</li>
+<li>V8 can optimize some implicit <code>new</code>, but not until it is hot</li>
+</ul>
+</li>
+<li>If the code is depotimized to many times or has certain code construct(like try-catch/for-in), it will <strong>stay unoptimized</strong> forever!!</li>
+<li><strong>Change of hidden class</strong> will deoptimized the code too</li>
+</ol>
+<h4 id="analyze">Analyze</h4>
+<pre><code class="lang-bash"><span class="hljs-comment"># v8.log will show up in cwd</span>
+$ Chrome --no-sandbox --js-flags=<span class="hljs-string">"--prof --noprof-lazy --log-timer-events"</span>
+<span class="hljs-comment"># These tools needs to be built with V8</span>
+$ tools/plot-timer-events /path/to/v8.log
+<span class="hljs-comment"># platform can be mac etc.</span>
+$ tools/platform-tick-processor /path/to/v8.log
+$ Chrome --no-sandbox --js-flags=<span class="hljs-string">"--trace-deopt --trace-opt-verbose"</span> &gt; some.log
+<span class="hljs-comment"># search for "disable optimization"</span>
+</code></pre>
+<p>Note GCScavenger.</p>
+<ul>
+<li>Trick: for un-optimizable constructs, <strong>seperate the optimizable code into a function</strong> so that the function could still be optimized</li>
+</ul>
 <h2 id="linux">Linux</h2>
 <h3 id="-linux-internals-http-0xax-gitbooks-io-linux-insides-content-index-html-"><a href="http://0xax.gitbooks.io/linux-insides/content/index.html">Linux internals</a></h3>
 <p>Looks nice, but it seems not finished yet.</p>
+<h2 id="rust">Rust</h2>
+<h3 id="-stanford-seminar-aaron-turon-of-mozilla-https-www-youtube-com-watch-v-o5vzlkg7y-k-"><a href="https://www.youtube.com/watch?v=O5vzLKg7y-k">Stanford Seminar - Aaron Turon of Mozilla </a></h3>
+<p>No runtime, memory safety without GC, no data race.</p>
+<h3 id="ownership-and-borrowing">Ownership and borrowing</h3>
+<p>Root of evil: aliasing + mutation:</p>
+<ol>
+<li><strong>Ownership</strong> eliminates aliasing: <code>(T)</code><ul>
+<li>Only one owner(can do mutation) at any given time</li>
+<li>Plain type for argument implies <strong>transfer of ownership</strong></li>
+<li>If the original owner wants to access the resource after transfer, compiler will complains</li>
+<li>Destruction will be determined by the new owner</li>
+</ul>
+</li>
+<li><strong>Shared borrowing()</strong> eliminates mutation: <code>(&amp; T)</code><ul>
+<li>If there is aliasing, no mutation is allowed</li>
+<li>If the borrower wants to mutate the resource, compiler will complains</li>
+<li>Destruction will be determined by the original owner</li>
+</ul>
+</li>
+<li><strong>Mutable borrowing</strong> restrict aliasing<ul>
+<li>Only one can borrow it at a time: <code>(&amp;mut T)</code></li>
+<li>Compiler will make sure there is only one borrower at a time<ul>
+<li>And the same code can&#39;t be both a mutable borrower and a shared borrower</li>
+</ul>
+</li>
+<li>Destruction will be determined by the original owner</li>
+</ul>
+</li>
+</ol>
+<h3 id="concurrency">Concurrency</h3>
+<p>Root of evil: aliasing + mutation + no ordering.</p>
+<p>Actor model(e.g. erlang) forbid aliasing, functional model(e.g. haskell) forbit mutation. Rust forbid both from happening simutaneously.</p>
+<ol>
+<li>Message passing =&gt; transfer of owenership<ul>
+<li>e.g. the ownership of the sending end of a channel gets transfered, while the one creating the channel still retains the receiving end(but it will lose the sending end once it gets transfered)</li>
+</ul>
+</li>
+<li>Shared read-only access<ul>
+<li>Maintained by ARC(Atomic Reference Counter)</li>
+<li>Destroyed when no one references it anymore</li>
+<li>Arc owns it: <code>Arc(T)</code>, others can only borrow it: <code>&amp;T</code></li>
+<li>Safe Arc, unsafe Rc</li>
+</ul>
+</li>
+<li>Locked mutatble access<ul>
+<li><code>Mutex</code></li>
+<li>Destructor takes the lock, get a mutable reference to the data</li>
+<li>Locks will be automitically released when the destructor&#39;s life ends</li>
+<li>You can&#39;t touch the lock unless you own the lock -- ensures criticle section</li>
+</ul>
+</li>
+</ol>
+<h3 id="parallelism">Parallelism</h3>
+<ul>
+<li>Split and join must appear together so that the stack won&#39;t be reclaimed</li>
+<li>Spawn is static, join is dynamic</li>
+<li>Compiler provides type checking</li>
+</ul>
+<h3 id="unsafe">Unsafe</h3>
+<ul>
+<li>Implementation can be unsafe, but public API must guarentee safety</li>
+<li>Audit by search for <code>unsafe</code></li>
+<li>Tools and expreience</li>
+</ul>
 </div></body></html>
