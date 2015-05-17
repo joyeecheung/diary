@@ -28,20 +28,18 @@ gulp.task('css', function () {
 // Generate markup
 gulp.task('markup', function() {
   gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest('./dist/css/'));
 
-  gulp.src('./diary/**/*.md', {
-    base: './diary'
-  }).pipe(plugins.markdown({
+  return gulp.src('./diary/**/*.md').pipe(plugins.markdown({
       highlight: function (code) {
         return require('highlight.js').highlightAuto(code).value;
       }
     }))
-    .pipe(plugins.layout({
-      layout: './src/jade/layout/diary-layout.jade'
-    }))
+    // .pipe(plugins.layout({
+    //   layout: './src/jade/layout/diary-layout.jade'
+    // }))
     .pipe(gulp.dest('./dist/'))
-    .pipe(plugins.livereload());
+    // .pipe(plugins.livereload());
 });
 
 // watch
