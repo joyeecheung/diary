@@ -18,11 +18,12 @@ header {
 
 .content p {
   text-indent: 2rem;
-  line-height: 1.5rem;
+  line-height: 1.8rem;
 }
 
 .content li p {
   text-indent: inherit;
+  margin: 0;
 }
 
 .content ul {
@@ -30,7 +31,8 @@ header {
 }
 
 .content li {
-  margin: 0.8rem 0;
+  margin: 0;
+  line-height: 1.8rem;
 }
 
 .header h1,
