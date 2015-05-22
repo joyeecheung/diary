@@ -186,7 +186,7 @@ $ Chrome --no-sandbox --js-flags=<span class="hljs-string">"--trace-deopt --trac
 <h2 id="rust">Rust</h2>
 <h3 id="-stanford-seminar-aaron-turon-of-mozilla-https-www-youtube-com-watch-v-o5vzlkg7y-k-"><a href="https://www.youtube.com/watch?v=O5vzLKg7y-k">Stanford Seminar - Aaron Turon of Mozilla </a></h3>
 <p>No runtime, memory safety without GC, no data race.</p>
-<h3 id="ownership-and-borrowing">Ownership and borrowing</h3>
+<h4 id="ownership-and-borrowing">Ownership and borrowing</h4>
 <p>Root of evil: aliasing + mutation:</p>
 <ol>
 <li><strong>Ownership</strong> eliminates aliasing: <code>(T)</code><ul>
@@ -212,7 +212,7 @@ $ Chrome --no-sandbox --js-flags=<span class="hljs-string">"--trace-deopt --trac
 </ul>
 </li>
 </ol>
-<h3 id="concurrency">Concurrency</h3>
+<h4 id="concurrency">Concurrency</h4>
 <p>Root of evil: aliasing + mutation + no ordering.</p>
 <p>Actor model(e.g. erlang) forbid aliasing, functional model(e.g. haskell) forbit mutation. Rust forbid both from happening simutaneously.</p>
 <ol>
@@ -235,16 +235,23 @@ $ Chrome --no-sandbox --js-flags=<span class="hljs-string">"--trace-deopt --trac
 </ul>
 </li>
 </ol>
-<h3 id="parallelism">Parallelism</h3>
+<h4 id="parallelism">Parallelism</h4>
 <ul>
 <li>Split and join must appear together so that the stack won&#39;t be reclaimed</li>
 <li>Spawn is static, join is dynamic</li>
 <li>Compiler provides type checking</li>
 </ul>
-<h3 id="unsafe">Unsafe</h3>
+<h4 id="unsafe">Unsafe</h4>
 <ul>
 <li>Implementation can be unsafe, but public API must guarentee safety</li>
 <li>Audit by search for <code>unsafe</code></li>
 <li>Tools and expreience</li>
 </ul>
+<h3 id="-dan-callahan-my-python-s-a-little-rust-y-pycon-2015-https-www-youtube-com-watch-v-3cwj0mh-4ma-"><a href="https://www.youtube.com/watch?v=3CwJ0MH-4MA">Dan Callahan - My Python&#39;s a little Rust-y - PyCon 2015</a></h3>
+<ul>
+<li>That multi-core layout thing of servo is dope. Just dope.</li>
+<li>Rust-FFI-Python seems super easy.</li>
+</ul>
+<h2 id="css">CSS</h2>
+<h3 id="-this-http-www-adobe-com-devnet-archive-html5-articles-css-shaders-html-looks-like-dark-magic-"><a href="http://www.adobe.com/devnet/archive/html5/articles/css-shaders.html">This</a> looks like dark magic...</h3>
 </div></body></html>

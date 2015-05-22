@@ -1,0 +1,127 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 22, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 22, 2015</h1></header><div class="content"><h2 id="learning-modern-3d-graphics-programming">Learning Modern 3D Graphics Programming</h2>
+<p><a href="http://www.reddit.com/r/programming/comments/muoof/learning_modern_3d_graphics_programming/">Reddit</a></p>
+<h3 id="ch1-basics">CH1 Basics</h3>
+<h4 id="graphics-and-rendering">Graphics and Rendering</h4>
+<ul>
+<li>In rasterizers, all objects that you see are <strong>empty shells</strong>. All of these shells are made of triangles(some might use planar quadrilaterals).<ul>
+<li>Why triangles? Because the lines are guaranteed to be on the <strong>same plane</strong>.</li>
+</ul>
+</li>
+<li>Objects are made out of adjacent triangles that define the outer surface of the object -- mesh/model/geometry.</li>
+<li>Pipeline: triangles in, 2D image(pixels) out.<ul>
+<li>One triangle at a time, in a specific order.</li>
+<li>Different triangles, different phases, one after another. Hence it is a pipeline.</li>
+</ul>
+</li>
+<li>The order in which triangles and the various meshes are submitted to the rasterizer can affect its output.</li>
+<li>OpenGL is an API for **accessing a hardware-based rasterizer</li>
+</ul>
+<h4 id="pipeline">Pipeline</h4>
+<ul>
+<li>Clipping &amp; clip coordinates<ul>
+<li>Volume - clip space, clip coordinates</li>
+<li>(x, y, z, w) for clip coordinates.</li>
+<li>w is the extent of clip space, which ranges in [-W, W]</li>
+<li>Clipping - transform triangles partially outside of the clip space into smaller triangles entirely within the space</li>
+</ul>
+</li>
+<li>Normalized device coordinates<ul>
+<li>Divide x, y, z by w</li>
+<li>[-1, 1]</li>
+</ul>
+</li>
+<li>Window coordinates<ul>
+<li>Bounds depends of the size of the viewport</li>
+<li>z in [0, 1], vertices with z &gt; 1 will not be seen</li>
+</ul>
+</li>
+<li>Scan Conversion<ul>
+<li>A triangle will produce a fragment for every pixel sample that is within the 2D area of the triangle</li>
+<li>OpenGL guarentees that triangles sharing an edge will not have gaps</li>
+<li>Result: a sequence of fragments that cover the shape of the triangle</li>
+<li>Fragments are associated with data containig 2D location of the fragment in window coordinates, as well as the Z position of the fragment(depth). </li>
+</ul>
+</li>
+<li>Fragment Processing<ul>
+<li>Takes a fragment, generate one or more color values and a single depth value</li>
+<li>Fragments of the same triangle must be processed together</li>
+</ul>
+</li>
+<li>Fragment Writing<ul>
+<li>Colors and depth might be combined with the current color of the image. Fragments are not necessarily all turrned into pixels</li>
+</ul>
+</li>
+</ul>
+<h2 id="browsers">Browsers</h2>
+<h3 id="-dom-attributes-now-on-the-prototype-chain-http-updates-html5rocks-com-2015-04-dom-attributes-now-on-the-prototype-"><a href="http://updates.html5rocks.com/2015/04/DOM-attributes-now-on-the-prototype">DOM Attributes now on the prototype chain</a></h3>
+<ul>
+<li>Now Chrome, IE and Firefox behaves the same</li>
+<li>Helps to implement getters/setters</li>
+<li>Polyfill</li>
+</ul>
+<h4 id="changes">Changes</h4>
+<ol>
+<li><p><code>hasOwnProperty</code> on DOM object</p>
+<pre><code class="lang-javascript">div.hasOwnProperty(<span class="hljs-string">"isContentEditable"</span>);
+</code></pre>
+<p>returns <code>false</code> now, but</p>
+<pre><code class="lang-javascript">HTMLElement.prototype.hasOwnProperty(<span class="hljs-string">"isContentEditable"</span>);
+</code></pre>
+<p>returns <code>true</code>. It is recommended to use:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span>(<span class="hljs-string">"isContentEditable"</span> <span class="hljs-keyword">in</span> div) {
+ <span class="hljs-comment">//...</span>
+}
+</code></pre>
+</li>
+<li><code>Object.getOwnPropertyDescriptor</code> will only work on DOM object prototypes, not on DOM obejct instances</li>
+<li>Since <code>JSON.stringify</code> doesn&#39;t serialize properties on the prototype, <code>JSON.stringify(domObject)</code> will no longer contain DOM properties(most of the time this should be <code>&quot;{}&quot;</code>). You can use for-in loop to do deep copy and serialize it.</li>
+<li>Writing to read-only properties in strict mode will throw an error</li>
+</ol>
+<h3 id="-how-do-browsers-implement-font-fallback-http-stackoverflow-com-questions-29241764-how-do-web-browsers-implement-font-fallback-"><a href="http://stackoverflow.com/questions/29241764/how-do-web-browsers-implement-font-fallback">How do browsers implement font fallback</a></h3>
+<ul>
+<li>Text engines in browsers uses CMAP table and subtables or GSUB rules to determine if a codepoint corresponds to a glyph in a given font.</li>
+<li>If this font has no glyph for a codepoint, the browser will look into the next font in list (by CSS spec).</li>
+<li>If there is no glyph for it whatsoever, the browser will display<ol>
+<li><code>.notdef</code> outline defined as glyph id 0, i.e. the empty box</li>
+<li>or a glyph it grabbed from some other font</li>
+</ol>
+</li>
+<li>CSS spec dosens&#39;t specify how the fallback algorithm should be and doesn&#39;t define any final fallback(like the <code>.notdef</code> empty box). It&#39;s up to the browsers.</li>
+</ul>
+<h3 id="-fixing-the-scrolltop-bug-https-dev-opera-com-articles-fixing-the-scrolltop-bug-"><a href="https://dev.opera.com/articles/fixing-the-scrolltop-bug/">Fixing the scrollTop bug</a></h3>
+<p>UA sniffing is evil...Now Edge is copying the bug of WebKit. Man, this is really screwed up.</p>
+<p>It seems that the least harmful way to solve this incompatibility problem for now is</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.documentElement.scrollTop || <span class="hljs-built_in">document</span>.body.scrollTop;
+}
+</code></pre>
+<p>or</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.documentElement.scrollTop + <span class="hljs-built_in">document</span>.body.scrollTop;
+}
+</code></pre>
+<p>and </p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setViewportScroll</span><span class="hljs-params">(y)</span> </span>{
+  <span class="hljs-built_in">document</span>.documentElement.scrollTop = y;
+  <span class="hljs-built_in">document</span>.body.scrollTop = y;
+}
+</code></pre>
+<h2 id="books">Books</h2>
+<p><a href="http://littleosbook.github.io/">The little book about OS development</a></p>
+<h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-rest-parameters-and-defaults-https-hacks-mozilla-org-2015-05-es6-in-depth-rest-parameters-and-defaults-"><a href="https://hacks.mozilla.org/2015/05/es6-in-depth-rest-parameters-and-defaults/">ES6 In Depth: Rest parameters and defaults</a></h3>
+<ul>
+<li>Default value expressions are evaluated at function call times(<strong>unlike python</strong>)</li>
+<li>Passing <code>undefined</code> will result in arguments with the default value</li>
+<li>Default argument can come before normal arguments(<strong>unlike python</strong>). Normal argument(like <code>b</code> in <code>(a=5,b)</code>) are equivalent to default arguments with <code>undefined</code> as its default value(<code>a=5, b=undefined</code>)</li>
+<li><code>arguments</code> are optimization killers. Check <a href="https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments">this</a> out.</li>
+</ul>
+<h2 id="web-audio-api">Web Audio API</h2>
+<p>Wrote <a href="http://joyeecheung.github.io/frontend-utils-and-demos/new-api/AnalyserNode/">this demo</a> for <a href="http://www.zhihu.com/question/30507500/answer/48580618">this answer</a>. It&#39;s super fun!</p>
+<p>And found <a href="http://freemusicarchive.org/">this website</a> which has tons of Common Creative Liscensed audio. Useful for building demos.</p>
+</div></body></html>
