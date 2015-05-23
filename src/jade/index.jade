@@ -1,0 +1,19 @@
+extends ./layout/layout.jade
+
+block header
+  header.header
+    h1 My Tech Diary
+
+block title
+  title My Tech Diary
+
+block style
+  link(rel='stylesheet', href="/diary/css/calendar.css")
+
+block content
+  .content
+    #calendar
+
+block script
+  script(src='/diary/js/vendor.bundle.js')
+  script(src='/diary/js/index.js')

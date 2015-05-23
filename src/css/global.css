@@ -1,14 +1,80 @@
+:root {
+  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
+  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --textColor: #333;
+  --brightColor: #5C5C5C;
+  --blockBorder: 0.3rem solid var(--brightColor);
+  --blockBackground: #F9F9F9;
+  --lightBorder: 0.1rem solid #E0E0E0;
+  --monoFont: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
+}
+
 html {
   font-size: 18px;
 }
 
 body {
-  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
-  color: #333;
+  font-family: var(--textFont);
+  color: var(--textColor);
 }
 
-header {
-  font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+a {
+  text-decoration: underline;
+  transition: all 0.2s ease-out;
+}
+
+a:link {
+  color: var(--textColor);
+}
+
+a:visited {
+  color: var(--textColor);
+}
+
+a:hover {
+  color: var(--brightColor);
+}
+
+a:active {
+  color: var(--brightColor);
+}
+
+.header h1,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5 {
+  font-family: var(--headFont);
+  text-align: center;
+  font-weight: normal;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.content h2 {
+  font-size: 2rem;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: var(--lightBorder);
+}
+
+.content h3 {
+  font-size: 1.4rem;
+  margin-top: 4rem;
+  margin-bottom: 3rem;
+}
+
+.content h4 {
+  font-size: 1.4rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 
 .content {
@@ -35,91 +101,33 @@ header {
   line-height: 1.8rem;
 }
 
-.header h1,
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h5 {
-  text-align: center;
-}
-
-.header h1 {
-  font-size: 3rem;
-  margin-top: 5rem;
-  margin-bottom: 3rem;
-}
-
-.content h2 {
-  font-size: 2rem;
-  margin-top: 4rem;
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 0.1rem solid #D7D7D7;
-}
-
-.content h3 {
-  font-size: 1.4rem;
-  margin-top: 4rem;
-  margin-bottom: 3rem;
-}
-
-.content h4 {
-  font-size: 1.4rem;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
-}
-
-.content pre {
+.content blockquote, .content pre {
   width: 90%;
   margin: 1.5rem auto 1.5rem auto;
   padding: 1rem 1.5rem;
-  background-color: #F9F9F9;
-  border-left: 0.4rem solid #008080;
+  background-color: var(--blockBackground);
+  border-left: var(--blockBorder);
+}
+
+.content blockquote {
+  font-style: italic;
+}
+
+.content pre {
   white-space: pre-wrap;
 }
 
 .content li > code, .content p > code {
-  background-color: #f9f9f9;
+  background-color: var(--blockBackground);
   padding: .1rem .3rem;
   margin-left: .3rem;
   margin-right: .3rem;
   border-radius: .4rem;
-  border: 1px solid #E0E0E0;
+  border: var(--lightBorder);
 }
 
-.content code, .content li code {
+.content code {
   font-size: 0.8rem;
   line-height: 1.3rem;
-  font-family: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace
-}
-
-a {
-  text-decoration: underline;
-  transition: all 0.2s ease-out;
-}
-
-a:link {
-  color: #333;
-}
-
-a:visited {
-  color: teal;
-}
-
-a:hover {
-  color: #5C5C5C;
-}
-
-a:active {
-  color: #5C5C5C;
-}
-
-blockquote {
-  width: 90%;
-  margin: 1.5rem auto 1.5rem auto;
-  padding: 1rem 1.5rem;
-  background-color: #F9F9F9;
-  border-left: 0.4rem solid #008080;
-  font-style: italic;
+  font-family: var(--monoFont);
 }

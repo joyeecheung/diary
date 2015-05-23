@@ -6,15 +6,21 @@ var http = require('http');
 var st = require('st');
 var moment = require('moment');
 
+gulp.task('js', function () {
+  return gulp.src("./src/js/index.js")
+    .pipe(plugins.webpack( require('./webpack.config.js') ))
+    .pipe(gulp.dest('./dist/js/'))
+    .pipe(plugins.livereload());
+});
+
 // PostCSS
 gulp.task('css', function () {
   var processors = [
-    require('autoprefixer-core')({browsers: ['last 1 version']}),
-    require('css-mqpacker'),
-    require('csswring')
+    require('cssnext')()
   ];
 
   return gulp.src('./src/css/**/*.css')
+    .pipe(plugins.debug())
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.postcss(processors))
     .pipe(plugins.sourcemaps.write())
@@ -24,10 +30,15 @@ gulp.task('css', function () {
 
 // Generate markup
 gulp.task('markup', function() {
-  gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
-    .pipe(gulp.dest('./dist/css/'));
+  gulp.src('./src/jade/index.jade')
+    .pipe(plugins.jade())
+    .pipe(gulp.dest('./dist/'))
+    .pipe(plugins.livereload());
 
-  return gulp.src('./diary/**/*.md').pipe(plugins.markdown({
+  return gulp.src('./diary/**/*.md')
+    .pipe(plugins.changed('./dist/', {extension: '.html'}))
+    .pipe(plugins.debug())
+    .pipe(plugins.markdown({
       highlight: function (code, lang) {
         if (lang) {
           return require('highlight.js').highlight(lang, code, true).value;
@@ -68,9 +79,10 @@ gulp.task('watch', ['server'], function() {
   plugins.livereload.listen({ basePath: 'dist' });
   gulp.watch(['./diary/**/*.md', './src/jade/**/*.jade'], ['markup']);
   gulp.watch('./src/css/**/*.css', ['css']);
+  gulp.watch([ 'webpack.config.js', './src/js/**/*.js'], ['js']);
 });
 
-gulp.task('build', ['markup', 'css']);
+gulp.task('build', ['js','markup', 'css']);
 
 // Launch server
 gulp.task('server', ['build'], function(done) {

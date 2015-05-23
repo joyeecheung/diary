@@ -1,0 +1,119 @@
+:root {
+  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
+  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --textColor: #333;
+  --brightColor: #5C5C5C;
+  --blockBorder: 0.3rem solid var(--brightColor);
+  --lightBackground: #E0E0E0;
+  --lightBorder: 0.1rem solid #E0E0E0;
+}
+
+html {
+  font-size: 18px;
+}
+
+.pika-single {
+  width: 20rem;
+  margin: 0 auto;
+  font-family: var(--headFont);
+  border-top: var(--lightBorder);
+  padding-top: 1rem;
+}
+
+.pika-single button {
+  font-family: var(--headFont);
+}
+
+.pika-title {
+  overflow: hidden;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.pika-label {
+  display: inline;
+  /*width: 50%;*/
+  text-align: center;
+}
+
+.pika-label:first-of-type {
+  margin-right: 0.5rem;
+}
+
+.pika-prev {
+  float: left;
+  content: '<';
+}
+
+.pika-next {
+  float: right;
+}
+
+button.is-disabled {
+  cursor: default;
+}
+
+button.is-disabled:hover {
+  background: none;
+}
+
+.pika-prev, .pika-next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease-out;
+}
+
+.pika-prev:hover, .pika-next:hover {
+  background: var(--lightBackground);
+}
+
+.pika-label select {
+  display: none;
+}
+
+.pika-table {
+  width: 100%;
+}
+
+.pika-table td {
+  width: 2rem;
+  height: 3rem;
+  text-align: center;
+}
+
+.pika-table button {
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.7rem;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+  background: none;
+  text-align: center;
+  background: var(--lightBackground);
+  border-radius: 100%;
+}
+
+.pika-table td.is-disabled button {
+  background: none;
+  cursor: default;
+}
+
+.pika-table td.is-disabled button:hover {
+  background: none;
+  color: inherit;
+}
+
+.pika-table td button:hover {
+  background: var(--brightColor);
+  color: white;
+}
+
+.is-today button {
+  background: var(--brightColor);
+  color: white;
+  border-radius: 100%;
+}
