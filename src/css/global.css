@@ -131,3 +131,26 @@ a:active {
   line-height: 1.3rem;
   font-family: var(--monoFont);
 }
+
+.content table {
+  width: 90%;
+  margin: 1.5rem auto 1.5rem auto;
+}
+
+.content table td, .content table th {
+  padding: 0.4rem;
+}
+
+.content table thead {
+  font-family: var(--headFont);
+  text-align: left;
+  background-color: var(--blockBackground);
+}
+
+.content table tbody {
+  font-size: 85%;
+}
+
+.content table tbody tr:nth-of-type(even) {
+  background-color: var(--blockBackground);
+}
