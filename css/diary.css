@@ -1,0 +1,202 @@
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+  color: #333;
+}
+
+.index {
+  position: fixed;
+  right: 10%;
+  bottom: 36px;
+  bottom: 2rem;
+  font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+.index a {
+  width: 54px;
+  width: 3rem;
+  height: 54px;
+  height: 3rem;
+  border-radius: 100%;
+  display: block;
+  text-decoration: none;
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+  font-size: 14px;
+  font-size: 0.8rem;
+  line-height: 54px;
+  line-height: 3rem;
+  color: #333;
+  background-color: white;
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+  box-shadow: 1px 1px 3px 1px #000000;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.index:hover a {
+  background-color: #5C5C5C;
+  color: #fff;
+}
+
+.diary a {
+  text-decoration: underline;
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+.diary a:link {
+  color: #333;
+}
+
+.diary a:visited {
+  color: #333;
+}
+
+.diary a:hover {
+  color: #5C5C5C;
+}
+
+.diary a:active {
+  color: #5C5C5C;
+}
+
+.diary h1,
+.diary h2,
+.diary h3,
+.diary h4,
+.diary h5 {
+  font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-align: center;
+  font-weight: normal;
+}
+
+.diary h2 {
+  font-size: 36px;
+  font-size: 2rem;
+  margin-top: 54px;
+  margin-top: 3rem;
+  padding-bottom: 9px;
+  padding-bottom: 0.5rem;
+  margin-bottom: 36px;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 0.1rem solid #E0E0E0;
+}
+
+.diary h3 {
+  font-size: 25px;
+  font-size: 1.4rem;
+  margin-top: 72px;
+  margin-top: 4rem;
+  margin-bottom: 54px;
+  margin-bottom: 3rem;
+}
+
+.diary h4 {
+  font-size: 25px;
+  font-size: 1.4rem;
+  margin-top: 54px;
+  margin-top: 3rem;
+  margin-bottom: 36px;
+  margin-bottom: 2rem;
+}
+
+.diary {
+  max-width: 720px;
+  max-width: 40rem;
+  margin: 54px auto;
+  margin: 3rem auto;
+}
+
+.diary p {
+  text-indent: 36px;
+  text-indent: 2rem;
+  line-height: 32px;
+  line-height: 1.8rem;
+}
+
+.diary li p {
+  text-indent: inherit;
+  margin: 0;
+}
+
+.diary ul {
+  padding-left: 27px;
+  padding-left: 1.5rem;
+}
+
+.diary li {
+  margin: 0;
+  line-height: 32px;
+  line-height: 1.8rem;
+}
+
+.diary blockquote, .diary pre {
+  width: 90%;
+  margin: 27px auto 27px auto;
+  margin: 1.5rem auto 1.5rem auto;
+  padding: 18px 27px;
+  padding: 1rem 1.5rem;
+  background-color: #F9F9F9;
+  border-left: 5px solid #5C5C5C;
+  border-left: 0.3rem solid #5C5C5C;
+}
+
+.diary blockquote {
+  font-style: italic;
+}
+
+.diary pre {
+  white-space: pre-wrap;
+}
+
+.diary li > code, .diary p > code {
+  background-color: #F9F9F9;
+  padding: 1px 5px;
+  padding: .1rem .3rem;
+  margin-left: 5px;
+  margin-left: .3rem;
+  margin-right: 5px;
+  margin-right: .3rem;
+  border-radius: .4rem;
+  border: 1px solid #E0E0E0;
+  border: 0.1rem solid #E0E0E0;
+}
+
+.diary code {
+  font-size: 14px;
+  font-size: 0.8rem;
+  line-height: 23px;
+  line-height: 1.3rem;
+  font-family: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
+}
+
+.diary table {
+  width: 90%;
+  margin: 27px auto 27px auto;
+  margin: 1.5rem auto 1.5rem auto;
+}
+
+.diary table td, .diary table th {
+  padding: 7px;
+  padding: 0.4rem;
+}
+
+.diary table thead {
+  font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  text-align: left;
+  background-color: #F9F9F9;
+}
+
+.diary table tbody {
+  font-size: 85%;
+}
+
+.diary table tbody tr:nth-of-type(even) {
+  background-color: #F9F9F9;
+}
