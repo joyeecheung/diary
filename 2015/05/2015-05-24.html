@@ -1,0 +1,56 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 24, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"></head><body><header class="header"><h1>May 24, 2015</h1></header><div class="content"><h2 id="css">CSS</h2>
+<h3 id="-text-rendering-optimizelegibility-is-decadent-and-depraved-http-bocoup-com-weblog-text-rendering-"><a href="http://bocoup.com/weblog/text-rendering/">text-rendering: optimizeLegibility is Decadent and Depraved</a></h3>
+<blockquote>
+<p>In the back of my mind, though, I knew these newfound wings were made of wax. All this typographic power came with a cost: text-rendering: optimizeLegibility is slow—and by “slow,” I mean that it can bog down an entire page, from initial render time to repaints. More than that, though, it’s buggy</p>
+<p>In Firefox, any type with a font-size of 20px or above is opted into optimizeLegibility’s features.</p>
+</blockquote>
+<h3 id="-how-we-use-web-fonts-responsibly-or-avoiding-a-font-face-palm-http-www-filamentgroup-com-lab-font-loading-html-"><a href="http://www.filamentgroup.com/lab/font-loading.html">How we use web fonts responsibly, or, avoiding a @font-face-palm</a></h3>
+<p>Avoid Flash of Invisible Text.</p>
+<p>If you just use <code>@font-face</code> with URLs to font files, browsers will wait a long time for the external fonts to load. During this time, the text using this font will be invisible. (e.g. MDN...)</p>
+<ol>
+<li>Choose variants and weights of fonts, use subsets.</li>
+<li><p>Encode fonts into Data URIs, put into WOFF2, WOFF and TTF.</p>
+<p>The encoded file(e.g. woff) looks like this:</p>
+<p>```css
+@font-face {
+ font-family: Open Sans;
+ src: url(&quot;data:application/x-font-woff;charset=utf-8;base64,...&quot;) format(&quot;woff&quot;);
+ font-weight: 400;
+ font-style: normal;
+}</p>
+<p>@font-face {
+ font-family: Open Sans;
+ src: url(&quot;data:application/x-font-woff;charset=utf-8;base64,...&quot;) format(&quot;woff&quot;);
+ font-weight: 700; /<em> Bold </em>/
+ font-style: normal;
+}
+``</p>
+</li>
+<li><p>Detect the font support and load Data-URI fonts</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> ua = <span class="hljs-built_in">window</span>.navigator.userAgent;
+<span class="hljs-comment">// Use WOFF2 if supported</span>
+<span class="hljs-keyword">if</span>( supportsWoff2 ) {
+ loadCSS( <span class="hljs-string">"/url/to/data-woff2.css"</span> );
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>( ua.indexOf( <span class="hljs-string">"Android 4."</span> ) &gt; -<span class="hljs-number">1</span> &amp;&amp; ua.indexOf( <span class="hljs-string">"like Gecko"</span> ) &gt; -<span class="hljs-number">1</span> &amp;&amp; ua.indexOf( <span class="hljs-string">"Chrome"</span> ) === -<span class="hljs-number">1</span> ) {
+ <span class="hljs-comment">// Android's Default Browser needs TTF instead of WOFF</span>
+ loadCSS( <span class="hljs-string">"/url/to/data-ttf.css"</span> );
+} <span class="hljs-keyword">else</span> {
+ <span class="hljs-comment">// Default to WOFF</span>
+ loadCSS( <span class="hljs-string">"/url/to/data-woff.css"</span> );
+}
+</code></pre>
+<p>They load it with <a href="https://github.com/filamentgroup/loadCSS">filamentgroup/loadCSS</a>, but I think WebPack can do this too.</p>
+</li>
+</ol>
+<h3 id="-font-loading-revisited-with-font-events-http-www-filamentgroup-com-lab-font-events-html-"><a href="http://www.filamentgroup.com/lab/font-events.html">Font Loading Revisited with Font Events</a></h3>
+<p>Avoid Flash of Fallback Text.</p>
+<h3 id="-fighting-the-font-face-fout-http-www-paulirish-com-2009-fighting-the-font-face-fout-"><a href="http://www.paulirish.com/2009/fighting-the-font-face-fout">Fighting the @font-face FOUT</a></h3>
+<p>Ugh...The opposite approach - keep the text invisible when the font is loading.</p>
+<h3 id="-fout-foit-foft-https-css-tricks-com-fout-foit-foft-"><a href="https://css-tricks.com/fout-foit-foft/">FOUT, FOIT, FOFT</a></h3>
+<p>Sums up different approaches.</p>
+</div></body></html>
