@@ -1,0 +1,176 @@
+:root {
+  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
+  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --textColor: #333;
+  --brightColor: #5C5C5C;
+  --blockBorder: 0.3rem solid var(--brightColor);
+  --blockBackground: #F9F9F9;
+  --lightBorder: 0.1rem solid #E0E0E0;
+  --monoFont: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: var(--textFont);
+  color: var(--textColor);
+}
+
+.index {
+  position: fixed;
+  right: 10%;
+  bottom: 2rem;
+  font-family: var(--headFont);
+  text-align: center;
+}
+
+.index a {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+  display: block;
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+  font-size: 0.8rem;
+  line-height: 3rem;
+  color: var(--textColor);
+  background-color: white;
+  transition: all 0.2s ease-out;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
+}
+
+.index:hover a {
+  background-color: var(--brightColor);
+  color: #fff;
+}
+
+.diary a {
+  text-decoration: underline;
+  transition: all 0.2s ease-out;
+}
+
+.diary a:link {
+  color: var(--textColor);
+}
+
+.diary a:visited {
+  color: var(--textColor);
+}
+
+.diary a:hover {
+  color: var(--brightColor);
+}
+
+.diary a:active {
+  color: var(--brightColor);
+}
+
+.diary h1,
+.diary h2,
+.diary h3,
+.diary h4,
+.diary h5 {
+  font-family: var(--headFont);
+  text-align: center;
+  font-weight: normal;
+}
+
+.diary h2 {
+  font-size: 2rem;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: var(--lightBorder);
+}
+
+.diary h3 {
+  font-size: 1.4rem;
+  margin-top: 4rem;
+  margin-bottom: 3rem;
+}
+
+.diary h4 {
+  font-size: 1.4rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.diary {
+  max-width: 40rem;
+  margin: 3rem auto;
+}
+
+.diary p {
+  text-indent: 2rem;
+  line-height: 1.8rem;
+}
+
+.diary li p {
+  text-indent: inherit;
+  margin: 0;
+}
+
+.diary ul {
+  padding-left: 1.5rem;
+}
+
+.diary li {
+  margin: 0;
+  line-height: 1.8rem;
+}
+
+.diary blockquote, .diary pre {
+  width: 90%;
+  margin: 1.5rem auto 1.5rem auto;
+  padding: 1rem 1.5rem;
+  background-color: var(--blockBackground);
+  border-left: var(--blockBorder);
+}
+
+.diary blockquote {
+  font-style: italic;
+}
+
+.diary pre {
+  white-space: pre-wrap;
+}
+
+.diary li > code, .diary p > code {
+  background-color: var(--blockBackground);
+  padding: .1rem .3rem;
+  margin-left: .3rem;
+  margin-right: .3rem;
+  border-radius: .4rem;
+  border: var(--lightBorder);
+}
+
+.diary code {
+  font-size: 0.8rem;
+  line-height: 1.3rem;
+  font-family: var(--monoFont);
+}
+
+.diary table {
+  width: 90%;
+  margin: 1.5rem auto 1.5rem auto;
+}
+
+.diary table td, .diary table th {
+  padding: 0.4rem;
+}
+
+.diary table thead {
+  font-family: var(--headFont);
+  text-align: left;
+  background-color: var(--blockBackground);
+}
+
+.diary table tbody {
+  font-size: 85%;
+}
+
+.diary table tbody tr:nth-of-type(even) {
+  background-color: var(--blockBackground);
+}

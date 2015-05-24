@@ -1,13 +1,7 @@
 :root {
   --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
   --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --textColor: #333;
-  --brightColor: #5C5C5C;
-  --blockBorder: 0.3rem solid var(--brightColor);
-  --blockBackground: #F9F9F9;
-  --lightBorder: 0.1rem solid #E0E0E0;
-  --monoFont: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
 }
 
 html {
@@ -19,138 +13,15 @@ body {
   color: var(--textColor);
 }
 
-a {
-  text-decoration: underline;
-  transition: all 0.2s ease-out;
-}
-
-a:link {
-  color: var(--textColor);
-}
-
-a:visited {
-  color: var(--textColor);
-}
-
-a:hover {
-  color: var(--brightColor);
-}
-
-a:active {
-  color: var(--brightColor);
-}
-
-.header h1,
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h5 {
-  font-family: var(--headFont);
-  text-align: center;
-  font-weight: normal;
+.header {
+  overflow: hidden;
 }
 
 .header h1 {
+  font-family: var(--headFont);
+  text-align: center;
+  font-weight: normal;
   font-size: 3rem;
   margin-top: 2.5rem;
   margin-bottom: 2rem;
-}
-
-.content h2 {
-  font-size: 2rem;
-  margin-top: 3rem;
-  padding-bottom: 0.5rem;
-  margin-bottom: 2rem;
-  border-bottom: var(--lightBorder);
-}
-
-.content h3 {
-  font-size: 1.4rem;
-  margin-top: 4rem;
-  margin-bottom: 3rem;
-}
-
-.content h4 {
-  font-size: 1.4rem;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
-}
-
-.content {
-  max-width: 40rem;
-  margin: 3rem auto;
-}
-
-.content p {
-  text-indent: 2rem;
-  line-height: 1.8rem;
-}
-
-.content li p {
-  text-indent: inherit;
-  margin: 0;
-}
-
-.content ul {
-  padding-left: 1.5rem;
-}
-
-.content li {
-  margin: 0;
-  line-height: 1.8rem;
-}
-
-.content blockquote, .content pre {
-  width: 90%;
-  margin: 1.5rem auto 1.5rem auto;
-  padding: 1rem 1.5rem;
-  background-color: var(--blockBackground);
-  border-left: var(--blockBorder);
-}
-
-.content blockquote {
-  font-style: italic;
-}
-
-.content pre {
-  white-space: pre-wrap;
-}
-
-.content li > code, .content p > code {
-  background-color: var(--blockBackground);
-  padding: .1rem .3rem;
-  margin-left: .3rem;
-  margin-right: .3rem;
-  border-radius: .4rem;
-  border: var(--lightBorder);
-}
-
-.content code {
-  font-size: 0.8rem;
-  line-height: 1.3rem;
-  font-family: var(--monoFont);
-}
-
-.content table {
-  width: 90%;
-  margin: 1.5rem auto 1.5rem auto;
-}
-
-.content table td, .content table th {
-  padding: 0.4rem;
-}
-
-.content table thead {
-  font-family: var(--headFont);
-  text-align: left;
-  background-color: var(--blockBackground);
-}
-
-.content table tbody {
-  font-size: 85%;
-}
-
-.content table tbody tr:nth-of-type(even) {
-  background-color: var(--blockBackground);
 }
