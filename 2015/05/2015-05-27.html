@@ -1,0 +1,49 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 27, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary">Index</a></div><h1>May 27, 2015</h1></header><div class="content"><div class="diary"><h2 id="opengl">OpenGL</h2>
+<h2 id="ch1">CH1</h2>
+<p>What you usually do in C++:</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">struct</span> Object
+{
+    <span class="hljs-keyword">int</span> count;
+    <span class="hljs-keyword">float</span> opacity;
+    <span class="hljs-keyword">char</span> *name;
+};
+
+<span class="hljs-comment">//Create the storage for the object.</span>
+Object newObject;
+
+<span class="hljs-comment">//Put data into the object.</span>
+newObject.count = <span class="hljs-number">5</span>;
+newObject.opacity = <span class="hljs-number">0.4f</span>;
+newObject.name = <span class="hljs-string">"Some String"</span>;
+</code></pre>
+<p>will look like this if written the OpenGL-way:</p>
+<pre><code class="lang-cpp"><span class="hljs-comment">//Create the storage for the object</span>
+GLuint objectName;
+<span class="hljs-comment">// generate an [Object], 1 is number of [Object],</span>
+<span class="hljs-comment">// &amp;objectName will get the allocated id</span>
+glGenObject(<span class="hljs-number">1</span>, &amp;objectName);
+
+<span class="hljs-comment">//Put data into the object.</span>
+<span class="hljs-comment">//Needs to be bound to a context=target first</span>
+<span class="hljs-comment">//Bound to GL_MODIFY</span>
+glBindObject(GL_MODIFY, objectName);
+<span class="hljs-comment">//Set parameters</span>
+glObjectParameteri(GL_MODIFY, GL_OBJECT_COUNT, <span class="hljs-number">5</span>);
+glObjectParameterf(GL_MODIFY, GL_OBJECT_OPACITY, <span class="hljs-number">0.4f</span>);
+glObjectParameters(GL_MODIFY, GL_OBJECT_NAME, <span class="hljs-string">"Some String"</span>);
+</code></pre>
+<p>Binding object 0 means to unbind the currently bound object.</p>
+<h2 id="native-v-s-web">Native v.s. Web</h2>
+<h3 id="-web-vs-native-let-s-concede-defeat-quirksblog-http-www-quirksmode-org-blog-archives-2015-05-web_vs_native_l-html-"><a href="http://www.quirksmode.org/blog/archives/2015/05/web_vs_native_l.html">Web vs. native: let’s concede defeat - QuirksBlog</a></h3>
+<p>Scrollbar hijacking is really a bad idea, I agree. It feels wrong to take over the browser&#39;s job (loading, selection, etc.), because the browsers can always do it better -- well, since the browser is native.</p>
+<blockquote>
+<p>Do people want to put your icon on their home screen?</p>
+<p>If the answer is Yes, go native. If No, go web. But, I add, not web disguised as native.</p>
+<p>If the user wants a just-in-time interaction, it’s the web they want — not because of any inherent technological superiority, but because it’s hassle-free.</p>
+</blockquote>
+</div></div></body></html>
