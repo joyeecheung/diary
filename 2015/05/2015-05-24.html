@@ -16,20 +16,20 @@
 <li>Choose variants and weights of fonts, use subsets.</li>
 <li><p>Encode fonts into Data URIs, put into WOFF2, WOFF and TTF.</p>
 <p>The encoded file(e.g. woff) looks like this:</p>
-<p>```css
-@font-face {
- font-family: Open Sans;
- src: url(&quot;data:application/x-font-woff;charset=utf-8;base64,...&quot;) format(&quot;woff&quot;);
- font-weight: 400;
- font-style: normal;
-}</p>
-<p>@font-face {
- font-family: Open Sans;
- src: url(&quot;data:application/x-font-woff;charset=utf-8;base64,...&quot;) format(&quot;woff&quot;);
- font-weight: 700; /<em> Bold </em>/
- font-style: normal;
-}
-``</p>
+<pre><code class="lang-css"><span class="hljs-at_rule">@<span class="hljs-keyword">font-face</span></span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">font-family</span>:<span class="hljs-value"> Open Sans</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> <span class="hljs-function">url</span>(<span class="hljs-string">"data:application/x-font-woff;charset=utf-8;base64,..."</span>) <span class="hljs-function">format</span>(<span class="hljs-string">"woff"</span>)</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> <span class="hljs-number">400</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">font-style</span>:<span class="hljs-value"> normal</span></span>;
+}</span>
+
+<span class="hljs-at_rule">@<span class="hljs-keyword">font-face</span></span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">font-family</span>:<span class="hljs-value"> Open Sans</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">src</span>:<span class="hljs-value"> <span class="hljs-function">url</span>(<span class="hljs-string">"data:application/x-font-woff;charset=utf-8;base64,..."</span>) <span class="hljs-function">format</span>(<span class="hljs-string">"woff"</span>)</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> <span class="hljs-number">700</span></span></span>; <span class="hljs-comment">/* Bold */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">font-style</span>:<span class="hljs-value"> normal</span></span>;
+}</span>
+</code></pre>
 </li>
 <li><p>Detect the font support and load Data-URI fonts</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> ua = <span class="hljs-built_in">window</span>.navigator.userAgent;
