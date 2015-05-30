@@ -71,39 +71,37 @@ body {
 .diary h4,
 .diary h5 {
   font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  text-align: center;
+  /*text-align: center;*/
   font-weight: normal;
 }
 
 .diary h2 {
   font-size: 36px;
   font-size: 2rem;
-  margin-top: 54px;
-  margin-top: 3rem;
-  padding-bottom: 9px;
-  padding-bottom: 0.5rem;
-  margin-bottom: 36px;
-  margin-bottom: 2rem;
+  margin-top: 36px;
+  margin-top: 2rem;
+  margin-bottom: 27px;
+  margin-bottom: 1.5rem;
   border-bottom: 1px solid #E0E0E0;
   border-bottom: 0.1rem solid #E0E0E0;
 }
 
 .diary h3 {
-  font-size: 25px;
-  font-size: 1.4rem;
-  margin-top: 72px;
-  margin-top: 4rem;
-  margin-bottom: 54px;
-  margin-bottom: 3rem;
+  font-size: 28px;
+  font-size: 1.6rem;
+  margin-top: 54px;
+  margin-top: 3rem;
+  margin-bottom: 27px;
+  margin-bottom: 1.5rem;
 }
 
 .diary h4 {
-  font-size: 25px;
-  font-size: 1.4rem;
-  margin-top: 54px;
-  margin-top: 3rem;
-  margin-bottom: 36px;
-  margin-bottom: 2rem;
+  font-size: 21px;
+  font-size: 1.2rem;
+  margin-top: 45px;
+  margin-top: 2.5rem;
+  margin-bottom: 12px;
+  margin-bottom: 0.7rem;
 }
 
 .diary {
@@ -114,10 +112,7 @@ body {
 }
 
 .diary p {
-  text-indent: 36px;
-  text-indent: 2rem;
-  line-height: 32px;
-  line-height: 1.8rem;
+  line-height: 1.8;
 }
 
 .diary li p {
@@ -132,8 +127,7 @@ body {
 
 .diary li {
   margin: 0;
-  line-height: 32px;
-  line-height: 1.8rem;
+  line-height: 1.8;
 }
 
 .diary blockquote, .diary pre {
@@ -152,6 +146,7 @@ body {
 }
 
 .diary pre {
+  line-height: 1.3;
   white-space: pre-wrap;
 }
 
@@ -169,10 +164,8 @@ body {
 }
 
 .diary code {
-  font-size: 14px;
-  font-size: 0.8rem;
-  line-height: 23px;
-  line-height: 1.3rem;
+  font-size: 80%;
+  line-height: 1.3;
   font-family: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
 }
 

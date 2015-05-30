@@ -1,0 +1,77 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 30, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>May 30, 2015</h1></header><div class="content"><div class="diary"><h2 id="angular">Angular</h2>
+<h3 id="track-by">track-by</h3>
+<ul>
+<li><a href="http://www.bennadel.com/blog/2556-using-track-by-with-ngrepeat-in-angularjs-1-2.htm">Using Track-By With ngRepeat In AngularJS 1.2</a></li>
+<li><a href="http://www.codelord.net/2014/04/15/improving-ng-repeat-performance-with-track-by/">Improving ng-repeat Performance with “track by”n</a></li>
+</ul>
+<p>So without track-by, angular will link your objects and the DOM by using a generated hash(<code>$$hashKey</code>). If one of them changes, the hash will be regenerated. If you use track-by to explicitly specifies what can be used as identifiers(in the collection for <code>ng-repeat</code>), then angular will just use that identifier, therefore improve the performance significantly.</p>
+<h2 id="git">Git</h2>
+<h3 id="-announcing-gittorrent-a-decentralized-github-http-blog-printf-net-articles-2015-05-29-announcing-gittorrent-a-decentralized-github-"><a href="http://blog.printf.net/articles/2015/05/29/announcing-gittorrent-a-decentralized-github/">Announcing GitTorrent: A Decentralized GitHub</a></h3>
+<blockquote>
+<p>Isn’t Git already decentralized?</p>
+<p>I don’t think so, and to explain why I’d like you to imagine someone arguing that we can do without BitTorrent because we have FTP.</p>
+</blockquote>
+<ol>
+<li><p>Get the hash(connect to GitHub):</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> gittorrent://github.com/cjb/recursers
+</code></pre>
+<p>And GitHub will return a hash for the latest commit</p>
+</li>
+<li>Fetch the repo. This is done by using BitTorrent protocol. There is a distributed hash table in the GitTorrent network.</li>
+<li>Smart protocol: a BitTorrent extension, negotiate packed commits on the git graph. The remote node will make a packfile for a commit and its parents, tell you the hash, then you can get the packfile from it and any other nodes seeding it.</li>
+<li><p>To avoid the initial connection to GitHub, you can distribute your repo by giving others a hash instead of a GitHub URL, so the cloning looks like:</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> gittorrent://<span class="hljs-number">81</span>e24205d4bac8496d3e13282c90ead5045f09ea/recursers
+</code></pre>
+<p>Then the clients will use the DHT to find out what is the latest version of this repo, and ask for that commit.</p>
+<p>This is made possible by using a BitTorrent extension that allows the nodes to maintain a network-wide key-value store.</p>
+</li>
+<li><p>To avoid the long, impossible-to-remember hashed username, GitTorrent borrows the idea from BitCoin’s BlockChain. A mechanism of distributed consensus will verify a user&#39;s identity. So the cloning now looks like:</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> gittorrent://cjb/foo
+</code></pre>
+</li>
+</ol>
+<p>The repo is <a href="https://github.com/cjb/gittorrent">cjb/gittorrent</a>.</p>
+<h2 id="service-worker">Service worker</h2>
+<h3 id="-introduction-to-service-worker-http-www-html5rocks-com-en-tutorials-service-worker-introduction-"><a href="http://www.html5rocks.com/en/tutorials/service-worker/introduction/">Introduction to Service Worker</a></h3>
+<ul>
+<li>For tasks that don&#39;t need a web page<ul>
+<li>e.g. push notification, background tasks</li>
+</ul>
+</li>
+<li>Can&#39;t access the DOM(coz it&#39;s a worker!), uses the <code>postMessage</code> interface.</li>
+<li>Its lifetime is not controlled by the developer, persistent state could be stored in indexDB.</li>
+<li>Promises!</li>
+<li>It needs HTTPS(or localhost when in development)</li>
+<li>Register -&gt; install -&gt; activation -&gt; idle -&gt; fetch/message -&gt; terminated(usually because the memory runs out)</li>
+</ul>
+<h4 id="register">Register</h4>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-string">'serviceWorker'</span> <span class="hljs-keyword">in</span> navigator) {
+  navigator.serviceWorker.register(<span class="hljs-string">'/sw.js'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(registration)</span> </span>{
+    <span class="hljs-comment">// Registration was successful</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'ServiceWorker registration successful with scope: '</span>,    registration.scope);
+  }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+    <span class="hljs-comment">// registration failed :(</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'ServiceWorker registration failed: '</span>, err);
+  });
+}
+</code></pre>
+<ul>
+<li>The browser will make sure it won&#39;t be registered repeatedly</li>
+</ul>
+<h2 id="design">Design</h2>
+<ul>
+<li><a href="https://www.google.com/design/videos/making-material-design/">Making Material Design Making Material Design</a></li>
+<li><a href="https://www.youtube.com/watch?v=6WxACOHm0_g">Refining roboto</a></li>
+<li><a href="https://www.youtube.com/watch?v=xYkz0Ueg0L4">Palette perfect</a></li>
+</ul>
+<h2 id="web-audio">Web Audio</h2>
+<ul>
+<li><a href="https://dev.opera.com/articles/drum-sounds-webaudio/">Synthesising Drum Sounds with the Web Audio API</a></li>
+<li><a href="http://blogs.windows.com/msedgedev/2015/05/26/announcing-dolby-audio-for-high-performance-audio-in-microsoft-edge/">Announcing Dolby Audio for high performance audio in Microsoft Edge</a></li>
+</ul>
+</div></div></body></html>

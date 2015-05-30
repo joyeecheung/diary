@@ -1,0 +1,80 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 29, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>May 29, 2015</h1></header><div class="content"><div class="diary"><h2 id="history-es4">History -- ES4</h2>
+<ul>
+<li><a href="http://blogs.msdn.com/b/jscript/archive/2008/08/20/ecmascript-3-and-beyond-the-road-to-harmony.aspx">ECMAScript 3 and beyond - the road to &quot;Harmony&quot;</a></li>
+<li><a href="http://blogs.msdn.com/b/jscript/archive/2007/10/29/ecmascript-3-and-beyond.aspx">ECMAScript 3 and beyond</a></li>
+<li><a href="http://ajaxian.com/archives/ecmascript-edition-4-brendan-speaks-out">ECMAScript Edition 4: Brendan Speaks Out</a></li>
+<li><a href="http://ejohn.org/blog/playing-with-ecmascript-4/">Playing with ECMAScript 4</a></li>
+<li><a href="http://ejohn.org/blog/ecmascript-4-speaking-tour">ECMAScript 4 Speaking Tour</a></li>
+<li><a href="http://ejohn.org/blog/state-of-ecmascript-4-dec-07/">State of ECMAScript 4 (Dec ’07)</a></li>
+</ul>
+<p>So in conclusion, DC was the idealist, BE was the practicalist, M$ was ... well, M$. Adobe and JR helped out a lot. Spidermonkey was leading in browser implementations. That type system, package and namespace were quite radical. Unfortunately the TC split, and ES4 eventually failed.</p>
+<h2 id="-rsconf-dr-axel-rauschmayer-using-ecmascript-6-today-part-i-https-www-youtube-com-watch-v-fg3bezicnuw-"><a href="https://www.youtube.com/watch?v=Fg3bEZIcnUw">#RSConf. Dr. Axel Rauschmayer. Using ECMAScript 6 today. Part I </a></h2>
+<h3 id="process-of-es-standardization">Process of ES standardization</h3>
+<ul>
+<li>Champions design features(1-2 expers)</li>
+<li>TC39 and web developers give feedbacks</li>
+<li>Field-testing and refining</li>
+<li>TC39 votes</li>
+</ul>
+<h3 id="symbols">Symbols</h3>
+<ul>
+<li>Like ids, but can help you avoid name clashes on object indexing</li>
+<li>Public symbols like <code>Symbol.iterator</code></li>
+</ul>
+<h3 id="object-literals">Object Literals</h3>
+<ul>
+<li><p>Shorter method definitions like ES5 getters/setters, much more compact</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> obj = {
+  methodA() {
+    <span class="hljs-comment">// ...</span>
+  },
+  methodB = {
+    <span class="hljs-comment">// ...</span>
+  }
+}
+</code></pre>
+</li>
+<li><p>Property values</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> x = <span class="hljs-number">1</span>, y = <span class="hljs-number">2</span>;
+<span class="hljs-keyword">let</span> obj = {x, y};  <span class="hljs-comment">// like {x: x, y: y}</span>
+</code></pre>
+</li>
+<li><p>Computed property keys(needs <code>[]</code>)</p>
+<p>```javascript
+let someKey = &#39;foo&#39;;</p>
+<p>let obj = {</p>
+</li>
+</ul>
+<pre><code>[<span class="hljs-link_reference">'o' + 'a'</span>]:<span class="hljs-link_url"> 1,</span>
+[<span class="hljs-link_label">someKey</span>](<span class="hljs-link_url"></span>) {
+  return 2;
+}
+</code></pre><p>  }</p>
+<pre><code>* Named Parameters
+
+  `<span class="javascript"></span>``<span class="javascript">javascript
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">(bar, {x, y})</span> </span>{
+    <span class="hljs-keyword">return</span> [x, y];
+  }
+  foo(<span class="hljs-number">1</span>, {x: <span class="hljs-string">'a'</span>, y: <span class="hljs-string">'b'</span>}); <span class="hljs-comment">// ['a', 'b']</span></span>
+</code></pre><h2 id="jquery">jQuery</h2>
+<h3 id="-annotated-version-of-the-original-jquery-release-http-genius-it-5104550-ejohn-org-files-jquery-original-html-"><a href="http://genius.it/5104550/ejohn.org/files/jquery-original.html">Annotated Version of the Original jQuery Release</a></h3>
+<h2 id="opengl">OpenGL</h2>
+<h3 id="ch1">CH1</h3>
+<ul>
+<li><strong>buffer object</strong>: object representing OpenGL-managed memory (could be in GPU). Can store things like vertex data.</li>
+<li><strong>input variables</strong>, <strong>output variables</strong>: variables in global scope of the shader, passed through the pipeline</li>
+<li><strong>vertex attribute</strong>: input variables to vertex shaders. <ul>
+<li>Each vertex attribute is a vector(length &lt;= 4) and has an index.</li>
+<li>Connection between buffer object(could be holding a lot of vertex data) and the vertex attribute(e.g. each 4 elements in the buffer object) can be made (in your normal program) by <code>glVertexAttribPointer()</code> and <code>glEnableVertexAttribArray()</code>.</li>
+<li>In the shader you can get back the index with <code>glGetAttribLocation()</code>.</li>
+</ul>
+</li>
+<li><strong>viewport transform</strong>: normalized device coordinate space -&gt; window space</li>
+</ul>
+</div></div></body></html>
