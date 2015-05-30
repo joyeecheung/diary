@@ -43,6 +43,20 @@ body {
   color: #fff;
 }
 
+.diary {
+  max-width: 720px;
+  max-width: 40rem;
+  margin: 54px auto;
+  margin: 3rem auto;
+}
+
+@media (max-width: 700px) {
+  .diary {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 .diary a {
   text-decoration: underline;
   -webkit-transition: all 0.2s ease-out;
@@ -104,13 +118,6 @@ body {
   margin-bottom: 0.7rem;
 }
 
-.diary {
-  max-width: 720px;
-  max-width: 40rem;
-  margin: 54px auto;
-  margin: 3rem auto;
-}
-
 .diary p {
   line-height: 1.8;
 }
@@ -134,8 +141,8 @@ body {
   width: 90%;
   margin: 27px auto 27px auto;
   margin: 1.5rem auto 1.5rem auto;
-  padding: 18px 27px;
-  padding: 1rem 1.5rem;
+  padding: 18px 0 18px 27px;
+  padding: 1rem 0 1rem 1.5rem;
   background-color: #F9F9F9;
   border-left: 5px solid #5C5C5C;
   border-left: 0.3rem solid #5C5C5C;
@@ -148,6 +155,7 @@ body {
 .diary pre {
   line-height: 1.3;
   white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .diary li > code, .diary p > code {
