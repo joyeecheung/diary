@@ -20,6 +20,12 @@ html {
   padding-top: 1rem;
 }
 
+@media (max-width: 700px) {
+  .pika-single {
+    width: 100%;
+  }
+}
+
 .pika-single button {
   font-family: var(--headFont);
 }

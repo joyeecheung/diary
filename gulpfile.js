@@ -59,7 +59,7 @@ function highlightCode(code, lang) {
 }
 
 function layoutDiary(file) {
-  var name = path.parse(file.path).name;
+  var name = path.basename(file.path).replace(path.extname(file.path), '');
   var date = moment(new Date(name));
   if (!date.isValid()) {
     return {
@@ -125,6 +125,7 @@ gulp.task('server', ['build-debug'], function(done) {
       cache: false }
     )
   ).listen(8000, done);
+  console.log('Server listening on http://localhost:8000/diary')
 });
 
 gulp.task('deploy', ['build'], function() {

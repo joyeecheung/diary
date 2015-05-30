@@ -46,6 +46,18 @@ body {
   color: #fff;
 }
 
+.diary {
+  max-width: 40rem;
+  margin: 3rem auto;
+}
+
+@media (max-width: 700px) {
+  .diary {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 .diary a {
   text-decoration: underline;
   transition: all 0.2s ease-out;
@@ -73,38 +85,31 @@ body {
 .diary h4,
 .diary h5 {
   font-family: var(--headFont);
-  text-align: center;
+  /*text-align: center;*/
   font-weight: normal;
 }
 
 .diary h2 {
   font-size: 2rem;
-  margin-top: 3rem;
-  padding-bottom: 0.5rem;
-  margin-bottom: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
   border-bottom: var(--lightBorder);
 }
 
 .diary h3 {
-  font-size: 1.4rem;
-  margin-top: 4rem;
-  margin-bottom: 3rem;
+  font-size: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .diary h4 {
-  font-size: 1.4rem;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
-}
-
-.diary {
-  max-width: 40rem;
-  margin: 3rem auto;
+  font-size: 1.2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.7rem;
 }
 
 .diary p {
-  text-indent: 2rem;
-  line-height: 1.8rem;
+  line-height: 1.8;
 }
 
 .diary li p {
@@ -118,13 +123,13 @@ body {
 
 .diary li {
   margin: 0;
-  line-height: 1.8rem;
+  line-height: 1.8;
 }
 
 .diary blockquote, .diary pre {
   width: 90%;
   margin: 1.5rem auto 1.5rem auto;
-  padding: 1rem 1.5rem;
+  padding: 1rem 0 1rem 1.5rem;
   background-color: var(--blockBackground);
   border-left: var(--blockBorder);
 }
@@ -134,7 +139,9 @@ body {
 }
 
 .diary pre {
+  line-height: 1.3;
   white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .diary li > code, .diary p > code {
@@ -147,8 +154,8 @@ body {
 }
 
 .diary code {
-  font-size: 0.8rem;
-  line-height: 1.3rem;
+  font-size: 80%;
+  line-height: 1.3;
   font-family: var(--monoFont);
 }
 
