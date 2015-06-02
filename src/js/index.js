@@ -5,7 +5,7 @@ window.addEventListener('load', function() {
   var picker = new Pikaday({
     onSelect: function(date) {
       var time = moment(date);
-      window.open(time.format('YYYY/MM/YYYY-MM-DD') + '.html', '_blank')
+      window.location.href += time.format('YYYY/MM/YYYY-MM-DD') + '.html';
     },
     i18n: {
         previousMonth : '&lt;&lt;',

@@ -67,7 +67,8 @@ button.is-disabled:hover {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   transition: all 0.2s ease-out;
 }
