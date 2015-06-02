@@ -63,6 +63,45 @@
 <ul>
 <li>The browser will make sure it won&#39;t be registered repeatedly</li>
 </ul>
+<p>...To be continued.</p>
+<h2 id="web-components">Web Components</h2>
+<h3 id="-let-s-build-some-apps-with-polymer-chrome-dev-summit-2014-rob-dodson-https-www-youtube-com-watch-v-kv0hgdmph28-"><a href="https://www.youtube.com/watch?v=kV0hgdMpH28">Let’s build some apps with Polymer! - Chrome Dev Summit 2014 (Rob Dodson)</a></h3>
+<p>GitHub repo: <a href="https://github.com/robdodson/contacts-app">robdodson/contacts-app</a></p>
+<h4 id="structure">Structure</h4>
+<ul>
+<li><code>&lt;div&gt;</code>s!</li>
+<li><code>&lt;core-toolbar&gt;</code> inside <code>&lt;core-header-panel&gt;</code> or <code>&lt;core-scroll-header-panel&gt;</code></li>
+<li><code>&lt;paper-menu-button&gt;</code>, <code>&lt;paper-icon-button&gt;</code>, <code>&lt;paper-dropdown&gt;</code><ul>
+<li><code>&lt;core-menu&gt;</code> with <code>&lt;paper-item&gt;</code>s</li>
+</ul>
+</li>
+<li><code>icon</code> for icons, <code>flex</code> just like css flex, <code>condenss</code> give you a cross-fade effect</li>
+<li>Responsive <code>&lt;core-drawer-panel&gt;</code> with <code>drawer</code> and <code>main</code></li>
+<li><code>&lt;core-list&gt;</code> is lazy with <code>&lt;templates&gt;</code> materialized by <code>{{ model }}</code>s</li>
+<li><code>&lt;core-image&gt;</code> can be <code>preload</code>ed</li>
+<li><code>&lt;core-list scrollTarget=&quot;{{$.coreHeaderPanelId.scroller}}&quot;</code> to make it work</li>
+<li><code>&lt;core-animated-pages&gt;</code> with <code>&lt;sections&gt;</code> and <code>transitions</code> for them</li>
+</ul>
+<h4 id="transition">Transition</h4>
+<ol>
+<li>The JavaScript way: change the <code>pages.selected</code> on route change<ul>
+<li>Lazy load with <code>Polymer.import</code></li>
+</ul>
+</li>
+<li>The markup way<ul>
+<li><code>&lt;app-router&gt;</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="performance">Performance</h4>
+<ul>
+<li>Check native WC support before using polyfills</li>
+<li>vulcanize your components into one file so you can gzip them</li>
+</ul>
+<h4 id="offline">Offline</h4>
+<ul>
+<li>Use ServiceWorker to cache it offline</li>
+</ul>
 <h2 id="design">Design</h2>
 <ul>
 <li><a href="https://www.google.com/design/videos/making-material-design/">Making Material Design Making Material Design</a></li>

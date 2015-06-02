@@ -62,8 +62,10 @@ button.is-disabled:hover {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 9px;
-  padding: 0.5rem;
+  width: 36px;
+  width: 2rem;
+  height: 36px;
+  height: 2rem;
   border-radius: 50%;
   -webkit-transition: all 0.2s ease-out;
           transition: all 0.2s ease-out;

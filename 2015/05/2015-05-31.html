@@ -1,0 +1,180 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>May 31, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>May 31, 2015</h1></header><div class="content"><div class="diary"><h2 id="ui">UI</h2>
+<h3 id="-label-and-name-inputs-properly-https-developers-google-com-web-fundamentals-input-form-label-and-name-inputs-hl-en-"><a href="https://developers.google.com/web/fundamentals/input/form/label-and-name-inputs?hl=en">Label and name inputs properly</a></h3>
+<h3 id="-google-i-o-2015-polymer-and-modern-web-apis-in-production-at-google-scale-https-www-youtube-com-watch-v-fd2as5rmm8q-"><a href="https://www.youtube.com/watch?v=fD2As5RmM8Q">Google I/O 2015 - Polymer and modern web APIs: In production at Google scale</a></h3>
+<h4 id="-thinking-in-react-a-step-by-step-screencast-tutorial-https-www-youtube-com-watch-v-mfeoarlnnqm-"><a href="https://www.youtube.com/watch?v=mFEoarLnnqM">Thinking in React, a step by step screencast tutorial</a></h4>
+<ol>
+<li>Break the app into components, find hierarchies(maybe write some markup first)</li>
+<li><code>React.createClass()</code> with <code>render()</code> returning markups</li>
+<li><code>React.renderComponent(&lt;ClassName /&gt;, HTMLElement)</code> to render the component into the HTML element(in the latest React it&#39;s <code>React.render()</code>)</li>
+<li>The <code>render()</code> returning the markup should return ONE tag, and the markup better be enclosed by parentheses.</li>
+<li><p>You can use <code>{this.props.foo}</code> and <code>{this.state.foo}</code>(only one pair of braces). <code>this.props</code> is passed by using attributes on tags.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Compo = React.createClass({
+ render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span> {this.props.foo} <span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>)</span>;
+ }
+});
+
+React.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Compo</span> <span class="hljs-attribute">foo</span>=<span class="hljs-value">"bar"</span>&gt;</span>, someHTMLElement);</span>
+</code></pre>
+</li>
+<li><p>You can use <code>{variable}</code> to render components(or arrays of them) inside other components. e.g.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> rows = <span class="hljs-keyword">this</span>.props.someList.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{
+ <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">AComponent</span> <span class="hljs-attribute">key</span>=<span class="hljs-value">{this.id}</span>/&gt;</span>)</span>;
+});
+
+<span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span> {rows} <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>)</span>;
+</code></pre>
+</li>
+<li>When building the components, you can first write up some static markups, then gradually put them into jsx</li>
+<li>Since <code>class</code> in JS is reserved, you need to use <code>className</code> to assign classes to tags</li>
+<li>Stat<ol>
+<li>Should not be passed by parents(self-containing)</li>
+<li>Should be variable over time</li>
+<li>Cannot be obtained just by computation using the props.</li>
+</ol>
+</li>
+<li>Identify where your stats should live. Usually its a big parent/common component.</li>
+<li><p>In your common component, define a <code>getInitialState()</code> returning an object of states. Then in your <code>render()</code> you will have <code>this.state.stateName</code> to use. You can pass it down to child components.</p>
+<pre><code class="lang-javascript">React.createClass({
+getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> {foo: <span class="hljs-string">"bar"</span>};
+},
+render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>{this.state.foo}<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>)</span>;
+}
+})
+</code></pre>
+</li>
+<li><p>The data flow for states usually looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Child = React.createClass({
+innerHandler: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">this</span>.props.outerHandler(<span class="hljs-keyword">this</span>.refs.someID.getDOMNode().value);
+},
+render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">ref</span>=<span class="hljs-value">"someID"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.innerHanlder</span>/&gt;</span>)</span>;
+}
+});
+
+<span class="hljs-keyword">var</span> Parent = React.createClass({
+stateSetter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{  <span class="hljs-comment">// passed from the children!</span>
+  <span class="hljs-keyword">this</span>.setState({foo: value});
+},
+getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> {foo: <span class="hljs-string">"bar"</span>};
+},
+render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Child</span> <span class="hljs-attribute">outerHanlder</span>=<span class="hljs-value">{this.props.stateSetter}</span>&gt;</span>)</span>;
+}
+});
+</code></pre>
+</li>
+</ol>
+<h2 id="dart">Dart</h2>
+<h3 id="-sky-an-experiment-writing-dart-for-mobile-https-www-youtube-com-watch-v-pniwl33ymwa-"><a href="https://www.youtube.com/watch?v=PnIWl33YMwA">Sky: An Experiment Writing Dart for Mobile</a></h3>
+<h4 id="architecture">Architecture</h4>
+<ol>
+<li>UI and business logic written in Dart</li>
+<li>The Sky framework(Dart) and Sky engine(C++, comes from Blink)</li>
+<li>Mojo(cross-language/process messaging, distilled from Chrome)</li>
+<li>Business logic written in the native language and the native API</li>
+</ol>
+<h4 id="features">Features</h4>
+<ul>
+<li>120fps+</li>
+<li>Platform agnostic</li>
+<li>Full access to privileges</li>
+<li>Edit/Refresh development</li>
+<li>Network first</li>
+</ul>
+<h4 id="demo">Demo</h4>
+<ul>
+<li>Need a bunch of Dart code (maybe inside <code>lib</code>) and some <code>.sky</code>(a bit like HTML).</li>
+<li>The tools and libraries are all packed inside the sky package. Just <code>pub get</code> and you have them all.</li>
+<li>Have control over the whole screen(so things can be drawn behind the status bar).</li>
+<li>Serve the package through a HTTP server to the mobile device, which runs a Dart VM and can load the package.</li>
+</ul>
+<h4 id="the-sky-framework">The Sky framework</h4>
+<ul>
+<li>Implement the Material Design</li>
+<li>All non-blocking APIs</li>
+<li>Pipeline</li>
+<li>Functional reactive, stateless components(like React)</li>
+</ul>
+<h4 id="demo-using-sky-framework">Demo using Sky framework</h4>
+<ul>
+<li><code>import</code> a bunch of things from the framework</li>
+<li>The tools can output compatible tracing files for <code>chrome://tracing</code></li>
+<li>Use the observatory(Web UI!) to debug the app on the device</li>
+</ul>
+<h4 id="q-a">Q&amp;A</h4>
+<ul>
+<li>No WebGL, but can expose OpenGL bindings</li>
+<li>Could be ported to iOS, but not yet</li>
+</ul>
+<h3 id="-moving-from-node-js-to-dart-https-www-youtube-com-watch-v-nhsmiy0rfs8-"><a href="https://www.youtube.com/watch?v=NHsmiY0rFS8">Moving from Node.js to Dart</a></h3>
+<h2 id="require-js-recap">Require.js Recap</h2>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">data-main</span>=<span class="hljs-value">"main"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text/javascript"</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"require.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-comment">// main.js</span>
+<span class="hljs-comment">// configure</span>
+<span class="hljs-built_in">require</span>.config({
+  paths: [
+    <span class="hljs-string">'jquery'</span>: <span class="hljs-string">'/js/lib/jquery'</span>
+  ]
+});
+
+<span class="hljs-comment">// bootstrap</span>
+<span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'message'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, message)</span> </span>{
+  $(<span class="hljs-string">'#output'</span>).append(message);
+});
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-comment">// message.js</span>
+define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
+  <span class="hljs-keyword">return</span> $(<span class="hljs-string">'&lt;div&gt; yo &lt;/div&gt;'</span>);
+});
+</code></pre>
+<h2 id="read-it-later">Read it later</h2>
+<h3 id="-continuations-https-curiosity-driven-org-continuations-ejs-"><a href="https://curiosity-driven.org/continuations?ejs">Continuations</a></h3>
+<h3 id="-introduction-to-service-worker-http-www-html5rocks-com-en-tutorials-service-worker-introduction-"><a href="http://www.html5rocks.com/en/tutorials/service-worker/introduction/">Introduction to Service Worker</a></h3>
+<h4 id="registration">Registration</h4>
+<p>This is done by using <code>navigator.serviceWorker.register()</code>, which returns a promise.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-string">'serviceWorker'</span> <span class="hljs-keyword">in</span> navigator) {
+  navigator.serviceWorker
+    .register(<span class="hljs-string">'/sw.js'</span>)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(registration)</span> </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Scope: '</span>, registration.scope);
+    })
+    .catch(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Failed: '</span>, err);
+    });
+}
+</code></pre>
+<p>Scope: the scope that can be controlled by the service worker is the same as the script being registered. So <code>/example/sw.js</code> can controll things under <code>/example/</code>, like <code>/example/page1/</code>.</p>
+<p>After the registration, check it out at <code>chrome://inspect/#service-workers</code>(for Chrome)</p>
+<h4 id="install">Install</h4>
+<p>This is done by listening on the <code>install</code> event (fired on <code>this</code> in your registered script). Inside the callback, you would typically cache some files. This is done by using <code>window.caches.open()</code> which returns a promise.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> CACHE_NAME = <span class="hljs-string">'my-site-cache-v1'</span>;
+<span class="hljs-keyword">var</span> urlsToCache = [
+  <span class="hljs-string">'/'</span>,
+  <span class="hljs-string">'/styles/main.css'</span>,
+  <span class="hljs-string">'/script/main.js'</span>
+];
+
+<span class="hljs-keyword">this</span>.addEventListener(<span class="hljs-string">'install'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
+  <span class="hljs-comment">// Perform install steps</span>
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(cache)</span> </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened cache'</span>);
+        <span class="hljs-keyword">return</span> cache.addAll(urlsToCache);
+      })
+  );
+});
+</code></pre>
+<p><code>event.waitUnti</code> takes a promise and uses it to know how long installation takes, and whether it succeeded. If the promise is rejected, the state of the worker will then be set to <code>redundant</code></p>
+</div></div></body></html>

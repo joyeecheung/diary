@@ -1,0 +1,223 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 1, 2015</h1></header><div class="content"><div class="diary"><h2 id="design">Design</h2>
+<h3 id="-google-i-o-2014-material-design-principles-https-www-youtube-com-watch-v-isyzxwap3q4-"><a href="https://www.youtube.com/watch?v=isYZXwaP3Q4">Google I/O 2014 - Material design principles</a></h3>
+<ol>
+<li>Metaphor<ul>
+<li>Metaphors are like stories, so they are powerful. People can think less when using it.</li>
+</ul>
+</li>
+<li>Surface<ul>
+<li><strong>Why paper</strong>? Because they have been carrying information through out the history</li>
+<li>But not constrained by natural laws</li>
+</ul>
+</li>
+<li>Dimensionality affords interaction<ul>
+<li><strong>Why ripples</strong> instead of fake push-down buttons? Because your finger will never feel the push-down. Ripples are much more natural.</li>
+</ul>
+</li>
+<li>Content<ul>
+<li>Bold typography, grids, color palettes</li>
+<li>Dynamic colors, accent color</li>
+</ul>
+</li>
+<li>Icons<ul>
+<li>Real-life shadows, geometric shapes</li>
+</ul>
+</li>
+<li>Users initiate change<ul>
+<li>Response should be <strong>immediate</strong>.</li>
+<li>Response should <strong>start from</strong> where the user touches.</li>
+</ul>
+</li>
+<li>Animations should live in the same world<ul>
+<li>Expansion &amp; shadows.</li>
+<li>Transitions happen <strong>around the selected object</strong>.</li>
+</ul>
+</li>
+<li>Motions<ul>
+<li><strong>Slide</strong> instead of fade(which is more meaningful).</li>
+</ul>
+</li>
+</ol>
+<h4 id="q-a">Q&amp;A</h4>
+<ul>
+<li><strong>Why circles</strong>?<ul>
+<li>Serve as emphasis without motion.</li>
+<li>Stands out in the shape palette(simple = geometric shapes)</li>
+<li>Propogate as circle in physics. Radiation.</li>
+</ul>
+</li>
+<li>Different screen sizes<ul>
+<li>Still not automatic enough</li>
+<li>Provide guidelines, but still need a human for decisions.</li>
+</ul>
+</li>
+<li>...</li>
+</ul>
+<h3 id="sitka">Sitka</h3>
+<ul>
+<li><a href="http://www.greenm3.com/gdcblog/2014/10/7/state-of-the-art-font-is-more-readable-than-the-rest-microso.html">State of the Art Font is more readable than the Rest - Microsoft&#39;s Sitka</a></li>
+<li><a href="http://affect.media.mit.edu/pdfs/05.larson-picard.pdf">The Aesthetics of Reading </a></li>
+<li><a href="http://blogs.msdn.com/b/ie/archive/2014/03/04/introducing-reading-view-in-ie-11.aspx">Introducing Reading View in IE 11</a></li>
+</ul>
+<blockquote>
+<p> An optical family contains styles specifically optimized for each size and use case – rather than trying to be one-size-fits-all, like many of the typefaces common on the Web.</p>
+</blockquote>
+<h2 id="ui">UI</h2>
+<h3 id="-6-js-react-angular-winjs-2-sp-https-www-youtube-com-watch-v-hikxfc4rowu-"><a href="https://www.youtube.com/watch?v=HIkXfc4rowU">第6回勉強会 フレームワークの世界まる見え！JS特捜部　～ React,Angular,WinJSだらけの2時間SP！～</a></h3>
+<h4 id="angular2">Angular2</h4>
+<ul>
+<li>Moves properties to prototype of DOM elements</li>
+<li><code>(click)=&quot;click()&quot;</code>, <code>[value]=&quot;val&quot;</code></li>
+<li>ui-router uses <code>&lt;ng-outlet&gt;</code> instead of <code>&lt;ng-viewport&gt;</code></li>
+<li>AtScript adds Annotations and Introspection to TypeScript</li>
+<li>Sever-side rendering</li>
+<li>NPM CLI</li>
+<li>Shadow DOM</li>
+</ul>
+<h4 id="winjs">WinJS</h4>
+<ul>
+<li>Rich control</li>
+<li>Promise, scheduler, XHR, data binding, templates &amp; fragments, routing</li>
+<li>Angular directive</li>
+<li>i18n: e.g. <code>js/en-US/ui.string.js</code></li>
+<li><p>Link a CSS theme and <code>WinJS.min.js</code>, then:</p>
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  WinJS.UI
+  .processAll()
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// App code here</span>
+  })
+})();
+</code></pre>
+</li>
+<li>In the markup, use <code>data-win-*</code></li>
+<li>In callbacks, use <code>this.win*</code></li>
+<li><p>To use it with Angular, add <code>angular-winjs</code>, then inject dependencies:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = angular.module(<span class="hljs-string">'App'</span>, [<span class="hljs-string">'winjs'</span>]);
+</code></pre>
+</li>
+</ul>
+<h2 id="network">Network</h2>
+<h3 id="-spdy-http-2-with-akamai-cto-guy-podjarny-https-www-youtube-com-watch-v-wklbrhw4nhq-"><a href="https://www.youtube.com/watch?v=WkLBrHW4NhQ">SPDY &amp; HTTP 2 with Akamai CTO Guy Podjarny</a></h3>
+<h3 id="spdy">SPDY</h3>
+<ul>
+<li>Compressed headers, header reuse</li>
+<li>Parallelism, true multiplexing, fragments</li>
+<li>Client can mark priorities for resource requests</li>
+<li>Server push after the first request<ul>
+<li>e.g. push CSS instead of waiting for the browser notice the reference in HTML</li>
+<li>Server hint to avoid pushing cached contents</li>
+</ul>
+</li>
+<li>Use HTTPS to make routers/gateways/proxies that cannot handle SPDY tunnel it.<ul>
+<li><strong>So SPDY needs HTTPS</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="-fluent-2015-demystifying-spdy-and-http-2-https-www-youtube-com-watch-v-yaysg2tcdq4-"><a href="https://www.youtube.com/watch?v=yaYsG2Tcdq4">Fluent 2015: Demystifying SPDY and HTTP/2</a></h3>
+<ul>
+<li>HTTP/2 is based on SPDY</li>
+<li>Chrome will remove SPDY in 2016 and replace it with HTTP/2</li>
+</ul>
+<h4 id="http-head-of-line-blocking">HTTP Head-of-line blocking</h4>
+<ul>
+<li>Aha! I think this is the devil behind some strange browser behavior I discovered in an old project(when using <code>Promise.all</code>).</li>
+<li>HTTP/2 solve this problem by multiplexing -- interleave multiple req/res on the same connection(fragments!)</li>
+<li>This improvement makes a lot of <em>best practices</em> for HTTP 1.x meaningless<ul>
+<li>CSS and JS concatenation</li>
+<li>Inlining small CSS/JS</li>
+<li>Image sprites</li>
+<li>DataURIs</li>
+<li><strong>Domain sharding</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="hpack">HPACK</h4>
+<ul>
+<li>Done by using a header table. Reference the changed fields in the header.</li>
+<li>Not zlib to avoid session hijacking</li>
+</ul>
+<h4 id="request-prioritization-and-server-push">Request Prioritization and Server Push</h4>
+<ul>
+<li>Client can decline them</li>
+<li>Obey same-origin policy</li>
+</ul>
+<h4 id="gotcha">Gotcha</h4>
+<ul>
+<li>Firefox and Chrome require HTTPS for HTTP/2</li>
+<li>These are going to hurt if you switch to HTTP/2<ul>
+<li>Inlining content(cannot be cached)</li>
+<li>Domain sharding(more TCP connections than you need)</li>
+</ul>
+</li>
+</ul>
+<h3 id="-spdy-and-http-2-0-the-present-and-the-future-valentin-bartenev-https-www-youtube-com-watch-v-nx7zhgwqx60-"><a href="https://www.youtube.com/watch?v=nx7zhGWQX60">SPDY and HTTP 2.0: The Present and The Future: Valentin Bartenev</a></h3>
+<h3 id="more-on-http-2-and-spdy">More on HTTP/2 and SPDY</h3>
+<ul>
+<li><a href="https://www.mnot.net/blog/2015/02/18/http2">HTTP/2 is Done</a></li>
+<li><a href="http://stackoverflow.com/questions/10480122/difference-between-http-pipeling-and-http-multiplexing-with-spdy">Difference between HTTP pipeling and HTTP multiplexing with SPDY</a></li>
+<li><a href="http://stackoverflow.com/questions/25221954/spdy-head-of-line-blocking">SPDY Head of Line blocking</a></li>
+<li><a href="https://http2.github.io/faq/">HTTP/2 Frequently Asked Questions</a></li>
+</ul>
+<h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-destructuring-https-hacks-mozilla-org-2015-05-es6-in-depth-destructuring-"><a href="https://hacks.mozilla.org/2015/05/es6-in-depth-destructuring/">ES6 In Depth: Destructuring</a></h3>
+<ul>
+<li>Nesting: <code>[foo, [[bar], baz]] = [1, [[2], 3]]</code></li>
+<li>Skipping: <code>[, , foo] = [1, 2, 3]</code></li>
+<li>Spreading: <code>[foo, ...tail] = [1, 2, 3]</code></li>
+<li>Missing: <code>[missing] = []</code></li>
+<li>Defaults</li>
+<li><p>OMG they are way more powerful than I remember!</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> foo = [<span class="hljs-string">"1"</span>, [{b: <span class="hljs-number">1</span>}, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>]];
+<span class="hljs-keyword">let</span> [bar, [{b: baz}, , ...tail], missing, withdef = <span class="hljs-number">4</span>] = foo;
+<span class="hljs-comment">// bar = "1", baz = 1, tail = [4, 3], missing = undefined, withdef = 4</span>
+</code></pre>
+</li>
+<li>Defaults for objects are not supported in firefox yet though: <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=932080">Bug 932080 - Support default values in destructuring </a></li>
+</ul>
+<h4 id="gotcha">Gotcha</h4>
+<ul>
+<li>The right-hand side must be declared first(<code>var</code> or <code>let</code> or <code>const</code>) if it is an object(because JS engine thinks braces mean blocks)</li>
+<li><p>Or you can wrap the assignment in <code>()</code></p>
+<pre><code class="lang-javascript">{ blowUp } = { blowUp: <span class="hljs-number">10</span> };  <span class="hljs-comment">// Syntax error</span>
+({ blowUp } = { blowUp: <span class="hljs-number">10</span> });  <span class="hljs-comment">// OK!</span>
+</code></pre>
+</li>
+<li>If the left-hand side is an array, the right-hand side must have an iterator.</li>
+<li>If the left-hand side is an object, th right-hand side must be &quot;coercible to an object&quot;</li>
+</ul>
+<h4 id="use-case">Use case</h4>
+<ol>
+<li><p>Like python <code>**</code> magic.</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">({bar, baz})</span> </span>{}
+</code></pre>
+</li>
+<li>No need for <code>var foo = config.foo || theDefaultFoo</code>, just use defaults</li>
+<li><p>On iterators</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> [key, value] <span class="hljs-keyword">of</span> map) {}
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> [key] <span class="hljs-keyword">of</span> map) {}
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> [,value] <span class="hljs-keyword">of</span> map) {}
+</code></pre>
+</li>
+<li><p>Multiple return values</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> {bar, baz} };
+
+<span class="hljs-keyword">let</span> {bar, baz} = foo();
+</code></pre>
+</li>
+<li><p>Combined with CommonJS modules</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// in module</span>
+<span class="hljs-built_in">module</span>.exports = {thing1: <span class="hljs-number">1</span>, thing2: <span class="hljs-number">2</span>};
+<span class="hljs-comment">// in client</span>
+<span class="hljs-keyword">const</span> {thing1, thing2} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module'</span>);
+</code></pre>
+</li>
+</ol>
+</div></div></body></html>

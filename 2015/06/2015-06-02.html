@@ -1,0 +1,59 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 2, 2015</h1></header><div class="content"><div class="diary"><h2 id="animations">Animations</h2>
+<p><a href="https://facebook.github.io/origami/">Origami</a></p>
+<p>Look at that animations on the home page!</p>
+<h2 id="node-js">Node.js</h2>
+<h3 id="-node-gyp-rebuild-https-breeswish-org-blog-2014-11-14-node-gyp-rebuild-freeze-"><a href="https://breeswish.org/blog/2014/11/14/node-gyp-rebuild-freeze/">node-gyp rebuild 卡住的解决方案</a></h3>
+<p>Cause: node-gyp might try to download the source code of Node.js for header files, but the CDN could be blocked in China.</p>
+<p>Solution:</p>
+<ol>
+<li><p>Download the source code from taobao</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># Get the version of your Node</span>
+<span class="hljs-built_in">export</span> NODE_VERSION=`node -v | cut <span class="hljs-operator">-d</span><span class="hljs-string">'v'</span> <span class="hljs-operator">-f</span> <span class="hljs-number">2</span>`
+
+<span class="hljs-comment"># Download the source code</span>
+wget http://npm.taobao.org/mirrors/node/v<span class="hljs-variable">$NODE_VERSION</span>/node-v<span class="hljs-variable">$NODE_VERSION</span>.tar.gz
+
+<span class="hljs-comment"># Download incomplete build</span>
+rm -rf ~/.node-gyp
+mkdir ~/.node-gyp
+
+<span class="hljs-comment"># Extract and rename by version</span>
+tar zxf node-v<span class="hljs-variable">$NODE_VERSION</span>.tar.gz -C ~/.node-gyp
+mv ~/.node-gyp/node-v<span class="hljs-variable">$NODE_VERSION</span> ~/.node-gyp/<span class="hljs-variable">$NODE_VERSION</span>
+
+<span class="hljs-comment"># Create a mark for it</span>
+<span class="hljs-built_in">printf</span> <span class="hljs-string">"9\n"</span>&gt;~/.node-gyp/<span class="hljs-variable">$NODE_VERSION</span>/installVersion
+</code></pre>
+</li>
+<li><p>Use cnpm</p>
+<pre><code class="lang-bash">$ npm install -g cnpm --registry=https://registry.npm.taobao.org
+</code></pre>
+</li>
+</ol>
+<h3 id="-inside-the-angularjs-directive-compiler-http-teropa-info-inside-the-angularjs-directive-compiler-"><a href="http://teropa.info/inside-the-angularjs-directive-compiler">Inside The AngularJS Directive Compiler</a></h3>
+<h3 id="-removing-user-interface-complexity-or-why-react-is-awesome-http-jlongster-com-removing-user-interface-complexity-or-why-react-is-awesome-"><a href="http://jlongster.com/Removing-User-Interface-Complexity,-or-Why-React-is-Awesome">Removing User Interface Complexity, or Why React is Awesome</a></h3>
+<h2 id="browsers">Browsers</h2>
+<h3 id="-how-browsers-work-with-akamai-cto-guy-podjarny-http-www-bilibili-com-video-av1447390-index_2-html-"><a href="http://www.bilibili.com/video/av1447390/index_2.html">How Browsers Work with Akamai CTO Guy Podjarny</a></h3>
+<ul>
+<li>Preload parser: doesn&#39;t construct DOM tree, finds references and loads them</li>
+<li>Load CSS and JS first, images and other resources later</li>
+</ul>
+<h3 id="-introduction-to-front-end-optimization-feo-with-vp-of-web-experience-ravi-maira-https-www-youtube-com-watch-v-azc1phzkkqq-"><a href="https://www.youtube.com/watch?v=AzC1phzKkQQ">Introduction to Front End Optimization (FEO) with VP of Web Experience Ravi Maira</a></h3>
+<ul>
+<li>Caching</li>
+<li>Routing an protocol</li>
+<li>Less request(concatenation)</li>
+<li>Less bytes(right files e.g. images for different devices)</li>
+<li>Prioritization of content.<ul>
+<li>Load after scroll</li>
+<li>Load thumbnails first</li>
+<li>Async JS</li>
+</ul>
+</li>
+</ul>
+</div></div></body></html>
