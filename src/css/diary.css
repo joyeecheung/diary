@@ -51,13 +51,6 @@ body {
   margin: 3rem auto;
 }
 
-@media (max-width: 700px) {
-  .diary {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
 .diary a {
   text-decoration: underline;
   transition: all 0.2s ease-out;
@@ -140,8 +133,7 @@ body {
 
 .diary pre {
   line-height: 1.3;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow-x: scroll;
 }
 
 .diary li > code, .diary p > code {
@@ -180,4 +172,19 @@ body {
 
 .diary table tbody tr:nth-of-type(even) {
   background-color: var(--blockBackground);
+}
+
+@media (max-width: 700px) {
+  .diary {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .diary ol, .diary ul {
+    padding-left: 1.5rem;
+  }
+
+  .diary pre {
+    padding: 0.8rem;
+  }
 }
