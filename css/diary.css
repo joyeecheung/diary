@@ -147,7 +147,7 @@ body {
 
 .diary pre {
   line-height: 1.3;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .diary li > code, .diary p > code {
