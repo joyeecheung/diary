@@ -1,0 +1,35 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 5, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-63818301-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 5, 2015</h1></header><div class="content"><div class="diary"><h2 id="js">JS</h2>
+<h3 id="-es6-in-depth-arrow-functions-https-hacks-mozilla-org-2015-06-es6-in-depth-arrow-functions-"><a href="https://hacks.mozilla.org/2015/06/es6-in-depth-arrow-functions/">ES6 In Depth: Arrow functions</a></h3>
+<h4 id="the-naughty-arrows">The naughty arrows</h4>
+<p>In the early days, to prevent browsers that doesn&#39;t support JS from choking on it, you can wrap JS code in HTML comments so that the browsers would ignore it, like this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">language</span>=<span class="hljs-value">"javascript"</span>&gt;</span><span class="xml">
+<span class="hljs-comment">&lt;!--
+  document.bgColor = "brown";  // red
+// --&gt;</span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre>
+<p>So in JS, <code>&lt;!--</code> has the same effect as <code>//</code>, and this is even valid in Node(V8)! And ES6 finally <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-html-like-comments">standardized it</a>.</p>
+<p>Notice that while <code>&lt;!--</code> is part of JS now, <code>--&gt;</code> isn&#39;t. Because <code>--&gt;</code> itself is an operator(though you can just think of them as <code>--</code> and <code>&gt;</code> together):</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">while</span> (n--&gt;<span class="hljs-number">0</span>) {
+  <span class="hljs-comment">// n goes to 0</span>
+}
+</code></pre>
+<h3 id="gotcha">Gotcha</h3>
+<p><code>{}</code> can be an empty block or empty object, and in ES6, we prefer to treat it as a blcok. Also <code>{foo, bar}</code> can be a block(with some meaningless expressions) or an object literal shorthand, and we still prefer to treat it as a block.</p>
+<p>So anytime you find yourself bugged by some strange behavior when using braces, try wrapping them in parentheses!</p>
+<h3 id="-immutable-js-https-facebook-github-io-immutable-js-"><a href="https://facebook.github.io/immutable-js/">immutable.js</a></h3>
+<p>Immutable data structures. Looks handy!</p>
+</div></div></body></html>
