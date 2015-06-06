@@ -25,9 +25,22 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
   <span class="hljs-comment">// n goes to 0</span>
 }
 </code></pre>
-<h3 id="gotcha">Gotcha</h3>
+<h4 id="gotcha">Gotcha</h4>
 <p><code>{}</code> can be an empty block or empty object, and in ES6, we prefer to treat it as a blcok. Also <code>{foo, bar}</code> can be a block(with some meaningless expressions) or an object literal shorthand, and we still prefer to treat it as a block.</p>
 <p>So anytime you find yourself bugged by some strange behavior when using braces, try wrapping them in parentheses!</p>
+<h4 id="use-this-rule-to-leave-this-hell">Use this rule to leave <code>this</code> hell</h4>
+<ul>
+<li>For methods that will be called like <code>obj.method()</code>, use the good old <code>function(){}</code></li>
+<li>For everything else, use arrows(if you are building something with <code>this</code> in mind).</li>
+</ul>
+<h4 id="fixed-point-combinator-in-es6">Fixed-point combinator in ES6</h4>
+<pre><code>fix = λf.(λx.<span class="hljs-function"><span class="hljs-title">f</span><span class="hljs-params">(λv.x(x)</span><span class="hljs-params">(v)</span></span>))(λx.<span class="hljs-function"><span class="hljs-title">f</span><span class="hljs-params">(λv.x(x)</span><span class="hljs-params">(v)</span></span>))
+</code></pre><pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fix = f =&gt; (x =&gt; f(v =&gt; x(x)(v)))
+               (x =&gt; f(v =&gt; x(x)(v)));
+</code></pre>
 <h3 id="-immutable-js-https-facebook-github-io-immutable-js-"><a href="https://facebook.github.io/immutable-js/">immutable.js</a></h3>
 <p>Immutable data structures. Looks handy!</p>
+<h2 id="gibberish">Gibberish</h2>
+<p>Installed Google Analytics on my diary site! I can see the real time data coming in, but no reports yet. Apparently it takes a couple more hours to show up: <a href="http://stackoverflow.com/questions/12965646/google-analytics-shows-real-time-visitors-but-reflects-0-visitors-historically">Google Analytics shows real time visitors but reflects 0 visitors historically</a>.</p>
+<p><a href="https://www.youtube.com/playlist?list=PLWbP5zgAYK_CYn985KcycZyzUiXKHsau1">This playlist</a> is very helpful.</p>
 </div></div></body></html>
