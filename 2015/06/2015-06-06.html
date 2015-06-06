@@ -1,0 +1,141 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 6, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 6, 2015</h1></header><div class="content"><div class="diary"><h2 id="reactive-programming">Reactive Programming</h2>
+<p>(Remember elm?)</p>
+<ul>
+<li><a href="https://www.coursera.org/course/reactive">Principles of Reactive Programming</a></li>
+<li><a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">The introduction to Reactive Programming you&#39;ve been missing</a></li>
+<li><a href="http://www.quora.com/What-is-Functional-Reactive-Programming">What is Functional Reactive Programming?</a></li>
+<li><a href="http://stackoverflow.com/questions/1028250/what-is-functional-reactive-programming">What is (functional) reactive programming?</a></li>
+<li><a href="http://reactivex.io/">ReactiveX</a></li>
+<li><a href="http://jhusain.github.io/learnrx/">Functional Programming in Javascript</a></li>
+<li><a href="http://rxmarbles.com/">Interactive diagrams of Rx Observables</a></li>
+</ul>
+<h3 id="-asynchronous-javascript-at-netflix-by-matthew-podwysowski-at-jsconf-budapest-2015-https-www-youtube-com-watch-v-a8w5vvgo-ja-"><a href="https://www.youtube.com/watch?v=a8W5VVGO-jA">Asynchronous JavaScript at Netflix by Matthew Podwysowski at JSConf Budapest 2015 </a></h3>
+<ul>
+<li>Events<ul>
+<li>Make you have to maintain a bunch of global states...not cool</li>
+</ul>
+</li>
+<li>Promises<ul>
+<li>Can&#39;t be canceled</li>
+<li>No &quot;finally&quot;</li>
+</ul>
+</li>
+</ul>
+<h4 id="events-and-arrays-are-both-collections-">Events and arrays are both <strong>collections</strong></h4>
+<p><code>flatMap</code> is basically <code>map</code> then <code>mergeAll</code>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> getElementDrags = (elmt) =&gt;
+  dom.mousedown(elmt)
+    .flatMap((md) =&gt;  <span class="hljs-comment">// merge mouseup and mousemove</span>
+      dom.mousemove(<span class="hljs-built_in">document</span>)
+        .takeUntil(dom.mouseup(elmt)
+    );
+);
+
+getElementDrags(image)
+  .forEach(moveImage);
+</code></pre>
+<p>And now we have first-class objects for the streams!(Yes, they are lazy).</p>
+<h4 id="this-is-awesome">This is awesome</h4>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRowUpdates</span><span class="hljs-params">(row)</span> </span>{
+  <span class="hljs-keyword">let</span> scrolls = Rx.observable.fromEvent(<span class="hljs-built_in">document</span>, <span class="hljs-string">'scroll'</span>);
+  <span class="hljs-keyword">let</span> rowVisibilities =
+    scrolls.debounce(<span class="hljs-number">50</span>)
+      .map((scrollEvent) =&gt; row.isVisible(scrollEvent.offset))
+      .distinctUntilChanged()
+      .share();
+  <span class="hljs-keyword">let</span> rowShows = rowVisibilities.filter((v) =&gt; v);
+  <span class="hljs-keyword">let</span> rowHides = rowVisibilities.filter((v) =&gt; !v);
+
+  <span class="hljs-keyword">return</span> rowShows
+    .flatMap(Rx.Observable.interval(<span class="hljs-number">10</span>))
+    .flatMap(() =&gt; row.getRowData().takeUntil(rowHides))
+    .toArray();
+}
+</code></pre>
+<h4 id="now-i-can-cancel-">Now I can cancel!</h4>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> authorizations =
+  player.init().flatMap(() =&gt;
+    playAttempts.flatMap((movieId) =&gt;
+      player.authorize(movieId)  <span class="hljs-comment">// merge play and authorize</span>
+        .retry(<span class="hljs-number">3</span>)
+        .takeUntil(cancels)  <span class="hljs-comment">// oh yeah!</span>
+    )
+);
+
+<span class="hljs-comment">// merge the events!</span>
+<span class="hljs-keyword">let</span> subscription = authorizations.forEach(
+  (license) =&gt; player.play(license),
+  (error) =&gt; showDialog(<span class="hljs-string">'Sorry'</span>)
+);
+</code></pre>
+<h4 id="schedulers">Schedulers</h4>
+<ul>
+<li>You can cancel events via the scheduler</li>
+<li>You can hook the scheduler into your UI (e.g. Angular&#39;s <code>$digest</code>)</li>
+<li>You can use it for deterministic testing</li>
+<li><code>Rx.Scheduler.requestAnimationFrame</code> to make your CPU happier</li>
+</ul>
+<h4 id="goodies">Goodies</h4>
+<p>Observables can have backpressure:</p>
+<ul>
+<li>lossy: pausable, sample, throttle</li>
+<li>buffer, pausableBuffered, controlled</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> pausable = chattyObservable.pausableBuffered();
+pausable.pause();
+pausable.resume();
+</code></pre>
+<h4 id="rxjs-and-gererators">RxJS and Gererators</h4>
+<ul>
+<li><code>Rx.spawn()</code> can take a generator...you get the idea.</li>
+<li><a href="https://esdiscuss.org/notes/2014-06/async%20generators.pdf">This</a> looks amazing.</li>
+</ul>
+<h2 id="flux">Flux</h2>
+<h3 id="-flux-tutorial-writing-a-simple-app-in-flux-and-react-https-www-youtube-com-watch-v-o5e894tmhjg-"><a href="https://www.youtube.com/watch?v=o5E894TmHJg">Flux Tutorial - Writing a Simple App in Flux and React</a></h3>
+<ul>
+<li>View -&gt; action -&gt; dispatcher(broadcasting) -&gt; store(listening)</li>
+<li>Assign an event emitter to the store</li>
+<li>Not really helpful....-<em>_</em>-</li>
+</ul>
+<h2 id="c-c-">C/C++</h2>
+<p>A useful trick:</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">struct</span> vec3 { 
+  <span class="hljs-keyword">union</span> {
+    <span class="hljs-keyword">struct</span> {
+      <span class="hljs-keyword">float</span> x, y, z;
+    };
+    <span class="hljs-keyword">float</span> raw[<span class="hljs-number">3</span>];
+  }; 
+};
+
+vec3 v;
+assert(&amp;v.raw[<span class="hljs-number">0</span>] == &amp;v.x);
+assert(&amp;v.raw[<span class="hljs-number">1</span>] == &amp;v.y);
+assert(&amp;v.raw[<span class="hljs-number">2</span>] == &amp;v.z);
+</code></pre>
+<p>When passing the vector to function like <code>glVertexAttribPointer</code> that takes a raw initial address, a stride and a size, you can just pass in <code>vectors[0].raw</code> instead of the weird <code>&amp;vectors[0].x</code>.</p>
+<p>This(anonymous struct &amp; union) is in C11, but not in C++ standard yet. Usually you need to turn on C11 on your compiler if you are compiling C, or turn on some extensions if you are compiling C++ (most C++ compilers support it).</p>
+<h2 id="web-audio">Web Audio</h2>
+<h3 id="-mmckegg-web-audio-school-https-github-com-mmckegg-web-audio-school-"><a href="https://github.com/mmckegg/web-audio-school">mmckegg/web-audio-school</a></h3>
+<p>Looks interesting.</p>
+<h2 id="machine-learning">Machine learning</h2>
+<h3 id="-deep-learning-tutorial-perceptrons-to-machine-learning-algorithms-toptal-http-www-toptal-com-machine-learning-an-introduction-to-deep-learning-from-perceptrons-to-deep-networks-"><a href="http://www.toptal.com/machine-learning/an-introduction-to-deep-learning-from-perceptrons-to-deep-networks">Deep Learning Tutorial: Perceptrons to Machine Learning Algorithms | Toptal</a></h3>
+<p>I wish I had read it last year when I was</p>
+<h2 id="todo">TODO</h2>
+<ul>
+<li>Take out the hard-coded GA ID in the jade partial of my diary site</li>
+<li>Do some proper i18n for the resume generator</li>
+<li>GA my resume</li>
+</ul>
+</div></div></body></html>
