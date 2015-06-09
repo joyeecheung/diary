@@ -11,4 +11,74 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-63818301-1', 'auto');
 ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 7, 2015</h1></header><div class="content"><div class="diary"><h2 id="c-c-">C/C++</h2>
 <h3 id="-what-are-aggregates-and-pods-and-how-why-are-they-special-http-stackoverflow-com-questions-4178175-what-are-aggregates-and-pods-and-how-why-are-they-special-"><a href="http://stackoverflow.com/questions/4178175/what-are-aggregates-and-pods-and-how-why-are-they-special">What are Aggregates and PODs and how/why are they special?</a></h3>
+<p>Rules for a POD:</p>
+<ol>
+<li>All of its non-static member should be POD/POD union/POD reference</li>
+<li>No user-defined <strong>constructor</strong>(use the default)</li>
+<li>No user-defined <strong>copy assignment operator</strong>(=)</li>
+<li>No user-defined <strong>destructor</strong></li>
+</ol>
+<p>The layout of a POD is guaranteed(members will be in the order they are declared with). So if you use <code>memcpy</code> on it, you can be sure what you copy doesn&#39;t change its structure mysteriously.</p>
+<p>To check if a class is POD at compile time, do this:</p>
+<pre><code class="lang-cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;type_traits&gt;</span>
+
+<span class="hljs-keyword">static_assert</span>(<span class="hljs-built_in">std</span>::is_pod&lt;A&gt;::value, <span class="hljs-string">"A must be a POD type."</span>);
+</code></pre>
+<p>(Used in my CG project!)</p>
+<h2 id="css">CSS</h2>
+<h3 id="black-and-white">Black-and-white</h3>
+<p>To make your web page black-and-white. For mourning, etc.:</p>
+<pre><code class="lang-css"><span class="hljs-tag">body</span> *<span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">-webkit-filter</span>:<span class="hljs-value"> <span class="hljs-function">grayscale</span>(<span class="hljs-number">100%</span>)</span></span>; <span class="hljs-comment">/* webkit */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">-moz-filter</span>:<span class="hljs-value"> <span class="hljs-function">grayscale</span>(<span class="hljs-number">100%</span>)</span></span>; <span class="hljs-comment">/*firefox*/</span>
+  <span class="hljs-rule"><span class="hljs-attribute">-ms-filter</span>:<span class="hljs-value"> <span class="hljs-function">grayscale</span>(<span class="hljs-number">100%</span>)</span></span>; <span class="hljs-comment">/*ie9*/</span>
+  <span class="hljs-rule"><span class="hljs-attribute">-o-filter</span>:<span class="hljs-value"> <span class="hljs-function">grayscale</span>(<span class="hljs-number">100%</span>)</span></span>; <span class="hljs-comment">/*opera*/</span>
+  <span class="hljs-rule"><span class="hljs-attribute">filter</span>:<span class="hljs-value"> <span class="hljs-function">grayscale</span>(<span class="hljs-number">100%</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">filter</span>:<span class="hljs-value">progid:DXImageTransform.Microsoft.<span class="hljs-function">BasicImage</span>(grayscale=<span class="hljs-number">1</span>)</span></span>; 
+  <span class="hljs-rule"><span class="hljs-attribute">filter</span>:<span class="hljs-value">gray</span></span>; <span class="hljs-comment">/*ie9- */</span>
+}</span>
+</code></pre>
+<p>(Taken from <a href="http://www.qq.com/">qq.com</a> during mourning for Yangtze River capsizing. R.I.P.)</p>
+<h3 id="-create-fullscreen-html5-page-background-video-http-demosthenes-info-blog-777-create-fullscreen-html5-page-background-video-"><a href="http://demosthenes.info/blog/777/Create-Fullscreen-HTML5-Page-Background-Video">Create Fullscreen HTML5 Page Background Video</a></h3>
+<h4 id="about-the-video-tag">About the <code>video</code> tag</h4>
+<p>Chrome currently has a bug in which it will not autoplay a <code>.webm</code> video if it comes after anything else. So make sure you put <code>.webm</code> at the top of your <code>&lt;source&gt;</code>s inside <code>&lt;video&gt;</code></p>
+<h4 id="go-fullscreen">Go fullscreen</h4>
+<pre><code class="lang-css"><span class="hljs-tag">video</span><span class="hljs-id">#bgvid</span> <span class="hljs-rules">{
+  <span class="hljs-comment">/* Top left corner to the center first */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> <span class="hljs-number">50%</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">50%</span></span></span>;
+  <span class="hljs-comment">/* Size. Calculated according to the parent size. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">min-width</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">min-height</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;
+  <span class="hljs-comment">/* Make it fit */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> auto</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> auto</span></span>;
+  <span class="hljs-comment">/* Move it to the top-left */</span>
+  <span class="hljs-comment">/* For Safari */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">-webkit-transform</span>:<span class="hljs-value"> <span class="hljs-function">translateX</span>(-<span class="hljs-number">50%</span>) <span class="hljs-function">translateY</span>(-<span class="hljs-number">50%</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">translateX</span>(-<span class="hljs-number">50%</span>) <span class="hljs-function">translateY</span>(-<span class="hljs-number">50%</span>)</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> fixed</span></span>;  <span class="hljs-comment">/* Parallax */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">z-index</span>:<span class="hljs-value"> -<span class="hljs-number">100</span></span></span>;  <span class="hljs-comment">/* Lies under */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">url</span>(polina.jpg) no-repeat</span></span>;  <span class="hljs-comment">/* Fallback */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">background-size</span>:<span class="hljs-value"> cover</span></span>;
+}</span>
+</code></pre>
+<h4 id="make-ie8-recognize-video-">Make IE8 recognize <code>&lt;video&gt;</code></h4>
+<pre><code class="lang-html"><span class="hljs-comment">&lt;!--[if lt IE 9]&gt;
+&lt;script&gt;
+document.createElement('video');
+&lt;/script&gt;
+&lt;![endif]--&gt;</span>
+</code></pre>
+<p>And this</p>
+<pre><code class="lang-css"><span class="hljs-tag">video</span> <span class="hljs-rules">{ <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>; }</span>
+</code></pre>
+<h4 id="for-mobiles">For mobiles</h4>
+<p>Most mobile platforms will refuse to autoplay the video. Just forget it and use a normal background instead.</p>
+<h4 id="accesibilities">Accesibilities</h4>
+<ul>
+<li>Remember to give the users a stop button.</li>
+<li>Usually just fade it out after the first play through</li>
+</ul>
 </div></div></body></html>
