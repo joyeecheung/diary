@@ -1,0 +1,39 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 8, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 8, 2015</h1></header><div class="content"><div class="diary"><h2 id="web">Web</h2>
+<h3 id="-basics-of-monkey-patching-http-davidwalsh-name-monkey-patching-"><a href="http://davidwalsh.name/monkey-patching">Basics of Monkey Patching</a></h3>
+<p>You don&#39;t want to modify the library code. It&#39;s will turn into a nightmare. Just monkey patch.</p>
+<ol>
+<li>Keep a reference to the old code</li>
+<li>Replace the method with a bug-fixed one(patch it on the library)</li>
+<li>Take care.</li>
+</ol>
+<h3 id="-building-a-user-avatar-component-with-node-js-transloadit-http-www-sitepoint-com-user-avatar-component-node-js-transloadit-"><a href="http://www.sitepoint.com/user-avatar-component-node-js-transloadit/">Building a User Avatar Component With Node.js &amp; TransloadIt</a></h3>
+<p>Looks like a good tutorial. Maybe read it later.</p>
+<h2 id="css">CSS</h2>
+<h3 id="selection-color">Selection color</h3>
+<p>Spec: <a href="http://dev.w3.org/csswg/css-pseudo-4/#selectordef-selection">CSS Pseudo-Elements Level 4(Working Draft)</a></p>
+<pre><code class="lang-css"><span class="hljs-comment">/* draw any selected text yellow on red background */</span>
+<span class="hljs-pseudo">::-moz-selection</span> <span class="hljs-rules">{ <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> gold</span></span>;  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> red</span></span>; }</span>
+<span class="hljs-pseudo">::selection</span>      <span class="hljs-rules">{ <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> gold</span></span>;  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> red</span></span>; }</span>
+</code></pre>
+<p>Needs IE9+. Firefox needs <code>-moz</code>.</p>
+<h2 id="dom">DOM</h2>
+<h3 id="mouse-events">Mouse Events</h3>
+<p>Made <a href="http://joyeecheung.github.io/frontend-utils-and-demos/dom/mouse-events/">this demo</a></p>
+<ul>
+<li><code>mouseenter</code> and <code>mouseleave</code> doesn&#39;t bubble. They only gets fired when the mouse enter/leaves the element&#39;s space(might be lying under its children).</li>
+<li><code>mouseover</code> and <code>mouseout</code> bubbles. They will be fired when the mouse enter/leaves the element&#39;s space, and when its children don&#39;t catch tehm, they will be fired on the element eventually.</li>
+<li>If you enter/leave a hierarchy at once(e.g. their border is overlapped), then <code>mouseenter</code> / <code>mouseleave</code> will be fired on everyone in the hierarchy. <code>mouselover</code> / <code>mouseout</code> will only be fired on the topmost element(usually a child), though they can bubbles up to the parent.</li>
+<li>So if your mouse is moving from one child to another, <code>mouseout</code> and <code>mouseover</code> could eventually be fired on the parent if the children don&#39;t stop the propagation, <strong>even though conceptually you are not moving over or out of the parent</strong>.</li>
+</ul>
+</div></div></body></html>

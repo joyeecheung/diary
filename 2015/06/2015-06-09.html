@@ -1,0 +1,48 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 9, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 9, 2015</h1></header><div class="content"><div class="diary"><h2 id="tools">Tools</h2>
+<h3 id="-pdfmake-client-server-side-pdf-printing-in-pure-javascript-http-pdfmake-org-"><a href="http://pdfmake.org/">pdfmake: Client/server side PDF printing in pure JavaScript</a></h3>
+<p>Maybe I can use it for my resume generator...hmmm...</p>
+<h2 id="design">Design</h2>
+<h3 id="-practical-techniques-on-designing-animation-http-www-smashingmagazine-com-2015-06-08-practical-techniques-on-designing-animation-utm_source-css-weekly-utm_campaign-issue-166-utm_medium-rss-"><a href="http://www.smashingmagazine.com/2015/06/08/practical-techniques-on-designing-animation/?utm_source=CSS-Weekly&amp;utm_campaign=Issue-166&amp;utm_medium=RSS">Practical Techniques On Designing Animation</a></h3>
+<p>Read this later.</p>
+<h2 id="css">CSS</h2>
+<h3 id="-the-making-of-in-pieces-designing-an-interactive-exhibition-with-css-clip-paths-http-www-smashingmagazine-com-2015-06-02-the-making-of-in-pieces-utm_source-css-weekly-utm_campaign-issue-166-utm_medium-rss-"><a href="http://www.smashingmagazine.com/2015/06/02/the-making-of-in-pieces/?utm_source=CSS-Weekly&amp;utm_campaign=Issue-166&amp;utm_medium=RSS">The Making Of “In Pieces”: Designing an Interactive Exhibition With CSS Clip Paths</a></h3>
+<h4 id="animations">Animations</h4>
+<ul>
+<li>Use CSS class names of the parent div to change species.</li>
+<li>Species names are kept inside an array.<ul>
+<li>Change of species involve finding the next index in that array</li>
+<li>Use the difference of index to determine the direction of the transition(left-to-right or right-to-left), and add an extra class for it</li>
+</ul>
+</li>
+<li>Use SASS for loops to generate a bunch of transitions(30 steps)</li>
+<li>Repetition of the animation is controlled by JS(<code>setInterval</code> combined with <code>setTimeout</code>) rather than CSS to avoid abrupt &quot;cuts&quot;.</li>
+<li>Each one has multiple sets of animations(e.g. eyes and vocal sac of the frog), they are controlled independently.</li>
+<li>&quot;Shimmering&quot; is done by adding pseudo-elements(<code>::before</code> with 100% width and height) to every shard and change their background color opacity(between<code>rgba(255, 255, 255, 0)</code> and <code>rgba(255, 255, 255, 1)</code>) periodically.<ul>
+<li>These 100% width and height pseudo-elements will be masked to the same shape as their parents</li>
+</ul>
+</li>
+</ul>
+<h4 id="bugs">Bugs</h4>
+<ul>
+<li><code>clip-path</code> doesn&#39;t like being overlapped with elements transitioning between opacity values</li>
+<li><code>transform</code>s don&#39;t like it too. The solution is to create a big parent div to do the scaling/translation/rotation. Don&#39;t transform the polygons directly</li>
+<li>Retina screens and Safari chokes on overlapping opacity. That&#39;s why only non-retina Chromes get the vignette around the species.</li>
+</ul>
+<h4 id="performance">Performance</h4>
+<ul>
+<li>Don&#39;t move 30 polygons at the same time. Use delay to move them in chains(that&#39;s when the for loops in SASS come to rescue).</li>
+<li>On PC, transitions are made faster to prevent overlap</li>
+</ul>
+<p>To be continued...</p>
+</div></div></body></html>
