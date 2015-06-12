@@ -21,7 +21,7 @@
     "gulp": "^3.8.11",
     "gulp-changed": "^1.2.1",
     "gulp-debug": "^2.0.1",
-    "gulp-gh-pages": "^0.5.1",
+    "gulp-gh-pages": "^0.5.2",
     "gulp-if": "^1.2.5",
     "gulp-jade": "^1.0.1",
     "gulp-layout": "0.0.3",
