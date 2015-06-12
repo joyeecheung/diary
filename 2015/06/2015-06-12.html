@@ -1,0 +1,106 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 12, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 12, 2015</h1></header><div class="content"><div class="diary"><h2 id="machine-learning">Machine Learning</h2>
+<p>Turns out I can use <a href="https://github.com/joyeecheung/neural-network">this code</a> I wrote last year again and again...=<em>_</em>,= All I need to do is tweaking the parameters.</p>
+<p>Think of a trick to generate/obtain the classes:</p>
+<pre><code class="lang-python"><span class="hljs-comment"># num_class = y.max()  # if the labels in y is 1 - n</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">to_class</span><span class="hljs-params">(y, num_class)</span>:</span>
+    X, _ = np.meshgrid(list(xrange(num_class)), list(xrange(y.shape[<span class="hljs-number">0</span>])))
+    <span class="hljs-keyword">return</span> np.array(X == (y - <span class="hljs-number">1</span>)[:, <span class="hljs-keyword">None</span>], dtype=np.float64)
+
+nn.train(train_X, to_class(train_y, train_y.max()))
+<span class="hljs-comment"># remember to add 1 back to the labels</span>
+result = np.argmax(nn.fit(test_X), axis=<span class="hljs-number">1</span>) + <span class="hljs-number">1</span>
+</code></pre>
+<h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-symbols-https-hacks-mozilla-org-2015-06-es6-in-depth-symbols-"><a href="https://hacks.mozilla.org/2015/06/es6-in-depth-symbols/">ES6 In Depth: Symbols</a></h3>
+<h4 id="why-it-s-necessary">Why it&#39;s necessary</h4>
+<p>Note: they are a bit like <code>__something__</code> in Python/PHP.</p>
+<p>Oftentimes you need flags: e.g. <code>obj.isMoving</code>. To avoid conflicts with others using the same name(string), you could try this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// get 1024 Unicode characters of gibberish</span>
+<span class="hljs-keyword">var</span> isMoving = SecureRandom.generateName();
+
+<span class="hljs-keyword">if</span> (element[isMoving]) {
+  smoothAnimations(element);
+}
+element[isMoving] = <span class="hljs-literal">true</span>;
+</code></pre>
+<p>But it would definitely be very hard to debug.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// when it shows up in the error message...it would look like this:</span>
+<span class="hljs-built_in">console</span>.log(isMoving);  <span class="hljs-comment">// WTF?!</span>
+</code></pre>
+<p>With symbols, life will be much easier:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// create a unique symbol</span>
+<span class="hljs-keyword">var</span> isMoving = <span class="hljs-built_in">Symbol</span>(<span class="hljs-string">"isMoving"</span>);
+
+<span class="hljs-keyword">if</span> (element[isMoving]) {
+  smoothAnimations(element);
+}
+element[isMoving] = <span class="hljs-literal">true</span>;
+<span class="hljs-built_in">console</span>.log(isMoving); <span class="hljs-comment">// Symbol(isMoving)</span>
+</code></pre>
+<p>Library authors will love this!</p>
+<h4 id="gotcha">Gotcha</h4>
+<ul>
+<li>Symbols are a bit like array elements in that <strong>you cannot reference them with dot notation</strong> e.g. <code>obj.symbol</code>. You have to go with <code>obj[symbol]</code>.</li>
+<li>Symbols <strong>have scopes</strong>. That means there is much smaller chance for collisions.</li>
+<li><p>You can&#39;t implicitly convert symbols to strings. You need <code>String(sym)</code> or <code>sym.toString()</code>.</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"your symbol is "</span> + sym
+<span class="hljs-comment">// TypeError: can't convert symbol to string</span>
+<span class="hljs-string">`your symbol is <span class="hljs-subst">${sym}</span>`</span>
+<span class="hljs-comment">// TypeError: can't convert symbol to string</span>
+</code></pre>
+</li>
+</ul>
+<h4 id="a-few-things-about-the-symbols">A few things about the symbols</h4>
+<ul>
+<li>Symbols are a bit like strings<ul>
+<li><strong>Immutable</strong></li>
+<li>You can&#39;t set <strong>properties</strong> on symbols. If you try this in strict mode you will get a <code>TypeError</code></li>
+</ul>
+</li>
+<li>Symbols are a bit like objects<ul>
+<li>Every symbol is <strong>unique</strong></li>
+<li>You can easily create new ones</li>
+</ul>
+</li>
+<li>You won&#39;t see them in <code>for-in</code> loops, <code>Object.keys(obj)</code> and <code>Object.getOwnPropertyNames(obj)</code>.</li>
+<li>You can, however, see them with <code>Object.getOwnPropertySymbols(obj)</code> and <code>Reflect.ownKeys(obj)</code></li>
+</ul>
+<h4 id="how-you-can-get-a-symbol">How you can get a symbol</h4>
+<ol>
+<li><p><code>Symbol()</code> or <code>Symbol(someString)</code></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> A = <span class="hljs-built_in">Symbol</span>(<span class="hljs-string">"foo"</span>);
+<span class="hljs-keyword">let</span> B = <span class="hljs-built_in">Symbol</span>(<span class="hljs-string">"foo"</span>);
+<span class="hljs-built_in">console</span>.log(A === B); <span class="hljs-comment">// false</span>
+</code></pre>
+</li>
+<li><p><code>Symbol.for(someString)</code>: useful when you need to share symbols</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">let</span> A = <span class="hljs-built_in">Symbol</span>.for(<span class="hljs-string">"foo"</span>);
+<span class="hljs-keyword">let</span> B = <span class="hljs-built_in">Symbol</span>.for(<span class="hljs-string">"foo"</span>);
+<span class="hljs-built_in">console</span>.log(A === B); <span class="hljs-comment">// true</span>
+</code></pre>
+</li>
+<li>Special symbols defined in the spec like <code>Symbol.iterator</code></li>
+</ol>
+<h4 id="special-symbols">Special symbols</h4>
+<ul>
+<li><code>Symbol.iterator</code>: can be used with <code>for-of</code> loops</li>
+<li><code>Symbol.hasInstance</code>: <code>object instanceof constructor</code> essentially calls <code>constructor[Symbol.hasInstance]</code> and pass it the <code>object</code>.</li>
+<li><code>Symbol.unscopables</code> to prevent dynamic scoping from breaking the web</li>
+<li><code>Symbol.match</code>: <code>str.match(obj)</code> essentially calls <code>obj[Symbol.match]</code> and pass it the <code>str</code><ul>
+<li>This is different from ES5 where <code>obj</code> will be converted into string first, because it is supposed to be <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/match"><code>str.match(regexp)</code></a>.</li>
+<li>Libraries can provide custom string matching classes(your own <code>RegExp</code>) now!</li>
+</ul>
+</li>
+</ul>
+</div></div></body></html>
