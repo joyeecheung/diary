@@ -22,3 +22,40 @@ body {
   margin-bottom: 36px;
   margin-bottom: 2rem;
 }
+
+.footer {
+  font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-size: 0.8rem;
+  width: 450px;
+  width: 25rem;
+  margin: 54px auto;
+  margin: 3rem auto;
+  text-align: center;
+  color: #666;
+}
+
+.footer .author a {
+  margin: auto 9px;
+  margin: auto 0.5rem;
+}
+
+.footer a {
+  text-decoration: underline;
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+.footer a:link,
+.footer a:visited {
+  color: #666;
+}
+
+.footer a:hover,
+.footer a:active {
+  color: #939393;
+}
+
+.footer p {
+  margin: 0;
+}

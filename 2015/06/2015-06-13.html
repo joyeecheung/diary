@@ -1,0 +1,99 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 13, 2015</h1></header><div class="content"><div class="diary"><h2 id="performance">Performance</h2>
+<h3 id="-supercharging-page-load-100-days-of-google-dev-https-www-youtube-com-watch-v-d5_6yhixpsq-"><a href="https://www.youtube.com/watch?v=d5_6yHixpsQ">Supercharging page load (100 Days of Google Dev)</a></h3>
+<ol>
+<li>Serve basic contents with static HTML, and mark <code>&lt;script&gt;</code>s <code>async</code></li>
+<li><p>Inline the basic styles, and load other CSS with JS asynchronously e.g. using <a href="https://github.com/filamentgroup/loadCSS">loadCSS</a>.</p>
+<p>A quick example:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="actionscript">
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadCSS</span><span class="hljs-params">()</span> </span>{ ... }
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onloadCSS</span><span class="hljs-params">()</span> </span>{ ... }
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">main</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"article"</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">"display:none"</span>&gt;</span>
+ <span class="hljs-comment">&lt;!-- Contents --&gt;</span>
+
+ <span class="hljs-comment">&lt;!-- Use JS to load CSS --&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+   onloadCSS(loadCSS(<span class="hljs-string">'style.css'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+     <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.article'</span>).style.display = <span class="hljs-string">''</span>;
+   });
+ </span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+ <span class="hljs-comment">&lt;!-- Fallback for browsers without JS --&gt;</span>
+ <span class="hljs-comment">&lt;!-- Just let the browser load it --&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">noscript</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-title">link</span> <span class="hljs-attribute">rel</span>=<span class="hljs-value">"stylesheet"</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"style.css"</span>&gt;</span>
+ <span class="hljs-tag">&lt;/<span class="hljs-title">noscript</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">main</span>&gt;</span>
+</code></pre>
+</li>
+<li>Use chunk-encoding/multiple data frames. <strong>Stream</strong> your contents retrieved by Ajax!</li>
+<li>Take control of cache and offline(<em>lie-fi</em>) behaviors by using <strong>service workers</strong>.<ul>
+<li>Use <a href="https://streams.spec.whatwg.org/">the Streaming API</a> and <a href="https://fetch.spec.whatwg.org/">the Fetch API</a> to take control of your Ajax calls again. Buffer readers will come to rescue!</li>
+</ul>
+</li>
+<li>Let the user decide whether they want to <strong>cache contents</strong>!<ul>
+<li>Remeber to check for updates</li>
+</ul>
+</li>
+</ol>
+<h4 id="reference">Reference</h4>
+<ul>
+<li><a href="http://jakearchibald.com/2014/offline-cookbook/">The offline cookbook</a></li>
+<li><a href="https://github.com/jakearchibald/offline-wikipedia">jakearchibald/offline-wikipedia</a></li>
+<li><a href="https://github.com/GoogleChrome/ioweb2015">GoogleChrome/ioweb2015</a></li>
+</ul>
+<h2 id="browsers">Browsers</h2>
+<h3 id="dev-tools">Dev tools</h3>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=U9xfYbKxosI">Animation Timeline in Chrome DevTools - coming soon</a></li>
+<li><a href="https://www.youtube.com/watch?v=sC6IlD-U2TI">Frame Viewer in Chrome DevTools</a></li>
+<li><a href="http://updates.html5rocks.com/2015/04/devtools-timeline-improvements">DevTools Timeline: Now Providing the Full Story</a></li>
+<li><a href="http://www.sencha.com/blog/hidden-gems-in-chrome-developer-tools/">Hidden Gems in Chrome Developer Tools</a></li>
+<li><a href="https://developer.chrome.com/devtools/docs/tips-and-tricks">Tips And Tricks - Google Chrome</a></li>
+</ul>
+<h3 id="rendering">Rendering</h3>
+<ul>
+<li><a href="http://www.html5rocks.com/en/tutorials/speed/layers/">Accelerated Rendering in Chrome</a></li>
+<li><a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome">GPU Accelerated Compositing in Chrome</a></li>
+</ul>
+<h3 id="-blinkon-4-state-of-blink-https-www-youtube-com-watch-v-ap5swqtce2o-"><a href="https://www.youtube.com/watch?v=Ap5sWqtCE2o">BlinkOn 4: State of Blink</a></h3>
+<h4 id="new-features">New features</h4>
+<ul>
+<li>Promoted &quot;Add to Homescreen&quot;</li>
+<li>Push notifications</li>
+<li>Permissions API</li>
+<li><code>navigator.connect</code></li>
+<li>Site Engagement/Karma</li>
+<li>Bluetooth</li>
+<li>Background sync</li>
+</ul>
+<h4 id="some-random-notes">Some random notes</h4>
+<ul>
+<li>Custom paint</li>
+<li>UI workers &amp; composite workers</li>
+<li>RAIL model<ul>
+<li>Response, Animation, Idle, Load</li>
+</ul>
+</li>
+</ul>
+<h2 id="virtual-reality">Virtual Reality</h2>
+<h3 id="webvr">WebVR</h3>
+<ul>
+<li><a href="http://mozvr.com/posts/quick-vr-prototypes/">Quick VR Mockups with Illustrator</a></li>
+<li><a href="https://github.com/borismus/webvr-boilerplate">borismus/webvr-boilerplate</a></li>
+<li><a href="http://webvr.info/">WebVR</a></li>
+<li><a href="http://mozvr.github.io/webvr-spec/webvr.html">WebVR Editor’s Draft, 13 May 2015</a></li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 14, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 14, 2015</h1></header><div class="content"><div class="diary"><h2 id="history">History</h2>
+<h3 id="-thinking-about-ecmascript-5-parts-http-tech-pro-tutorial-1671-thinking-about-ecmascript-5-parts-"><a href="http://tech.pro/tutorial/1671/thinking-about-ecmascript-5-parts">Thinking About ECMAScript 5 Parts</a></h3>
+<p>IE8 only has a ES3 engine, so it&#39;s necessary to know what&#39;s new in ES5...(ugh..compatibility problem sucks)</p>
+<h4 id="syntax">Syntax</h4>
+<p>*　Trailing commas</p>
+<ul>
+<li>Multiline string literals using <code>\</code></li>
+<li>Object property names can use reserve words<ul>
+<li>e.g. <code>obj.catch</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="utilities">Utilities</h4>
+<ul>
+<li>JSON methos<ul>
+<li><code>JSON.parse</code>, <code>JSON.stringify</code></li>
+</ul>
+</li>
+<li><code>str.trim()</code></li>
+<li>Indexing strings: <code>&#39;str&#39;[0]</code></li>
+<li><code>undefined</code>, <code>NaN</code>, and <code>Infinty</code> became read-only</li>
+<li><code>Array.isArray([]) === true</code><ul>
+<li><a href="http://web.mit.edu/jwalden/www/isArray.html">Determining with absolute accuracy whether or not a JavaScript object is an array</a></li>
+</ul>
+</li>
+<li>New array methods<ul>
+<li><code>map</code>, <code>reduce</code>, <code>filter</code>, <code>forEach</code>, <code>every</code>, <code>some</code></li>
+<li><code>indexOf</code>, <code>lastIndexOf</code></li>
+<li>You can set <code>this</code> to some array-like object by passing it to the method after the callback</li>
+</ul>
+</li>
+<li><code>Date.now</code></li>
+</ul>
+<h4 id="objects">Objects</h4>
+<ul>
+<li><code>get</code>, <code>set</code>, <code>value</code>, <code>writeable</code>, <code>enumerable</code>, <code>configurable</code> for object properties</li>
+<li><code>Object.getOwnPropertyDescriptor()</code>, <code>Object.defineProperty()</code>, <code>Object.defineProperties()</code></li>
+<li><code>Object.keys()</code>, <code>Object.getOwnPropertyNames()</code></li>
+<li>Protect your objects<ul>
+<li><code>Object.preventExtensions()</code>: can&#39;t add new properties</li>
+<li><code>Object.seal()</code>: marks all existing properties as non-configurable</li>
+<li><code>Object.freeze()</code>: marks all existing properties as non-writable</li>
+<li><code>Object.isExtensible()</code>, <code>Object.isSealed()</code>, <code>Object.isFrozen()</code></li>
+</ul>
+</li>
+<li><code>Object.create()</code></li>
+<li><code>Object.getPrototypeOf()</code></li>
+</ul>
+<h4 id="functions">Functions</h4>
+<ul>
+<li><code>bind()</code></li>
+</ul>
+<h4 id="strict-mode">Strict mode</h4>
+<p>You know...strict mode.</p>
+<h4 id="reference">Reference</h4>
+<ul>
+<li><a href="Crockford on JavaScript - Level 7: ECMAScript 5: The New Parts">Crockford on JavaScript - Level 7: ECMAScript 5: The New Parts</a></li>
+</ul>
+<h3 id="-h-kon-wium-lie-css3-fronteers-2010-https-vimeo-com-15775937-"><a href="https://vimeo.com/15775937">Håkon Wium Lie | CSS3 | Fronteers 2010</a></h3>
+<ul>
+<li><code>text-shadow</code></li>
+<li><code>border-radius</code></li>
+<li><code>box-shadow</code></li>
+<li>Multi columns (still not well-supported today)</li>
+<li><code>transition</code></li>
+<li>Media queries</li>
+<li><code>@page</code></li>
+</ul>
+<h2 id="js">JS</h2>
+<h3 id="-prototypes-are-objects-and-why-that-matters-http-raganwald-com-2015-06-10-mixins-html-"><a href="http://raganwald.com/2015/06/10/mixins.html">Prototypes are Objects (and why that matters)</a></h3>
+<ul>
+<li>Prototype -&gt; class syntax(more compact)</li>
+<li>Use <code>Object.assign</code> to do mixins<ul>
+<li>Create mixins using the compact object literal!</li>
+</ul>
+</li>
+<li><p>How to patch a new property:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> Author = {
+  writeBook (name) {
+    <span class="hljs-keyword">this</span>.books().push(name);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  },
+  books () {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._books_written || (<span class="hljs-keyword">this</span>._books_written = []);
+  }
+};
+</code></pre>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
