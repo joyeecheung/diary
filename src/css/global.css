@@ -2,6 +2,8 @@
   --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
   --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --textColor: #333;
+  --footerColor: #666;
+  --linkHoverColor: #939393;
 }
 
 html {
@@ -24,4 +26,37 @@ body {
   font-size: 3rem;
   margin-top: 2.5rem;
   margin-bottom: 2rem;
+}
+
+.footer {
+  font-family: var(--headFont);
+  font-size: 0.8rem;
+  width: 25rem;
+  margin: 3rem auto;
+  text-align: center;
+  color: var(--footerColor);
+}
+
+.footer .author a {
+  margin: auto 0.5rem;
+}
+
+.footer a {
+  text-decoration: underline;
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+.footer a:link,
+.footer a:visited {
+  color: var(--footerColor);
+}
+
+.footer a:hover,
+.footer a:active {
+  color: var(--linkHoverColor);
+}
+
+.footer p {
+  margin: 0;
 }

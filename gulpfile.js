@@ -1,10 +1,11 @@
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-
 var path = require('path');
 var http = require('http');
 var st = require('st');
+
+var gulp = require('gulp');
+var plugins = require('gulp-load-plugins')();
 var moment = require('moment');
+var config = require('./config')
 
 // --------------------------------
 // JavaScript packing
@@ -45,8 +46,9 @@ gulp.task('css', function () {
 
 function generateIndex() {
   return gulp.src('./src/jade/index.jade')
-    .pipe(plugins.jade())
-    .pipe(gulp.dest('./dist/'))
+    .pipe(plugins.jade({
+      locals: config
+     })).pipe(gulp.dest('./dist/'))
     .pipe(plugins.livereload());
 }
 
@@ -61,25 +63,21 @@ function highlightCode(code, lang) {
 function layoutDiary(file) {
   var name = path.basename(file.path).replace(path.extname(file.path), '');
   var date = moment(new Date(name));
+
+  var locals = config;
+  locals.data_lang = 'en';
+
   if (!date.isValid()) {
-    return {
-      layout: './src/jade/layout/plain-layout.jade',
-      data_lang: 'en',
-      title: name
-    }
+    locals.layout = './src/jade/layout/plain-layout.jade';
+    locals.title = name;
   } else if (name.length > 7) {   // full date
-    return {
-      layout: './src/jade/layout/diary-layout.jade',
-      data_lang: 'en',
-      title: date.format('MMMM D, YYYY')
-    }
+    locals.layout = './src/jade/layout/diary-layout.jade';
+    locals.title = date.format('MMMM D, YYYY');
   } else {  // month summary
-    return {
-      layout: './src/jade/layout/month-layout.jade',
-      data_lang: 'en',
-      title: date.format('MMMM, YYYY')
-    }
+    locals.layout = './src/jade/layout/month-layout.jade';
+    locals.title = date.format('MMMM, YYYY');
   }
+  return locals;
 }
 
 function generateDiary(layout) {
