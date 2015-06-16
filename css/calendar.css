@@ -123,8 +123,12 @@ button.is-disabled:hover {
   color: white;
 }
 
-.is-today button {
+.last-update button {
   background: #5C5C5C;
   color: white;
   border-radius: 100%;
+}
+
+.is-today button {
+  border: 1px solid #FFB1B1;
 }

@@ -1,0 +1,129 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 16, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 16, 2015</h1></header><div class="content"><div class="diary"><h2 id="graphics">Graphics</h2>
+<h3 id="how-to-do-skeletal-animations-in-three-js-with-blendcharacter">How to do skeletal animations in Three.js with BlendCharacter</h3>
+<pre><code class="lang-javascript"><span class="hljs-comment">// you need a clock for delta time</span>
+<span class="hljs-comment">// but you can also use Performance API or just Date.now()</span>
+<span class="hljs-keyword">var</span> clock = <span class="hljs-keyword">new</span> THREE.Clock();
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadCharacter</span><span class="hljs-params">(scene)</span> </span>{
+  <span class="hljs-keyword">var</span> blendMesh = <span class="hljs-keyword">new</span> THREE.BlendCharacter();
+  blendMesh.load( <span class="hljs-string">"/path/to/threejs/json/model"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    scene.add(blendMesh);
+
+    <span class="hljs-comment">// if the model has some animations, say, "idle"</span>
+    blendMesh.play(<span class="hljs-string">"idle"</span>, <span class="hljs-number">1</span>);  <span class="hljs-comment">// the second argument is weight</span>
+
+    <span class="hljs-comment">// shadows</span>
+    blendMesh.receiveShadow = <span class="hljs-literal">true</span>;
+    blendMesh.castShadow = <span class="hljs-literal">true</span>;
+  });
+  <span class="hljs-keyword">return</span> blendMesh;
+}
+
+<span class="hljs-comment">// in your animation function</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">animate</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// get the delta</span>
+  <span class="hljs-keyword">var</span> delta = clock.getDelta();
+
+  <span class="hljs-comment">// update the skeletons</span>
+  blendMesh.update(delta);
+  THREE.AnimationHandler.update(delta);
+
+  <span class="hljs-comment">// this assumes you have global renderer, scene and camera</span>
+  renderer.render(scene, camera);
+
+  requestAnimationFrame(animate);  <span class="hljs-comment">// next frame</span>
+}
+
+<span class="hljs-comment">// to change the animation</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onChangeAnimation</span><span class="hljs-params">(mesh, animation, weight)</span> </span>{
+  mesh.stopAll();
+  mesh.play(animation, weight);
+}
+</code></pre>
+<h2 id="js">JS</h2>
+<h3 id="event-proxy">Event proxy</h3>
+<p>An implementation: <a href="https://github.com/JacksonTian/eventproxy">JacksonTian/eventproxy</a></p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> EventProxy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'eventproxy'</span>);
+<span class="hljs-keyword">var</span> proxy = <span class="hljs-keyword">new</span> EventProxy();
+
+<span class="hljs-comment">// simple emit</span>
+fs.readFile(<span class="hljs-string">'fileA'</span>, <span class="hljs-string">'utf-8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, data)</span> </span>{
+  proxy.emit(<span class="hljs-string">'a'</span>, data);
+});
+
+<span class="hljs-comment">// use proxy.done() to handle the error and pass down the data</span>
+fs.readFile(<span class="hljs-string">'fileB'</span>, <span class="hljs-string">'utf-8'</span>, proxy.done(<span class="hljs-string">'b'</span>));
+
+<span class="hljs-comment">// use proxy.done() to do some additional transformation</span>
+fs.readFile(<span class="hljs-string">'fileC'</span>, <span class="hljs-string">'utf-8'</span>, proxy.done(<span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> </span>{
+  <span class="hljs-keyword">return</span> data.trim();
+}));
+
+<span class="hljs-comment">// when a, b and c are all gathered</span>
+proxy.all(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a, b, c)</span> </span>{
+  <span class="hljs-built_in">console</span>.log(a, b, c);
+});
+</code></pre>
+<h3 id="wrote-an-answer">Wrote an answer</h3>
+<p>About hidden classes and inline caches: <a href="http://www.zhihu.com/question/31350233/answer/51567703">编程语言可不可以不要数据结构全部散列？</a></p>
+<h2 id="css">CSS</h2>
+<h3 id="-the-future-generation-of-css-selectors-level-4-http-www-sitepoint-com-future-generation-css-selectors-level-4-"><a href="http://www.sitepoint.com/future-generation-css-selectors-level-4/">The Future Generation of CSS Selectors: Level 4</a></h3>
+<p>Read it later...</p>
+<h2 id="a-few-notes">A few notes</h2>
+<h3 id="source-maps-and-webpack">Source maps and WebPack</h3>
+<p>Currently source maps <a href="http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/#toc-notperfect">doesn&#39;t support variable mapping</a>, which make them pretty useless when debugging minified code...</p>
+<p>To make WebPack map files to local files(instead of something in <code>webpack://</code>), don&#39;t use the <code>devtool</code> option, use a plugin:</p>
+<pre><code class="lang-javascript">  <span class="hljs-keyword">new</span> webpack.SourceMapDevToolPlugin(
+    <span class="hljs-string">"[file].map"</span>, <span class="hljs-literal">null</span>,
+    <span class="hljs-string">"[absolute-resource-path]"</span>, <span class="hljs-string">"[absolute-resource-path]"</span>
+  ),
+</code></pre>
+<h3 id="pikaday">Pikaday</h3>
+<p>Pikaday has a bug where disabled date will still have their <code>onSelect</code> handler called. It&#39;s been <a href="https://github.com/dbushell/Pikaday/pull/247">fixed</a> but the fix is still not in the release(1.3.2). Need to remember to update my dependencies when the next release is out(or I might just write my own date picker when I am less busy).</p>
+<h3 id="gulp">Gulp</h3>
+<p>Use a quite clever trick(IMO) to make the index calendar show the last update...</p>
+<pre><code class="lang-javascript">  <span class="hljs-keyword">var</span> <span class="hljs-built_in">Promise</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bluebird'</span>);
+  <span class="hljs-keyword">var</span> ls = <span class="hljs-built_in">Promise</span>.promisify(<span class="hljs-built_in">require</span>(<span class="hljs-string">'node-dir'</span>).files);
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLastFile</span><span class="hljs-params">(files)</span> </span>{
+    <span class="hljs-keyword">return</span> files.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{
+      <span class="hljs-keyword">return</span> path.basename(file);  <span class="hljs-comment">// strip out dir names</span>
+    }).filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{  <span class="hljs-comment">// filter out articles</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-regexp">/\d{4}-\d{2}-\d{2}\.md/</span>.test(file);
+    }).sort() <span class="hljs-comment">// lexical order = chronological order for ISO Date </span>
+    .reverse()[<span class="hljs-number">0</span>].split(<span class="hljs-string">'.'</span>)[<span class="hljs-number">0</span>];
+  }
+
+  <span class="hljs-comment">// In my gulp task...</span>
+  pipe(plugins.data(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{
+    <span class="hljs-comment">// get the last file</span>
+    <span class="hljs-keyword">return</span> ls(<span class="hljs-string">'diary'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(files)</span> </span>{
+      <span class="hljs-keyword">var</span> result =  _.assign({}, config, {
+        last: getLastFile(files)
+      });
+      <span class="hljs-built_in">console</span>.log(result);
+      <span class="hljs-keyword">return</span> result;
+    });
+  }))
+</code></pre>
+<p>Two things to note:</p>
+<ol>
+<li><p>For ISO Date strings, lexical order = chronological order. From <a href="https://en.wikipedia.org/wiki/ISO_8601">Wikipedia</a>:</p>
+<blockquote>
+<p>Date and time values are ordered from the largest to smallest unit of time: year, month (or week), day, hour, minute, second, and fraction of second. The lexicographical order of the representation thus corresponds to chronological order, except for date representations involving negative years. This allows dates to be naturally sorted by, for example, file systems.</p>
+</blockquote>
+</li>
+<li>gulp-data can pass down promises, which means you can promisify some async function(e.g. use bluebird), then pipe its result down to another plugin. This is very helpful when filling templates.</li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
