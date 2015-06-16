@@ -1,11 +1,19 @@
 var path = require('path');
 var http = require('http');
 var st = require('st');
+var fs = require('fs');
 
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
+var merge = require('merge-stream');
+
+var Promise = require('bluebird');
+var ls = Promise.promisify(require('node-dir').files);
+var _ = require('lodash');
 var moment = require('moment');
+
 var config = require('./config')
+
 
 // --------------------------------
 // JavaScript packing
@@ -19,18 +27,20 @@ gulp.task('js', function () {
 // --------------------------------
 // PostCSS
 function compileCSS(debug) {
-  gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
+  var theme = gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
     .pipe(gulp.dest('./dist/css/'))
 
   var processors = [require('cssnext')()];
 
-  return gulp.src('./src/css/**/*.css')
+  var css = gulp.src('./src/css/**/*.css')
     .pipe(plugins.debug())
     .pipe(plugins.if(debug, plugins.sourcemaps.init()))
     .pipe(plugins.postcss(processors))
     .pipe(plugins.if(debug, plugins.sourcemaps.write()))
     .pipe(gulp.dest('./dist/css/'))
     .pipe(plugins.livereload());
+
+  return merge(theme, css);
 }
 
 gulp.task('css-debug', function () {
@@ -44,13 +54,29 @@ gulp.task('css', function () {
 // --------------------------------
 // Generate markup
 
-function generateIndex() {
-  return gulp.src('./src/jade/index.jade')
-    .pipe(plugins.jade({
-      locals: config
-     })).pipe(gulp.dest('./dist/'))
-    .pipe(plugins.livereload());
+function getLastFile(files) {
+  return files.map(function(file) {
+    return path.basename(file);  // strip out dir names
+  }).filter(function(file) {  // filter out articles
+    return /\d{4}-\d{2}-\d{2}\.md/.test(file);
+  }).sort() // lexical order = chronological order for ISO Date 
+  .reverse()[0].split('.')[0];
 }
+
+gulp.task('index', function() {
+  return gulp.src('./src/jade/index.jade')
+    .pipe(plugins.data(function(file) {
+      // get the last file
+      return ls('diary').then(function(files) {
+        var result =  _.assign({}, config, {
+          last: getLastFile(files)
+        });
+        console.log(result);
+        return result;
+      });
+    })).pipe(plugins.jade()).pipe(gulp.dest('./dist/'))
+    .pipe(plugins.livereload());
+});
 
 function highlightCode(code, lang) {
   if (lang) {
@@ -61,10 +87,11 @@ function highlightCode(code, lang) {
 }
 
 function layoutDiary(file) {
-  var name = path.basename(file.path).replace(path.extname(file.path), '');
+  var name = path.basename(file.path)
+                 .replace(path.extname(file.path), '');
   var date = moment(new Date(name));
 
-  var locals = config;
+  var locals = _.assign({}, config);
   locals.data_lang = 'en';
 
   if (!date.isValid()) {
@@ -91,21 +118,20 @@ function generateDiary(layout) {
     .pipe(plugins.livereload());
 }
 
-gulp.task('markup', function() {
-  generateIndex();
-  generateDiary();
+gulp.task('markup', ['index'], function() {
+  return generateDiary();
 });
 
-gulp.task('relayout', function() {
-  generateIndex();
-  generateDiary(true);
+gulp.task('relayout', ['index'], function() {
+  return generateDiary(true);
 });
 
 // watch
 gulp.task('watch', ['server'], function() {
   plugins.livereload.listen({ basePath: 'dist' });
   gulp.watch(['./diary/**/*.md'], ['markup']);
-  gulp.watch(['./src/jade/**/*.jade'], ['relayout']);
+  gulp.watch(['./src/jade/index.jade'], ['index']);
+  gulp.watch(['./src/jade/layout/*.jade'], ['relayout']);
   gulp.watch('./src/css/**/*.css', ['css']);
   gulp.watch([ 'webpack.config.js', './src/js/**/*.js'], ['js']);
 });

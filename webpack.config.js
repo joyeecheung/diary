@@ -9,16 +9,19 @@ module.exports = {
     filename: '[name].js',
     path: require("path").resolve("./dist/js"),
   },
-  // devtool: "#source-map",
   plugins: [
     new webpack.optimize.CommonsChunkPlugin(
       /* chunkName= */"vendor",
       /* filename= */"vendor.bundle.js"),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-          warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //       warnings: false
+    //   }
+    // }),
+    new webpack.SourceMapDevToolPlugin(
+      "[file].map", null,
+      "[absolute-resource-path]", "[absolute-resource-path]"
+    ),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ]
 };
