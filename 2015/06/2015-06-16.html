@@ -92,6 +92,22 @@ proxy.all(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</s
 <h3 id="pikaday">Pikaday</h3>
 <p>Pikaday has a bug where disabled date will still have their <code>onSelect</code> handler called. It&#39;s been <a href="https://github.com/dbushell/Pikaday/pull/247">fixed</a> but the fix is still not in the release(1.3.2). Need to remember to update my dependencies when the next release is out(or I might just write my own date picker when I am less busy).</p>
 <h3 id="gulp">Gulp</h3>
+<p>To make the tasks run faster, be sure to return all streams. If you have multiple streams in one task, merge them before return:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// npm install --save-dev gulp merge-stream</span>
+
+<span class="hljs-keyword">var</span> gulp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp'</span>);
+<span class="hljs-keyword">var</span> merge = <span class="hljs-built_in">require</span>(<span class="hljs-string">'merge-stream'</span>);
+
+gulp.task(<span class="hljs-string">'test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">var</span> js = gulp.src(<span class="hljs-string">'src/js/*.js'</span>)
+    .pipe(gulp.dest(<span class="hljs-string">'dist/js'</span>));
+
+  <span class="hljs-keyword">var</span> css = gulp.src(<span class="hljs-string">'src/css/*.css'</span>)
+    .pipe(gulp.dest(<span class="hljs-string">'dist/css'</span>));
+
+  <span class="hljs-keyword">return</span> merge(js, css);
+});
+</code></pre>
 <p>Use a quite clever trick(IMO) to make the index calendar show the last update...</p>
 <pre><code class="lang-javascript">  <span class="hljs-keyword">var</span> <span class="hljs-built_in">Promise</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bluebird'</span>);
   <span class="hljs-keyword">var</span> ls = <span class="hljs-built_in">Promise</span>.promisify(<span class="hljs-built_in">require</span>(<span class="hljs-string">'node-dir'</span>).files);

@@ -1,0 +1,99 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 18, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 18, 2015</h1></header><div class="content"><div class="diary"><h2 id="css">CSS</h2>
+<h3 id="-cssconf-oakland-2014-tab-atkins-the-future-of-css-https-www-youtube-com-watch-feature-youtu-be-v-ad1wq0qzrmq-"><a href="https://www.youtube.com/watch?feature=youtu.be&amp;v=ad1Wq0qZrMQ">CSSConf Oakland 2014 | Tab Atkins: The Future of CSS</a></h3>
+<h4 id="images">Images</h4>
+<ul>
+<li><p>Fallbacks from images to colors(when the image fails to load):</p>
+<pre><code class="lang-css"><span class="hljs-class">.foo</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">image</span>(<span class="hljs-string">"url.png"</span>, blue)</span></span>;
+}</span>
+</code></pre>
+</li>
+<li><p>Solid color image / semi-transparent color on top of another image:</p>
+<pre><code class="lang-css"><span class="hljs-class">.foo</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">image</span>(<span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">255</span>, .<span class="hljs-number">2</span>), <span class="hljs-function">url</span>(url.png))</span></span>;
+}</span>
+</code></pre>
+</li>
+<li><p>Better fallbacks for media fragments: instead of using <code>background-position</code>/<code>background-size</code>, use <code>image()</code> with a hash: </p>
+<pre><code class="lang-css"><span class="hljs-class">.foo</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">image</span>(<span class="hljs-string">"url.png#xywh=40,60,20,20"</span>, <span class="hljs-string">"sprite.png"</span>)</span></span>;
+}</span>
+</code></pre>
+<ul>
+<li>This makes the position information stay on the same property as the image, so they can be ignored <strong>all together</strong> .</li>
+<li>If you use <code>background-position</code>/<code>background-size</code>, when they are not recognized, the image(on another propery) will stretch and ruin your styles.</li>
+</ul>
+</li>
+<li><p>Responsive images: <code>image-set()</code></p>
+<pre><code class="lang-css"><span class="hljs-class">.foo</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">image-set</span>(<span class="hljs-string">"foo.png"</span> <span class="hljs-number">1</span>x, <span class="hljs-string">"foo-2x.png"</span> <span class="hljs-number">2</span>x, <span class="hljs-string">"foo-print.png"</span> <span class="hljs-number">500dpi</span>)</span></span>;
+}</span>
+</code></pre>
+<p>will match <code>&lt;picture&gt;</code></p>
+</li>
+<li>Smooth fade between images: <code>cross-fade()</code></li>
+<li>Provide hints for image scaling: <code>image-rendering</code><ul>
+<li><code>auto</code>(bi-linear), <code>pixelated</code>(for pixel art), <code>crisp-edges</code>(smooth)</li>
+</ul>
+</li>
+</ul>
+<h3 id="flexbox">Flexbox</h3>
+<ul>
+<li>Improvements<ul>
+<li><code>flex-flow</code> for direction</li>
+<li><code>order</code> for order</li>
+<li><code>justify-*</code> and <code>align</code> for alignment and centering</li>
+<li><code>flex</code> to grow/shrink</li>
+</ul>
+</li>
+</ul>
+<p>...To be continued.</p>
+<h2 id="js">JS</h2>
+<p>ES6 got approved today!</p>
+<h2 id="web">Web</h2>
+<h3 id="-building-a-more-interoperable-web-with-microsoft-edge-http-blogs-windows-com-msedgedev-2015-06-17-building-a-more-interoperable-web-with-microsoft-edge-"><a href="http://blogs.windows.com/msedgedev/2015/06/17/building-a-more-interoperable-web-with-microsoft-edge/">Building a more interoperable Web with Microsoft Edge</a></h3>
+<ul>
+<li>Always assume there&#39;s gonna be new browsers in the game - the Internet will be avaiable on many more devices in the near future.</li>
+<li>Even Firefox is <a href="www.ghacks.net/2015/05/09/mozilla-adds-webkit-prefix-emulation-to-select-sites-in-firefox/">supporting some <code>-webkit</code> properties</a> now...WTF-<em>_</em>-</li>
+<li><p>Wow you guys are really trying very hard...</p>
+<blockquote>
+<p>A lot of web sites depend on JavaScript libraries and frameworks, so we also submit fixes to libraries to ensure that they work in all browsers.</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="de-facto-standards-in-the-web">De facto standards in the Web</h4>
+<ol>
+<li><p>The missing <code>url=</code>.</p>
+<p>Malformed:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">http-equiv</span>=<span class="hljs-value">"refresh"</span> <span class="hljs-attribute">content</span>=<span class="hljs-value">"0;http://foo.com"</span> /&gt;</span>
+</code></pre>
+<p>Correct:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">http-equiv</span>=<span class="hljs-value">"refresh"</span> <span class="hljs-attribute">content</span>=<span class="hljs-value">"0;url=http://foo.com"</span> /&gt;</span>
+</code></pre>
+</li>
+<li><p>It&#39;s <code>utf-8</code>, not <code>utf8</code>!</p>
+<p>Malformed:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">charset</span>=<span class="hljs-value">"utf8"</span>&gt;</span>
+</code></pre>
+<p>Correct:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">charset</span>=<span class="hljs-value">"utf-8"</span>&gt;</span>
+</code></pre>
+<p>IE11- dosen&#39;t tolerante the malformed one, but Edge choose to tolerate it</p>
+</li>
+<li>Checking CORS headers and <code>installable</code> flags for web fonts is now not necessary. The spec say you should, but WebKit works fine without it, so now Edge follows WebKit.</li>
+<li>The non-standard <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Mobile/Viewport_meta_tag"><code>&lt;meta name=&quot;viewport&quot;&gt;</code></a></li>
+<li><a href="https://developers.google.com/web/updates/2015/04/DOM-attributes-now-on-the-prototype"><code>scrollTop</code> bug</a>(should&#39;ve been on the root, but WebKit and Blink put it on the <code>&lt;body&gt;</code>)</li>
+<li><a href="https://developers.google.com/web/updates/2015/04/DOM-attributes-now-on-the-prototype">DOM Attributes on the prototype chain</a></li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

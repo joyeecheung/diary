@@ -2,9 +2,9 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Pikaday = __webpack_require__(1);
-	var moment = __webpack_require__(3);
-	var util = __webpack_require__(2);
+	var Pikaday = __webpack_require__(3);
+	var moment = __webpack_require__(2);
+	var util = __webpack_require__(1);
 	
 	window.addEventListener('load', function() {
 	  var calendar = document.getElementById('calendar');
@@ -54,8 +54,7 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 1 */,
-/* 2 */
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function hasClass(element, className) {

@@ -1,0 +1,196 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 17, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 17, 2015</h1></header><div class="content"><div class="diary"><h2 id="history">History</h2>
+<h3 id="modular-js-the-old-way-javascript-module-pattern-in-depth-http-www-adequatelygood-com-javascript-module-pattern-in-depth-html-">Modular JS - the old way :<a href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">JavaScript Module Pattern: In-Depth</a></h3>
+<ol>
+<li><p>IIFE: avoid global pollution</p>
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">'use strict'</span>;
+
+<span class="hljs-comment">//...</span>
+
+}());
+</code></pre>
+</li>
+<li><p>IIFE + Global import: avoid global pollution, speed up access for global modules</p>
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
+<span class="hljs-pi">'use strict'</span>;
+
+<span class="hljs-comment">//...</span>
+
+}(jQuery));
+</code></pre>
+</li>
+<li><p>Module Export: can have private states and import globals too</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<span class="hljs-pi"> 'use strict'</span>;
+ <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
+
+ <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-comment">// ...</span>
+ };
+
+ <span class="hljs-built_in">module</span>.property = <span class="hljs-string">"foo"</span>;
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}());
+</code></pre>
+</li>
+<li><p>Augmentation(Useful for plugins e.g. Three.js)</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<span class="hljs-pi"> 'use strict'</span>;
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-comment">// ...</span>
+ };
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}(Module));
+</code></pre>
+</li>
+<li><p>Loose Augmentation: doesn&#39;t require a certain order of script loading(you can load plugins first)</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<span class="hljs-pi"> 'use strict'</span>;
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-comment">// ...</span>
+ };
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}(Module || {}));  <span class="hljs-comment">// Notice here!</span>
+</code></pre>
+</li>
+<li><p>Tight Augmentation: maintain reference to old properties, makes overriding easier</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<span class="hljs-pi"> 'use strict'</span>;
+ <span class="hljs-keyword">var</span> oldPlugin = <span class="hljs-built_in">module</span>.plugin;
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-keyword">if</span> (oldPlugin)  {
+     <span class="hljs-comment">// exists, override this</span>
+   } <span class="hljs-keyword">else</span> {
+     <span class="hljs-comment">// plugin loaded before the module</span>
+     <span class="hljs-comment">// do something about it</span>
+   }
+ };
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}(Module || {}));  <span class="hljs-comment">// Notice here!</span>
+</code></pre>
+</li>
+<li><p>Cloning and Inheritance: notice does not use deep cloning, so change to the old module will affect the new module</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module2 = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(old)</span> </span>{
+ <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
+ <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> old) {
+   <span class="hljs-keyword">if</span> (old.hasOwnProperty(key)) {
+     <span class="hljs-built_in">module</span>[key] = old[key];
+   }
+ }
+
+ <span class="hljs-keyword">var</span> superMethod = old.method;
+ <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+   <span class="hljs-comment">// override method on the clone, access to super through superMethod</span>
+ };
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}(Module));
+</code></pre>
+</li>
+<li><p>Cross-File Private State: access private states in multiple files</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+ <span class="hljs-comment">// preserve the private states in this closure</span>
+ <span class="hljs-keyword">var</span> _private = <span class="hljs-built_in">module</span>._private = <span class="hljs-built_in">module</span>._private || {};
+
+ <span class="hljs-comment">// a function to seal the module(delete all private sates)</span>
+ <span class="hljs-keyword">var</span> _seal = <span class="hljs-built_in">module</span>._seal = <span class="hljs-built_in">module</span>._seal || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+     <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._private;
+     <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._seal;
+     <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._unseal;
+   },
+
+ <span class="hljs-comment">// a function to unseal the module(restore private states from the closure)</span>
+ <span class="hljs-comment">// after sealing, this can only be invoked by other methods inside this file</span>
+ <span class="hljs-keyword">var</span> _unseal = <span class="hljs-built_in">module</span>._unseal = <span class="hljs-built_in">module</span>._unseal || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+     <span class="hljs-built_in">module</span>._private = _private;
+     <span class="hljs-built_in">module</span>._seal = _seal;
+     <span class="hljs-built_in">module</span>._unseal = _unseal;
+   };
+
+ <span class="hljs-comment">// permanent access to _private, _seal, and _unseal</span>
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}(Module || {}));
+</code></pre>
+</li>
+<li><p>Sub-modules: modules nested inside another module...</p>
+<pre><code class="lang-javascript">Module.sub = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+ <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
+ <span class="hljs-comment">// ...</span>
+
+ <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
+}());
+</code></pre>
+</li>
+</ol>
+<h4 id="combination">Combination</h4>
+<p>Loose augmentation + private state + sub-modules</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Util = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(old, $)</span> </span>{
+  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = old.ajax = old.ajax || {};
+
+  <span class="hljs-built_in">module</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(url, params, callback)</span> </span>{
+    <span class="hljs-keyword">return</span> $.getJSON(url, params, callback);
+  };
+
+  <span class="hljs-comment">// etc...</span>
+
+  <span class="hljs-keyword">return</span> old;
+}(Util || {}, jQuery));
+</code></pre>
+<h4 id="conclusion">Conclusion</h4>
+<ol>
+<li>Module pattern is good for performance: <strong>can be minified safely</strong></li>
+<li>Note: copy references to local variables can make minification even easier, and it&#39;s faster in runtime(less look-up, you know how messy the global space can be...)</li>
+<li>Loose augmentation allows you to load the script asynchronously</li>
+</ol>
+<h3 id="-async-vs-defer-attributes-growing-with-the-web-http-www-growingwiththeweb-com-2014-02-async-vs-defer-attributes-html-"><a href="http://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html">async vs defer attributes - Growing with the Web</a></h3>
+<h4 id="-async-"><code>async</code></h4>
+<ul>
+<li>Executed immediately after downloading, but the downloading doesn&#39;t block HTML parsing(<code>&lt;script&gt;</code> without <code>async</code> will)</li>
+<li>No guarantee for order</li>
+<li>If you put them all at the bottom of <code>&lt;body&gt;</code>, it&#39;s like <code>defer</code> without guarantee for order</li>
+</ul>
+<p><strong>Use case</strong>:</p>
+<ol>
+<li>Want them executed ASAP(but not on the spot)</li>
+<li>Blocking download is not OK</li>
+<li>But <strong>blocking execution</strong> is fine</li>
+<li><strong>No dependencies</strong>(order)</li>
+</ol>
+<h4 id="-defer-"><code>defer</code></h4>
+<ul>
+<li>Only executed after HTML is parsed, thus rule out the possiblity of blocking HTML parsing</li>
+<li>Preserve orders</li>
+</ul>
+<p><strong>Use case</strong>:</p>
+<ol>
+<li>Execution can be postponed until HTML is parsed</li>
+<li>Blocking download is not OK</li>
+<li>Have <strong>dependencies</strong></li>
+</ol>
+<h4 id="inlined-scripts">Inlined scripts</h4>
+<ul>
+<li>No attributes, placed above <code>async</code> scripts</li>
+</ul>
+<p><strong>Use case</strong>:</p>
+<ol>
+<li>Small</li>
+<li><strong>Depended</strong> by others, needs to be executed <strong>on the spot</strong></li>
+<li>Have <strong>dependencies</strong></li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
