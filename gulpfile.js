@@ -13,7 +13,7 @@ var _ = require('lodash');
 var moment = require('moment');
 
 var config = require('./config')
-
+var submodule = config.repo.as_submodule;
 
 // --------------------------------
 // JavaScript packing
@@ -54,25 +54,26 @@ gulp.task('css', function () {
 // --------------------------------
 // Generate markup
 
-function getLastFile(files) {
-  return files.map(function(file) {
-    return path.basename(file);  // strip out dir names
+function getFirstAndLastFile(files) {
+  var sorted = files.map(function(file) {
+    return path.basename(file).split('.')[0];  // strip out dir names
   }).filter(function(file) {  // filter out articles
-    return /\d{4}-\d{2}-\d{2}\.md/.test(file);
-  }).sort() // lexical order = chronological order for ISO Date 
-  .reverse()[0].split('.')[0];
+    return /\d{4}-\d{2}-\d{2}/.test(file);
+  }).sort(); // lexical order = chronological order for ISO Date 
+
+  return [sorted[0], sorted[sorted.length - 1]];
 }
 
 gulp.task('index', function() {
   return gulp.src('./src/jade/index.jade')
     .pipe(plugins.data(function(file) {
       // get the last file
-      return ls('diary').then(function(files) {
-        var result =  _.assign({}, config, {
-          last: getLastFile(files)
+      return ls(submodule).then(function(files) {
+        var firstAndLast = getFirstAndLastFile(files);
+        return _.assign({}, config, {
+          first: firstAndLast[0],
+          last: firstAndLast[1]
         });
-        console.log(result);
-        return result;
       });
     })).pipe(plugins.jade()).pipe(gulp.dest('./dist/'))
     .pipe(plugins.livereload());
@@ -108,7 +109,7 @@ function layoutDiary(file) {
 }
 
 function generateDiary(layout) {
-  return gulp.src('./diary/**/*.md')
+  return gulp.src(submodule + '/**/*.md')
     .pipe(plugins.if(!layout,
       plugins.changed('./dist/', {extension: '.html'})))
     .pipe(plugins.debug())
@@ -129,7 +130,7 @@ gulp.task('relayout', ['index'], function() {
 // watch
 gulp.task('watch', ['server'], function() {
   plugins.livereload.listen({ basePath: 'dist' });
-  gulp.watch(['./diary/**/*.md'], ['markup']);
+  gulp.watch(['./' + submodule + '/**/*.md'], ['markup']);
   gulp.watch(['./src/jade/index.jade'], ['index']);
   gulp.watch(['./src/jade/layout/*.jade'], ['relayout']);
   gulp.watch('./src/css/**/*.css', ['css']);

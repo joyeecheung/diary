@@ -5,6 +5,7 @@ var util = require('./util');
 window.addEventListener('load', function() {
   var calendar = document.getElementById('calendar');
   var lastDate = new Date(calendar.getAttribute('data-last-date'));
+  var firstDate = new Date(calendar.getAttribute('data-first-date'));
 
   var picker = new Pikaday({
     onSelect: function(date) {
@@ -19,15 +20,15 @@ window.addEventListener('load', function() {
         weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
         weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
     },
-    minDate: new Date('2015-04-23'),
+    minDate: firstDate,
     maxDate: lastDate
   });
 
   calendar.appendChild(picker.el);
 
   var buttons = picker.el.getElementsByTagName('button');
-  var lastButton = getButtonByDate(buttons, lastDate);
-  util.addClass(lastButton.parentNode, 'last-update');
+  // var lastButton = getButtonByDate(buttons, lastDate);
+  // util.addClass(lastButton.parentNode, 'last-update');
 
   document.querySelector('.pika-prev').textContent = '<<';
   document.querySelector('.pika-next').textContent = '>>';

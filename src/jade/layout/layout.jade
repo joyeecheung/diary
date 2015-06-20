@@ -1,3 +1,5 @@
+include ../partials/ga.jade
+
 doctype html
 <!--[if lte IE 8]>
 |<html lang="#{data_lang}" class="lte-ie8">
@@ -8,10 +10,14 @@ doctype html
 head
   meta(charset='utf-8')
   block title
+
   meta(name='viewport', content='width=device-width, initial-scale=1.0')
-  link(rel='stylesheet', href="/diary/css/global.css")
+  link(rel='stylesheet', href="#{base_url}/css/global.css")
+
   block style
-  include ../partials/ga.jade
+
+  if ga_id
+    +ga(ga_id)
 body
   block IEcondition
 

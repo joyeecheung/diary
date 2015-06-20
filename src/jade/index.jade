@@ -2,18 +2,18 @@ extends ./layout/layout.jade
 
 block header
   header.header
-    h1 My Tech Diary
+    h1=title
 
 block title
-  title My Tech Diary
+  title=title
 
 block style
-  link(rel='stylesheet', href="/diary/css/calendar.css")
+  link(rel='stylesheet', href="#{base_url}/css/calendar.css")
 
 block content
   .content
-    #calendar(data-last-date=last)
+    #calendar(data-last-date=last, data-first-date=first)
 
 block script
-  script(src='/diary/js/vendor.bundle.js')
-  script(src='/diary/js/index.js')
+  script(src='#{base_url}/js/vendor.bundle.js')
+  script(src='#{base_url}/js/index.js')
