@@ -1,14 +1,15 @@
-webpackJsonp([1],[
+webpackJsonp([0],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Pikaday = __webpack_require__(3);
-	var moment = __webpack_require__(2);
-	var util = __webpack_require__(1);
+	var Pikaday = __webpack_require__(4);
+	var moment = __webpack_require__(1);
+	var util = __webpack_require__(2);
 	
 	window.addEventListener('load', function() {
 	  var calendar = document.getElementById('calendar');
 	  var lastDate = new Date(calendar.getAttribute('data-last-date'));
+	  var firstDate = new Date(calendar.getAttribute('data-first-date'));
 	
 	  var picker = new Pikaday({
 	    onSelect: function(date) {
@@ -23,15 +24,15 @@ webpackJsonp([1],[
 	        weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
 	        weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 	    },
-	    minDate: new Date('2015-04-23'),
+	    minDate: firstDate,
 	    maxDate: lastDate
 	  });
 	
 	  calendar.appendChild(picker.el);
 	
 	  var buttons = picker.el.getElementsByTagName('button');
-	  var lastButton = getButtonByDate(buttons, lastDate);
-	  util.addClass(lastButton.parentNode, 'last-update');
+	  // var lastButton = getButtonByDate(buttons, lastDate);
+	  // util.addClass(lastButton.parentNode, 'last-update');
 	
 	  document.querySelector('.pika-prev').textContent = '<<';
 	  document.querySelector('.pika-next').textContent = '>>';
@@ -54,7 +55,8 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function hasClass(element, className) {

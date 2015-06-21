@@ -1,0 +1,109 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 21, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 21, 2015</h1></header><div class="content"><div class="diary"><h2 id="require-js-three-js">Require.js &amp; Three.js</h2>
+<p>Use shim to make it work:</p>
+<ol>
+<li><p>In main.js</p>
+<pre><code class="lang-javascript">requirejs.config({
+ baseUrl: <span class="hljs-string">'js'</span>,
+ paths: {
+   THREE: <span class="hljs-string">'libs/three.min'</span>,
+   OBJLoader: <span class="hljs-string">'loaders/OBJLoader'</span>,
+   MTLLoader: <span class="hljs-string">'loaders/MTLLoader'</span>,
+   OBJMTLLoader: <span class="hljs-string">'loaders/OBJMTLLoader'</span>
+ },
+ shim: {
+   THREE: {
+     exports: <span class="hljs-string">'THREE'</span>
+   },
+   OBJLoader: {
+     deps: [<span class="hljs-string">'THREE'</span>],
+     exports: <span class="hljs-string">'THREE.OBJLoader'</span>
+   },
+   MTLLoader: {
+     deps: [<span class="hljs-string">'THREE'</span>],
+     exports: <span class="hljs-string">'THREE.MTLLoader'</span>
+   },
+   OBJMTLLoader: {
+     deps: [<span class="hljs-string">'THREE'</span>, <span class="hljs-string">'MTLLoader'</span>, <span class="hljs-string">'OBJLoader'</span>],
+     exports: <span class="hljs-string">'THREE.OBJMTLLoader'</span>
+   }
+ }
+});
+
+<span class="hljs-comment">// js/app.js can be automatically imported</span>
+requirejs([<span class="hljs-string">'app'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(app)</span> </span>{
+ app.init();
+});
+</code></pre>
+</li>
+<li><p>In app.js</p>
+<pre><code class="lang-javascript">define(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'THREE'</span>, <span class="hljs-string">'OBJMTLLoader'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(THREE)</span> </span>{
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-comment">// set up the world</span>
+   loadObject(scene);
+ }
+
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadObject</span><span class="hljs-params">(scene)</span> </span>{
+   <span class="hljs-keyword">var</span> loader = <span class="hljs-keyword">new</span> THREE.OBJMTLLoader();
+
+   loader.load(<span class="hljs-string">'path/to/obj'</span>, <span class="hljs-string">'path/to/mtl'</span>,
+     <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(object)</span> </span>{
+       scene.add(object);
+     });
+ }
+
+ <span class="hljs-keyword">return</span> {
+   init: init
+ };
+});
+</code></pre>
+</li>
+<li><p>In your HTML</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">data-main</span>=<span class="hljs-value">"/js/main"</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"/js/require.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre>
+</li>
+</ol>
+<h2 id="git-lfs-bfg-some-useful-commands">git lfs, bfg, some useful commands</h2>
+<p>Tried to use git lfs on Windows but the installation script doesn&#39;t really work...</p>
+<p>Used <a href="https://rtyley.github.io/bfg-repo-cleaner/">bfg</a> to clean out some large binary files accidentally committed before. It&#39;s dead simple:</p>
+<ol>
+<li>Download the jar</li>
+<li><p>Get the mirror</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> --mirror git://url.to.your/repo.git`
+</code></pre>
+<p>What gets downloaded will not be like your normal clone, and it will be a folder named with <code>.git</code> at the end</p>
+</li>
+<li><p>Delete files/folders you don&#39;t want</p>
+<pre><code class="lang-bash">java -jar bfg.jar --delete-files *.mp3 repo.git
+java -jar bfg.jar --delete-folders tmp repo.git
+</code></pre>
+<p>Tips: to see every files ever committed(even if it&#39;s deleted now):</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">log</span> --pretty=format: --name-status | cut <span class="hljs-operator">-f</span>2- | sort -u
+</code></pre>
+<p>To see the largest files(the last 10 can be any number you want):</p>
+<pre><code class="lang-bash">git ls-files | xargs ls <span class="hljs-operator">-l</span> | sort -nrk5 | head -n <span class="hljs-number">10</span>
+</code></pre>
+</li>
+<li><p>If you are being paranoid(like me), clone the repo from this local mirror and check if it is working:</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> repo.git a-temp-folder
+</code></pre>
+</li>
+<li>When you are done, cd to the .git folder, and do a <code>git push</code>. If you are still paranoid(like me), get a backup (clone a mirror) again and save it to somewhere safe :)</li>
+</ol>
+<h2 id="hot-to-reset-your-messed-up-workspace-in-chrome">Hot to reset your messed up workspace in Chrome</h2>
+<p>Don&#39;t know why but after I deleted some files previously added to the workspace, the devtool is messed up -- I can&#39;t see the dynamically loaded scripts(by require.js) in the Source tab, which is really annoying(I can see some <code>VMxxx main.js</code> in the console and jump to them by clicking on the links though, but I just can&#39;t see them in the Source tab and can&#39;t navigate through them)</p>
+<p>I can get it work again in incongnito mode, so I guess it&#39;s caused by some corrupted files in my user data, but I am not used to work in incognito...I want my old devtools back. After a few googling I didn&#39;t find any good solution, so I decided to reset Chrome, which basically means clear out my user data: <a href="https://support.google.com/chrome/answer/142059?hl=en">Create a new browser user profile</a></p>
+<p>It&#39;s acually quite easy. I keep my user data synced through my Google account everyday, so after creating a new profile, I get everything back in a few seconds by syncing again ^^.</p>
+<h2 id="moved-out-diary-config">Moved out diary config</h2>
+<p>Refactored the diary generator and wrote a README for it: <a href="https://github.com/joyeecheung/diary/commits/master">Commits · joyeecheung/diary</a>. Now the configurations are all moved into <a href="https://github.com/joyeecheung/diary/blob/master/config.js">config.js</a> instead of being hard-coded in the code.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
