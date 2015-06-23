@@ -1,10 +1,4 @@
-:root {
-  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
-  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --textColor: #333;
-  --footerColor: #666;
-  --linkHoverColor: #939393;
-}
+@import "variables.css";
 
 html {
   font-size: 18px;
@@ -31,7 +25,6 @@ body {
 .footer {
   font-family: var(--headFont);
   font-size: 0.8rem;
-  width: 25rem;
   margin: 3rem auto;
   text-align: center;
   color: var(--footerColor);

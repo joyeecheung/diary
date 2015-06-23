@@ -1,0 +1,17 @@
+:root {
+  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
+  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --monoFont: Menlo, Monaco, Consolas, "lucida console", "Courier New", monospace;
+
+  --textColor: #333;
+  --brightColor: #5C5C5C;
+
+  --lightBackground: #E0E0E0;
+  --lightBorder: 0.1rem solid #E0E0E0;
+
+  --blockBorder: 0.3rem solid var(--brightColor);
+  --blockBackground: #F9F9F9;
+
+  --footerColor: #666;
+  --linkHoverColor: #939393;
+}

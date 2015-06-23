@@ -1,16 +1,4 @@
-:root {
-  --textFont: Georgia, Cambria, 'Times New Roman', Times, serif;
-  --headFont: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --textColor: #333;
-  --brightColor: #5C5C5C;
-  --blockBorder: 0.3rem solid var(--brightColor);
-  --lightBackground: #E0E0E0;
-  --lightBorder: 0.1rem solid #E0E0E0;
-}
-
-html {
-  font-size: 18px;
-}
+@import "variables.css";
 
 .pika-single {
   width: 20rem;
