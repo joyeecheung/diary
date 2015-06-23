@@ -20,7 +20,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>The <code>render()</code> returning the markup should return ONE tag, and the markup better be enclosed by parentheses.</li>
 <li><p>You can use <code>{this.props.foo}</code> and <code>{this.state.foo}</code>(only one pair of braces). <code>this.props</code> is passed by using attributes on tags.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Compo = React.createClass({
- render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+ render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span> {this.props.foo} <span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>)</span>;
  }
 });
@@ -29,7 +29,7 @@ React.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-titl
 </code></pre>
 </li>
 <li><p>You can use <code>{variable}</code> to render components(or arrays of them) inside other components. e.g.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> rows = <span class="hljs-keyword">this</span>.props.someList.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(item)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> rows = <span class="hljs-keyword">this</span>.props.someList.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">item</span>) </span>{
  <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">AComponent</span> <span class="hljs-attribute">key</span>=<span class="hljs-value">{this.id}</span>/&gt;</span>)</span>;
 });
 
@@ -47,10 +47,10 @@ React.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-titl
 <li>Identify where your stats should live. Usually its a big parent/common component.</li>
 <li><p>In your common component, define a <code>getInitialState()</code> returning an object of states. Then in your <code>render()</code> you will have <code>this.state.stateName</code> to use. You can pass it down to child components.</p>
 <pre><code class="lang-javascript">React.createClass({
-getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> {foo: <span class="hljs-string">"bar"</span>};
 },
-render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>{this.state.foo}<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>)</span>;
 }
 })
@@ -58,22 +58,22 @@ render: <span class="hljs-function"><span class="hljs-keyword">function</span><s
 </li>
 <li><p>The data flow for states usually looks like this:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Child = React.createClass({
-innerHandler: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+innerHandler: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span>.props.outerHandler(<span class="hljs-keyword">this</span>.refs.someID.getDOMNode().value);
 },
-render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">ref</span>=<span class="hljs-value">"someID"</span> <span class="hljs-attribute">onChange</span>=<span class="hljs-value">{this.innerHanlder</span>/&gt;</span>)</span>;
 }
 });
 
 <span class="hljs-keyword">var</span> Parent = React.createClass({
-stateSetter: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{  <span class="hljs-comment">// passed from the children!</span>
+stateSetter: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{  <span class="hljs-comment">// passed from the children!</span>
   <span class="hljs-keyword">this</span>.setState({foo: value});
 },
-getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> {foo: <span class="hljs-string">"bar"</span>};
 },
-render: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> (<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">Child</span> <span class="hljs-attribute">outerHanlder</span>=<span class="hljs-value">{this.props.stateSetter}</span>&gt;</span>)</span>;
 }
 });
@@ -135,12 +135,12 @@ render: <span class="hljs-function"><span class="hljs-keyword">function</span><s
 });
 
 <span class="hljs-comment">// bootstrap</span>
-<span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'message'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($, message)</span> </span>{
+<span class="hljs-built_in">require</span>([<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'message'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$, message</span>) </span>{
   $(<span class="hljs-string">'#output'</span>).append(message);
 });
 </code></pre>
 <pre><code class="lang-javascript"><span class="hljs-comment">// message.js</span>
-define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
+define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
   <span class="hljs-keyword">return</span> $(<span class="hljs-string">'&lt;div&gt; yo &lt;/div&gt;'</span>);
 });
 </code></pre>
@@ -152,10 +152,10 @@ define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function">
 <pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-string">'serviceWorker'</span> <span class="hljs-keyword">in</span> navigator) {
   navigator.serviceWorker
     .register(<span class="hljs-string">'/sw.js'</span>)
-    .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(registration)</span> </span>{
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">registration</span>) </span>{
       <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Scope: '</span>, registration.scope);
     })
-    .catch(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+    .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
       <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Failed: '</span>, err);
     });
 }
@@ -171,11 +171,11 @@ define([<span class="hljs-string">'jquery'</span>], <span class="hljs-function">
   <span class="hljs-string">'/script/main.js'</span>
 ];
 
-<span class="hljs-keyword">this</span>.addEventListener(<span class="hljs-string">'install'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
+<span class="hljs-keyword">this</span>.addEventListener(<span class="hljs-string">'install'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
   <span class="hljs-comment">// Perform install steps</span>
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(cache)</span> </span>{
+      .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">cache</span>) </span>{
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Opened cache'</span>);
         <span class="hljs-keyword">return</span> cache.addAll(urlsToCache);
       })

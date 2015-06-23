@@ -15,7 +15,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>Default arguments can reference lexical scope</li>
 <li>No default iterators, you need to implement them to use them</li>
 <li><p>Am I looking at python? LOL</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> *<span class="hljs-title">items</span><span class="hljs-params">(o)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> *<span class="hljs-title">items</span>(<span class="hljs-params">o</span>) </span>{
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k <span class="hljs-keyword">in</span> o) {
     <span class="hljs-keyword">yield</span> [k, o[k]];
   }

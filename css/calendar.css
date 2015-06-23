@@ -1,15 +1,11 @@
-html {
-  font-size: 18px;
-}
-
 .pika-single {
-  width: 360px;
+  width: 320px;
   width: 20rem;
   margin: 0 auto;
   font-family: 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-top: 1px solid #E0E0E0;
   border-top: 0.1rem solid #E0E0E0;
-  padding-top: 18px;
+  padding-top: 16px;
   padding-top: 1rem;
 }
 
@@ -26,7 +22,7 @@ html {
 .pika-title {
   overflow: hidden;
   text-align: center;
-  margin-bottom: 9px;
+  margin-bottom: 8px;
   margin-bottom: 0.5rem;
 }
 
@@ -37,7 +33,7 @@ html {
 }
 
 .pika-label:first-of-type {
-  margin-right: 9px;
+  margin-right: 8px;
   margin-right: 0.5rem;
 }
 
@@ -62,9 +58,9 @@ button.is-disabled:hover {
   background: none;
   border: none;
   cursor: pointer;
-  width: 36px;
+  width: 32px;
   width: 2rem;
-  height: 36px;
+  height: 32px;
   height: 2rem;
   border-radius: 50%;
   -webkit-transition: all 0.2s ease-out;
@@ -84,20 +80,20 @@ button.is-disabled:hover {
 }
 
 .pika-table td {
-  width: 36px;
+  width: 32px;
   width: 2rem;
-  height: 54px;
+  height: 48px;
   height: 3rem;
   text-align: center;
 }
 
 .pika-table button {
   border: none;
-  width: 36px;
+  width: 32px;
   width: 2rem;
-  height: 36px;
+  height: 32px;
   height: 2rem;
-  font-size: 12px;
+  font-size: 11px;
   font-size: 0.7rem;
   -webkit-transition: all 0.2s ease-out;
           transition: all 0.2s ease-out;

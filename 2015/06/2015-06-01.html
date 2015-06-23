@@ -92,10 +92,10 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>Angular directive</li>
 <li>i18n: e.g. <code>js/en-US/ui.string.js</code></li>
 <li><p>Link a CSS theme and <code>WinJS.min.js</code>, then:</p>
-<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   WinJS.UI
   .processAll()
-  .then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-comment">// App code here</span>
   })
 })();
@@ -200,7 +200,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h4 id="use-case">Use case</h4>
 <ol>
 <li><p>Like python <code>**</code> magic.</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">({bar, baz})</span> </span>{}
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params">{bar, baz}</span>) </span>{}
 </code></pre>
 </li>
 <li>No need for <code>var foo = config.foo || theDefaultFoo</code>, just use defaults</li>
@@ -213,7 +213,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Multiple return values</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> {bar, baz} };
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> {bar, baz} };
 
 <span class="hljs-keyword">let</span> {bar, baz} = foo();
 </code></pre>

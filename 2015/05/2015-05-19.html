@@ -14,20 +14,20 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h4 id="avoid-non-returning-foreach-use-promise-all-">Avoid non-returning <code>forEach</code>, use <code>Promise.all</code></h4>
 <p>Turn this</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// I want to remove() all docs</span>
-db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
-  result.rows.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(row)</span> </span>{
+db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+  result.rows.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">row</span>) </span>{
     db.remove(row.doc);  
   });
-}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-comment">// I naively believe all docs have been removed() now!</span>
 });
 </code></pre>
 <p>into this:</p>
-<pre><code class="lang-javascript">db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
-  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.all(result.rows.map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(row)</span> </span>{
+<pre><code class="lang-javascript">db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.all(result.rows.map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">row</span>) </span>{
     <span class="hljs-keyword">return</span> db.remove(row.doc);
   });
-}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(arrayOfResults)</span> </span>{
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">arrayOfResults</span>) </span>{
   <span class="hljs-comment">// All docs have really been removed() now!</span>
 });
 </code></pre>
@@ -38,8 +38,8 @@ db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span cl
 </code></pre>
 </li>
 <li><p>The revealing constructor pattern(e.g. turn typical callback patterns into promises)</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(resolve, reject)</span> </span>{
- fs.readFile(<span class="hljs-string">'myfile.txt'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, file)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>{
+ fs.readFile(<span class="hljs-string">'myfile.txt'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, file</span>) </span>{
    <span class="hljs-keyword">if</span> (err) {
      <span class="hljs-keyword">return</span> reject(err);
    }
@@ -52,20 +52,20 @@ db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span cl
 <h4 id="remember-to-return">Remember to return</h4>
 <ol>
 <li><p>Return another promise</p>
-<pre><code class="lang-javascript">getUserByName(<span class="hljs-string">'nolan'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(user)</span> </span>{
+<pre><code class="lang-javascript">getUserByName(<span class="hljs-string">'nolan'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
  <span class="hljs-keyword">return</span> getUserAccountById(user.id);
-}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(userAccount)</span> </span>{
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">userAccount</span>) </span>{
  <span class="hljs-comment">// I got a user account!</span>
 });
 </code></pre>
 </li>
 <li><p>Return a synchronous value(e.g. from cache) or undefined</p>
-<pre><code class="lang-javascript">getUserByName(<span class="hljs-string">'nolan'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(user)</span> </span>{
+<pre><code class="lang-javascript">getUserByName(<span class="hljs-string">'nolan'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
  <span class="hljs-keyword">if</span> (inMemoryCache[user.id]) {
    <span class="hljs-keyword">return</span> inMemoryCache[user.id];    <span class="hljs-comment">// returning a synchronous value!</span>
  }
  <span class="hljs-keyword">return</span> getUserAccountById(user.id); <span class="hljs-comment">// returning a promise!</span>
-}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(userAccount)</span> </span>{
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">userAccount</span>) </span>{
  <span class="hljs-comment">// I got a user account!</span>
 });
 </code></pre>
@@ -75,21 +75,21 @@ db.allDocs({include_docs: <span class="hljs-literal">true</span>}).then(<span cl
 <h4 id="use-promise-resolve-and-promise-reject-">Use <code>Promise.resolve</code> and <code>Promise.reject</code></h4>
 <p>No need to wrap them.</p>
 <h4 id="promise-factory-for-sequential-factory">Promise factory for sequential factory</h4>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">executeSequentially</span><span class="hljs-params">(promiseFactories)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">executeSequentially</span>(<span class="hljs-params">promiseFactories</span>) </span>{
   <span class="hljs-keyword">var</span> result = <span class="hljs-built_in">Promise</span>.resolve();
-  promiseFactories.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(promiseFactory)</span> </span>{
+  promiseFactories.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">promiseFactory</span>) </span>{
     result = result.then(promiseFactory);
   });
   <span class="hljs-keyword">return</span> result;
 }
 </code></pre>
 <h4 id="-then-null-or-then-undefined-or-pass-anything-uncallable-to-then-will-fall-through"><code>then(null)</code> or <code>then(undefined)</code> or pass anything uncallable to then will fall through</h4>
-<pre><code class="lang-javascript"><span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'foo'</span>).then(<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'bar'</span>)).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'foo'</span>).then(<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'bar'</span>)).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
   <span class="hljs-built_in">console</span>.log(result);
 });
 </code></pre>
 <p>Since <code>Promise.resolve(&#39;bar&#39;)</code> returns a promise, which is uncallable, this is like:</p>
-<pre><code class="lang-javascript"><span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'foo'</span>).then(<span class="hljs-literal">null</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-string">'foo'</span>).then(<span class="hljs-literal">null</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">result</span>) </span>{
   <span class="hljs-built_in">console</span>.log(result);
 });
 </code></pre>

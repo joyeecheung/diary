@@ -47,7 +47,7 @@ getElementDrags(image)
 </code></pre>
 <p>And now we have first-class objects for the streams!(Yes, they are lazy).</p>
 <h4 id="this-is-awesome">This is awesome</h4>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRowUpdates</span><span class="hljs-params">(row)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getRowUpdates</span>(<span class="hljs-params">row</span>) </span>{
   <span class="hljs-keyword">let</span> scrolls = Rx.observable.fromEvent(<span class="hljs-built_in">document</span>, <span class="hljs-string">'scroll'</span>);
   <span class="hljs-keyword">let</span> rowVisibilities =
     scrolls.debounce(<span class="hljs-number">50</span>)

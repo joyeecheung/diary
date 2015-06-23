@@ -16,10 +16,10 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h4 id="default-parameters">Default parameters</h4>
 <p>Intermediate scope of default parameter initializers are particularly hard to implement.</p>
 <p>Chakra can handle this:</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span> }
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"outside"</span> }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span><span class="hljs-params">(a = fn()</span>) </span>{
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"inside"</span> }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span>(<span class="hljs-params">a = fn(</span>)) </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-string">"inside"</span> }
   <span class="hljs-keyword">return</span> a;
 }
 
@@ -28,7 +28,7 @@ outer();  <span class="hljs-comment">// should return "outside"</span>
 <p>But not this (yet):</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">let</span> x = <span class="hljs-string">"outside"</span>;
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span><span class="hljs-params">(a = ()</span> =&gt; <span class="hljs-title">eval</span><span class="hljs-params">("x")</span>) </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outer</span>(<span class="hljs-params">a = (</span>) =&gt; <span class="hljs-title">eval</span>(<span class="hljs-params">"x"</span>)) </span>{
   <span class="hljs-keyword">let</span> x = <span class="hljs-string">"inside"</span>;
   <span class="hljs-keyword">return</span> a();
 }

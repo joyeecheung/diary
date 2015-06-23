@@ -102,17 +102,17 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h3 id="-fixing-the-scrolltop-bug-https-dev-opera-com-articles-fixing-the-scrolltop-bug-"><a href="https://dev.opera.com/articles/fixing-the-scrolltop-bug/">Fixing the scrollTop bug</a></h3>
 <p>UA sniffing is evil...Now Edge is copying the bug of WebKit. Man, this is really screwed up.</p>
 <p>It seems that the least harmful way to solve this incompatibility problem for now is</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.documentElement.scrollTop || <span class="hljs-built_in">document</span>.body.scrollTop;
 }
 </code></pre>
 <p>or</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportScroll</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.documentElement.scrollTop + <span class="hljs-built_in">document</span>.body.scrollTop;
 }
 </code></pre>
 <p>and </p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setViewportScroll</span><span class="hljs-params">(y)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setViewportScroll</span>(<span class="hljs-params">y</span>) </span>{
   <span class="hljs-built_in">document</span>.documentElement.scrollTop = y;
   <span class="hljs-built_in">document</span>.body.scrollTop = y;
 }

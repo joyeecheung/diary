@@ -107,7 +107,7 @@ New structure:</li>
 <ul>
 <li>Each time <code>process.binding(&#39;moduleName&#39;)</code> is invoded, <code>node.cc</code> will look it up and initialize it</li>
 <li><p>Note this:</p>
-<pre><code class="lang-javascript">process.binding = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(moduleName)</span> </span>{
+<pre><code class="lang-javascript">process.binding = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">moduleName</span>) </span>{
   <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = modules[moduleName];
   <span class="hljs-keyword">if</span> (<span class="hljs-built_in">module</span>.initialized)
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>.exports;

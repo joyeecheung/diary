@@ -22,7 +22,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h4 id="1-upgrade">1. Upgrade</h4>
 <p>Uses <code>prototype</code> and <code>createdCallback</code>.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> proto = <span class="hljs-built_in">Object</span>.create(HTMLElement.prototype);
-proto.createdCallback = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ ... };
+proto.createdCallback = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ ... };
 <span class="hljs-built_in">document</span>.registerElement(<span class="hljs-string">'my-element'</span>, { prototype: proto });
 </code></pre>
 <h4 id="2-dmitry">2. Dmitry</h4>

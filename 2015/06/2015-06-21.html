@@ -41,23 +41,23 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 });
 
 <span class="hljs-comment">// js/app.js can be automatically imported</span>
-requirejs([<span class="hljs-string">'app'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(app)</span> </span>{
+requirejs([<span class="hljs-string">'app'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">app</span>) </span>{
  app.init();
 });
 </code></pre>
 </li>
 <li><p>In app.js</p>
-<pre><code class="lang-javascript">define(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'THREE'</span>, <span class="hljs-string">'OBJMTLLoader'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(THREE)</span> </span>{
- <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript">define(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'THREE'</span>, <span class="hljs-string">'OBJMTLLoader'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">THREE</span>) </span>{
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-comment">// set up the world</span>
    loadObject(scene);
  }
 
- <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadObject</span><span class="hljs-params">(scene)</span> </span>{
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadObject</span>(<span class="hljs-params">scene</span>) </span>{
    <span class="hljs-keyword">var</span> loader = <span class="hljs-keyword">new</span> THREE.OBJMTLLoader();
 
    loader.load(<span class="hljs-string">'path/to/obj'</span>, <span class="hljs-string">'path/to/mtl'</span>,
-     <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(object)</span> </span>{
+     <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">object</span>) </span>{
        scene.add(object);
      });
  }

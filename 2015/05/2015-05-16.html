@@ -65,7 +65,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
   SaferHTML(templateData, sender);
 </code></pre>
 <p>and you can implement the function like this</p>
-<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SaferHTML</span><span class="hljs-params">(templateData, ...values)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SaferHTML</span>(<span class="hljs-params">templateData, ...values</span>) </span>{
   <span class="hljs-keyword">let</span> s = templateData[<span class="hljs-number">0</span>];
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; values.length; i++) {
     <span class="hljs-keyword">let</span> value = <span class="hljs-built_in">String</span>(values[i]);  <span class="hljs-comment">// value to interpolate</span>

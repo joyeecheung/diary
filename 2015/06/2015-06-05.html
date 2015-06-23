@@ -34,7 +34,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>For everything else, use arrows(if you are building something with <code>this</code> in mind).</li>
 </ul>
 <h4 id="fixed-point-combinator-in-es6">Fixed-point combinator in ES6</h4>
-<pre><code>fix = λf.(λx.<span class="hljs-function"><span class="hljs-title">f</span><span class="hljs-params">(λv.x(x)</span><span class="hljs-params">(v)</span></span>))(λx.<span class="hljs-function"><span class="hljs-title">f</span><span class="hljs-params">(λv.x(x)</span><span class="hljs-params">(v)</span></span>))
+<pre><code>fix = λf.<span class="hljs-params">(λx.f<span class="hljs-params">(λv.x<span class="hljs-params">(x)</span><span class="hljs-params">(v)</span>)</span>)</span><span class="hljs-params">(λx.f<span class="hljs-params">(λv.x<span class="hljs-params">(x)</span><span class="hljs-params">(v)</span>)</span>)</span>
 </code></pre><pre><code class="lang-javascript"><span class="hljs-keyword">var</span> fix = f =&gt; (x =&gt; f(v =&gt; x(x)(v)))
                (x =&gt; f(v =&gt; x(x)(v)));
 </code></pre>

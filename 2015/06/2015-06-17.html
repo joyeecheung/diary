@@ -13,7 +13,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h3 id="modular-js-the-old-way-javascript-module-pattern-in-depth-http-www-adequatelygood-com-javascript-module-pattern-in-depth-html-">Modular JS - the old way :<a href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">JavaScript Module Pattern: In-Depth</a></h3>
 <ol>
 <li><p>IIFE: avoid global pollution</p>
-<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi">'use strict'</span>;
 
 <span class="hljs-comment">//...</span>
@@ -22,7 +22,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>IIFE + Global import: avoid global pollution, speed up access for global modules</p>
-<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($)</span> </span>{
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
 <span class="hljs-pi">'use strict'</span>;
 
 <span class="hljs-comment">//...</span>
@@ -31,11 +31,11 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Module Export: can have private states and import globals too</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
 <span class="hljs-pi"> 'use strict'</span>;
  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
 
- <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+ <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-comment">// ...</span>
  };
 
@@ -46,9 +46,9 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Augmentation(Useful for plugins e.g. Three.js)</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module</span>) </span>{
 <span class="hljs-pi"> 'use strict'</span>;
- <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-comment">// ...</span>
  };
 
@@ -57,9 +57,9 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Loose Augmentation: doesn&#39;t require a certain order of script loading(you can load plugins first)</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module</span>) </span>{
 <span class="hljs-pi"> 'use strict'</span>;
- <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-comment">// ...</span>
  };
 
@@ -68,10 +68,10 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Tight Augmentation: maintain reference to old properties, makes overriding easier</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module</span>) </span>{
 <span class="hljs-pi"> 'use strict'</span>;
  <span class="hljs-keyword">var</span> oldPlugin = <span class="hljs-built_in">module</span>.plugin;
- <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+ <span class="hljs-built_in">module</span>.plugin = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
    <span class="hljs-keyword">if</span> (oldPlugin)  {
      <span class="hljs-comment">// exists, override this</span>
    } <span class="hljs-keyword">else</span> {
@@ -85,7 +85,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Cloning and Inheritance: notice does not use deep cloning, so change to the old module will affect the new module</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module2 = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(old)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module2 = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">old</span>) </span>{
  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> old) {
    <span class="hljs-keyword">if</span> (old.hasOwnProperty(key)) {
@@ -94,7 +94,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
  }
 
  <span class="hljs-keyword">var</span> superMethod = old.method;
- <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+ <span class="hljs-built_in">module</span>.method = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
    <span class="hljs-comment">// override method on the clone, access to super through superMethod</span>
  };
 
@@ -103,12 +103,12 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Cross-File Private State: access private states in multiple files</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(module)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Module = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">module</span>) </span>{
  <span class="hljs-comment">// preserve the private states in this closure</span>
  <span class="hljs-keyword">var</span> _private = <span class="hljs-built_in">module</span>._private = <span class="hljs-built_in">module</span>._private || {};
 
  <span class="hljs-comment">// a function to seal the module(delete all private sates)</span>
- <span class="hljs-keyword">var</span> _seal = <span class="hljs-built_in">module</span>._seal = <span class="hljs-built_in">module</span>._seal || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+ <span class="hljs-keyword">var</span> _seal = <span class="hljs-built_in">module</span>._seal = <span class="hljs-built_in">module</span>._seal || <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
      <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._private;
      <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._seal;
      <span class="hljs-keyword">delete</span> <span class="hljs-built_in">module</span>._unseal;
@@ -116,7 +116,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 
  <span class="hljs-comment">// a function to unseal the module(restore private states from the closure)</span>
  <span class="hljs-comment">// after sealing, this can only be invoked by other methods inside this file</span>
- <span class="hljs-keyword">var</span> _unseal = <span class="hljs-built_in">module</span>._unseal = <span class="hljs-built_in">module</span>._unseal || <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+ <span class="hljs-keyword">var</span> _unseal = <span class="hljs-built_in">module</span>._unseal = <span class="hljs-built_in">module</span>._unseal || <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
      <span class="hljs-built_in">module</span>._private = _private;
      <span class="hljs-built_in">module</span>._seal = _seal;
      <span class="hljs-built_in">module</span>._unseal = _unseal;
@@ -129,7 +129,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Sub-modules: modules nested inside another module...</p>
-<pre><code class="lang-javascript">Module.sub = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<pre><code class="lang-javascript">Module.sub = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = {};
  <span class="hljs-comment">// ...</span>
 
@@ -140,10 +140,10 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </ol>
 <h4 id="combination">Combination</h4>
 <p>Loose augmentation + private state + sub-modules</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Util = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(old, $)</span> </span>{
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Util = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">old, $</span>) </span>{
   <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = old.ajax = old.ajax || {};
 
-  <span class="hljs-built_in">module</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(url, params, callback)</span> </span>{
+  <span class="hljs-built_in">module</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">url, params, callback</span>) </span>{
     <span class="hljs-keyword">return</span> $.getJSON(url, params, callback);
   };
 

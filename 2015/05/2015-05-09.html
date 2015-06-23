@@ -53,24 +53,24 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </ol>
 <p>My Example:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// ------------ Implement it!</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Stack</span><span class="hljs-params">(arr)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Stack</span>(<span class="hljs-params">arr</span>) </span>{
   <span class="hljs-keyword">this</span>.storage = arr ? arr.slice(<span class="hljs-number">0</span>) : [];
 }
 
-Stack.prototype.push = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> </span>{
+Stack.prototype.push = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
   <span class="hljs-keyword">this</span>.storage.push(value);
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
 }
 
-Stack.prototype.pop = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+Stack.prototype.pop = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.storage.pop();
 }
 
-Stack.prototype[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+Stack.prototype[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
 }
 
-Stack.prototype.next = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+Stack.prototype.next = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">var</span> done = (<span class="hljs-keyword">this</span>.storage.length === <span class="hljs-number">0</span>);
   <span class="hljs-keyword">if</span> (done) <span class="hljs-keyword">return</span> {done: done};
   <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> {value: <span class="hljs-keyword">this</span>.pop(), done: done}
@@ -100,23 +100,23 @@ Stack.prototype.next = <span class="hljs-function"><span class="hljs-keyword">fu
 <h3 id="generators">Generators</h3>
 <p>Suspend on <code>yield</code>, like python.</p>
 <pre><code class="lang-javascript">
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncOperation</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncOperation</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; {
-    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       resolve(<span class="hljs-built_in">Math</span>.random());
     }, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">3000</span>);
   });
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">syncOperation</span><span class="hljs-params">(value)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">syncOperation</span>(<span class="hljs-params">value</span>) </span>{
   <span class="hljs-built_in">console</span>.log(value);
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span><span class="hljs-params">(gen)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span>(<span class="hljs-params">gen</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; { 
     <span class="hljs-keyword">let</span> iter = gen();  <span class="hljs-comment">// get the iterator out of the generator</span>
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span><span class="hljs-params">(v)</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span>(<span class="hljs-params">v</span>) </span>{
       <span class="hljs-keyword">let</span> cur = iter.next(v);  <span class="hljs-comment">// spread it out</span>
       <span class="hljs-keyword">if</span> (cur.done) {
         resolve(cur.value);
@@ -129,7 +129,7 @@ Stack.prototype.next = <span class="hljs-function"><span class="hljs-keyword">fu
   });
 }
 
-spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-params">()</span> </span>{
+spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"start"</span>);
 
   <span class="hljs-comment">// what passed to next() will be yielded here</span>
@@ -171,8 +171,8 @@ spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* <s
 [<span class="hljs-constant">Bytecode]</span> -&gt; <span class="hljs-constant">Profiling Interpreter </span>(<span class="hljs-constant">Starts </span>interpretation/execution)
 </code></pre></li>
 <li><p>Later:</p>
-<pre><code>[<span class="hljs-constant">Bytecode </span>+ profiling data] -&gt; <span class="hljs-constant">Full JIT Compiler </span>-&gt;
-[<span class="hljs-constant">Machine </span>code] -&gt; <span class="hljs-constant">Run </span>machine code
+<pre><code>[<span class="hljs-keyword">Bytecode </span>+ profiling <span class="hljs-preprocessor">data</span>] -&gt; Full JIT Compiler -&gt;
+[Machine <span class="hljs-preprocessor">code</span>] -&gt; Run machine <span class="hljs-preprocessor">code</span>
 </code></pre><p>Profiling data contains type information.</p>
 </li>
 <li><p>Bailout: type validation fails</p>

@@ -1,0 +1,108 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 22, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 22, 2015</h1></header><div class="content"><div class="diary"><h2 id="web-workers">Web workers</h2>
+<p>Used it in my <a href="https://github.com/joyeecheung/virtual-bookcase/tree/master/public/js">virtual bookcase</a>. A few notes:</p>
+<ol>
+<li>You can&#39;t post messages with DOM objects(including canvas context, etc.). That will mess the GC.</li>
+<li>It can import global variables from other scripts though.</li>
+<li>Needs IE10+</li>
+</ol>
+<p>My example:</p>
+<ol>
+<li><p>In the main script:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// path to the worker script</span>
+<span class="hljs-keyword">var</span> worker = <span class="hljs-keyword">new</span> Worker(<span class="hljs-string">'js/color-worker.js'</span>);
+worker.addEventListener(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+   <span class="hljs-built_in">console</span>.log(e.data);  <span class="hljs-comment">// get the palette</span>
+});
+
+worker.postMessage({
+ pixelCount: pixelCount,
+ quality: quality,
+ pixels: pixels,
+ colorCount: colorCount
+});
+</code></pre>
+</li>
+<li><p>In the worker</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// import color theif globals</span>
+importScripts(<span class="hljs-string">'libs/color-thief.min.js'</span>)
+
+addEventListener(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+ <span class="hljs-keyword">var</span> data = e.data;
+ <span class="hljs-keyword">var</span> pixels = data.pixels, quality = data.quality,
+   pixelCount = data.pixelCount, colorCount = data.colorCount;
+
+ <span class="hljs-comment">// ... some code to setup the variables</span>
+
+ <span class="hljs-comment">// this is the heavy stuff.</span>
+ <span class="hljs-comment">// Send array to quantize function which clusters values</span>
+ <span class="hljs-comment">// using median cut algorithm</span>
+ <span class="hljs-keyword">var</span> cmap    = MMCQ.quantize(pixelArray, colorCount);
+ <span class="hljs-keyword">var</span> palette = cmap.palette();
+
+ postMessage(palette);
+});
+</code></pre>
+</li>
+</ol>
+<h2 id="testing">Testing</h2>
+<h3 id="selenium-with-python">Selenium with Python</h3>
+<p>It&#39;s dead simple!</p>
+<h4 id="1-install-selenium">1. Install Selenium</h4>
+<p><code>pip install selenium</code>(I use Python3.4)</p>
+<h4 id="2-write-a-test-script">2. Write a test script</h4>
+<p>This is for my Software Testing course, where I chose Hexo to be my target</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> unittest
+<span class="hljs-keyword">from</span> selenium <span class="hljs-keyword">import</span> webdriver
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HexoTest</span><span class="hljs-params">(unittest.TestCase)</span>:</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">setUp</span><span class="hljs-params">(self)</span>:</span>
+        self.driver = webdriver.Firefox()
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test_hexo</span><span class="hljs-params">(self)</span>:</span>
+        driver = self.driver
+        driver.get(<span class="hljs-string">"http://localhost:4000"</span>)
+        self.assertIn(<span class="hljs-string">"Hexo"</span>, driver.title)
+        <span class="hljs-comment"># click a post</span>
+        link = driver.find_elements_by_css_selector(<span class="hljs-string">"#post-hello-world a"</span>)[<span class="hljs-number">0</span>]
+        link.click()
+
+        <span class="hljs-comment"># confirm it jumps to that post</span>
+        self.assertIn(<span class="hljs-string">"Hello World"</span>, driver.title)
+
+        <span class="hljs-comment"># back to homepage</span>
+        driver.back()
+        self.assertIn(<span class="hljs-string">"Hexo"</span>, driver.title)
+
+        <span class="hljs-comment"># click the archive</span>
+        link2 = driver.find_elements_by_css_selector(<span class="hljs-string">".archive-list-link"</span>)[<span class="hljs-number">0</span>]
+        link2.click()
+
+        <span class="hljs-comment"># confirm there are two posts in the archive</span>
+        articles = driver.find_elements_by_css_selector(
+          <span class="hljs-string">".archive-article.archive-type-post"</span>)
+        self.assertEqual(len(articles), <span class="hljs-number">2</span>)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">tearDown</span><span class="hljs-params">(self)</span>:</span>
+        self.driver.close()
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    unittest.main()
+</code></pre>
+<h4 id="3-run-the-script">3. Run the script</h4>
+<p><code>python test.py</code></p>
+<h4 id="4-wait-and-see-it-at-work-">4. Wait and see it at work!</h4>
+<p>Don&#39;t know why but my web driver uses the Firefox dev edition on my computer, not the regular one...</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

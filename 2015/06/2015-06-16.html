@@ -15,9 +15,9 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <span class="hljs-comment">// but you can also use Performance API or just Date.now()</span>
 <span class="hljs-keyword">var</span> clock = <span class="hljs-keyword">new</span> THREE.Clock();
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadCharacter</span><span class="hljs-params">(scene)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadCharacter</span>(<span class="hljs-params">scene</span>) </span>{
   <span class="hljs-keyword">var</span> blendMesh = <span class="hljs-keyword">new</span> THREE.BlendCharacter();
-  blendMesh.load( <span class="hljs-string">"/path/to/threejs/json/model"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  blendMesh.load( <span class="hljs-string">"/path/to/threejs/json/model"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     scene.add(blendMesh);
 
     <span class="hljs-comment">// if the model has some animations, say, "idle"</span>
@@ -31,7 +31,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 }
 
 <span class="hljs-comment">// in your animation function</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">animate</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">animate</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-comment">// get the delta</span>
   <span class="hljs-keyword">var</span> delta = clock.getDelta();
 
@@ -46,7 +46,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 }
 
 <span class="hljs-comment">// to change the animation</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onChangeAnimation</span><span class="hljs-params">(mesh, animation, weight)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onChangeAnimation</span>(<span class="hljs-params">mesh, animation, weight</span>) </span>{
   mesh.stopAll();
   mesh.play(animation, weight);
 }
@@ -58,7 +58,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <span class="hljs-keyword">var</span> proxy = <span class="hljs-keyword">new</span> EventProxy();
 
 <span class="hljs-comment">// simple emit</span>
-fs.readFile(<span class="hljs-string">'fileA'</span>, <span class="hljs-string">'utf-8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, data)</span> </span>{
+fs.readFile(<span class="hljs-string">'fileA'</span>, <span class="hljs-string">'utf-8'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>) </span>{
   proxy.emit(<span class="hljs-string">'a'</span>, data);
 });
 
@@ -66,12 +66,12 @@ fs.readFile(<span class="hljs-string">'fileA'</span>, <span class="hljs-string">
 fs.readFile(<span class="hljs-string">'fileB'</span>, <span class="hljs-string">'utf-8'</span>, proxy.done(<span class="hljs-string">'b'</span>));
 
 <span class="hljs-comment">// use proxy.done() to do some additional transformation</span>
-fs.readFile(<span class="hljs-string">'fileC'</span>, <span class="hljs-string">'utf-8'</span>, proxy.done(<span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> </span>{
+fs.readFile(<span class="hljs-string">'fileC'</span>, <span class="hljs-string">'utf-8'</span>, proxy.done(<span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
   <span class="hljs-keyword">return</span> data.trim();
 }));
 
 <span class="hljs-comment">// when a, b and c are all gathered</span>
-proxy.all(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a, b, c)</span> </span>{
+proxy.all(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b, c</span>) </span>{
   <span class="hljs-built_in">console</span>.log(a, b, c);
 });
 </code></pre>
@@ -98,7 +98,7 @@ proxy.all(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</s
 <span class="hljs-keyword">var</span> gulp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp'</span>);
 <span class="hljs-keyword">var</span> merge = <span class="hljs-built_in">require</span>(<span class="hljs-string">'merge-stream'</span>);
 
-gulp.task(<span class="hljs-string">'test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+gulp.task(<span class="hljs-string">'test'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">var</span> js = gulp.src(<span class="hljs-string">'src/js/*.js'</span>)
     .pipe(gulp.dest(<span class="hljs-string">'dist/js'</span>));
 
@@ -112,19 +112,19 @@ gulp.task(<span class="hljs-string">'test'</span>, <span class="hljs-function"><
 <pre><code class="lang-javascript">  <span class="hljs-keyword">var</span> <span class="hljs-built_in">Promise</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'bluebird'</span>);
   <span class="hljs-keyword">var</span> ls = <span class="hljs-built_in">Promise</span>.promisify(<span class="hljs-built_in">require</span>(<span class="hljs-string">'node-dir'</span>).files);
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLastFile</span><span class="hljs-params">(files)</span> </span>{
-    <span class="hljs-keyword">return</span> files.map(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLastFile</span>(<span class="hljs-params">files</span>) </span>{
+    <span class="hljs-keyword">return</span> files.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
       <span class="hljs-keyword">return</span> path.basename(file);  <span class="hljs-comment">// strip out dir names</span>
-    }).filter(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{  <span class="hljs-comment">// filter out articles</span>
+    }).filter(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{  <span class="hljs-comment">// filter out articles</span>
       <span class="hljs-keyword">return</span> <span class="hljs-regexp">/\d{4}-\d{2}-\d{2}\.md/</span>.test(file);
     }).sort() <span class="hljs-comment">// lexical order = chronological order for ISO Date </span>
     .reverse()[<span class="hljs-number">0</span>].split(<span class="hljs-string">'.'</span>)[<span class="hljs-number">0</span>];
   }
 
   <span class="hljs-comment">// In my gulp task...</span>
-  pipe(plugins.data(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(file)</span> </span>{
+  pipe(plugins.data(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
     <span class="hljs-comment">// get the last file</span>
-    <span class="hljs-keyword">return</span> ls(<span class="hljs-string">'diary'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(files)</span> </span>{
+    <span class="hljs-keyword">return</span> ls(<span class="hljs-string">'diary'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">files</span>) </span>{
       <span class="hljs-keyword">var</span> result =  _.assign({}, config, {
         last: getLastFile(files)
       });

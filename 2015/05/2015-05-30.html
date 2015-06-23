@@ -57,10 +57,10 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </ul>
 <h4 id="register">Register</h4>
 <pre><code class="lang-javascript"><span class="hljs-keyword">if</span> (<span class="hljs-string">'serviceWorker'</span> <span class="hljs-keyword">in</span> navigator) {
-  navigator.serviceWorker.register(<span class="hljs-string">'/sw.js'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(registration)</span> </span>{
+  navigator.serviceWorker.register(<span class="hljs-string">'/sw.js'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">registration</span>) </span>{
     <span class="hljs-comment">// Registration was successful</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'ServiceWorker registration successful with scope: '</span>,    registration.scope);
-  }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+  }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
     <span class="hljs-comment">// registration failed :(</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'ServiceWorker registration failed: '</span>, err);
   });

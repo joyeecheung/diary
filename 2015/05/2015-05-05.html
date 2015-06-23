@@ -26,7 +26,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h2 id="css">CSS</h2>
 <p><a href="https://github.com/cssdream/css-creating">Another CSS style guide...looks good</a></p>
 <h2 id="modular-js">Modular JS</h2>
-<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, definition)</span> </span>{
+<pre><code class="lang-javascript">;(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name, definition</span>) </span>{
 <span class="hljs-pi">  'use strict'</span>;
 
   <span class="hljs-keyword">var</span> hasDefine = (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span>),
@@ -40,8 +40,8 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
     <span class="hljs-keyword">this</span>[name] = definition;  <span class="hljs-comment">// mount to root, e.g. window.mymodule</span>
   }
 
-})(<span class="hljs-string">'module-name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(require)</span> </span>{
-  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+})(<span class="hljs-string">'module-name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">require</span>) </span>{
+  <span class="hljs-keyword">var</span> <span class="hljs-built_in">module</span> = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-comment">// module code goes here</span>
   }
   <span class="hljs-keyword">return</span> <span class="hljs-built_in">module</span>;
