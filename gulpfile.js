@@ -7,6 +7,7 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var merge = require('merge-stream');
 
+var webpack = require('webpack-stream');
 var Promise = require('bluebird');
 var ls = Promise.promisify(require('node-dir').files);
 var _ = require('lodash');
@@ -19,7 +20,7 @@ var submodule = config.repo.as_submodule;
 // JavaScript packing
 gulp.task('js', function () {
   return gulp.src("./src/js/index.js")
-    .pipe(plugins.webpack( require('./webpack.config.js') ))
+    .pipe(webpack( require('./webpack.config.js') ))
     .pipe(gulp.dest('./dist/js/'))
     .pipe(plugins.livereload());
 });
