@@ -9,12 +9,11 @@ The markdown files for the diaries can be kept under another repo named `YYYY/MM
 ## Build
 
 1. Run `npm install` to install the dependencies
-2. Configure `config.js` and `.gitsubmodules`
+2. Configure `config.js`
 3. Run
-  1. `git submodule sync` to update the remote url
-  2. `git submodule init` to setup your submodule
-  2. `git submodule update` to update your submodule
-  3. `git submodule -q foreach git pull` to pull the markdown files
+  1. `git rm diary` to remove the old submodule 
+  2. `git submodule add git://new/submodule.git diary` to add your own submodule
+  3. Commit the change if you want
 4. Run `gulp build` to generate the static site (placed under `dist`).
 5. Run `gulp server` and visit `http://localhost:8000/diary` if you want to see it hosted locally(make sure the port 8000 is not taken).
 
