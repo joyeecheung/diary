@@ -1,0 +1,127 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 24, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 24, 2015</h1></header><div class="content"><div class="diary"><h2 id="history">History</h2>
+<h3 id="jquery-internals">jQuery Internals</h3>
+<p><a href="http://www.slideshare.net/jeresig/jquery-internals-cool-stuff-presentation">Slides</a></p>
+<h4 id="-jquery-internals-1-5-john-resig-jquery-camp-2008-mit-https-www-youtube-com-watch-v-tdjt6vgz-6s-"><a href="https://www.youtube.com/watch?v=TDJT6VGz-6s">jQuery Internals (1/5) - John Resig - jQuery Camp 2008 (MIT)</a></h4>
+<ul>
+<li>Chaining API</li>
+<li>Modular/Isolation</li>
+<li><code>jQuery.noConflict</code></li>
+</ul>
+<h4 id="-jquery-internals-2-5-john-resig-jquery-camp-2008-mit-https-www-youtube-com-watch-v-aqf7gmitbfe-"><a href="https://www.youtube.com/watch?v=aqf7GMItBFE">jQuery Internals (2/5) - John Resig - jQuery Camp 2008 (MIT)</a></h4>
+<ul>
+<li>Element Data</li>
+<li>Selectors<ul>
+<li>Old: left-to-right</li>
+<li>New: Sizzle, right-to-left like in the CSS spec</li>
+<li>Caching and fallbacks</li>
+</ul>
+</li>
+</ul>
+<h4 id="-jquery-internals-3-5-john-resig-jquery-camp-2008-mit-https-www-youtube-com-watch-v-tdjt6vgz-6s-"><a href="https://www.youtube.com/watch?v=TDJT6VGz-6s">jQuery Internals (3/5) - John Resig - jQuery Camp 2008 (MIT)</a></h4>
+<ul>
+<li>DOM manipulation<ul>
+<li>Clean the input(XML-&gt;HTML)</li>
+<li>Convert into a DOM(<code>innerHTML</code>)</li>
+<li>Injection<ul>
+<li>Old: loop and clone</li>
+<li>New: Document Fragments</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Custom events</li>
+</ul>
+<h4 id="-jquery-internals-4-5-john-resig-jquery-camp-2008-mit-https-www-youtube-com-watch-v-tdjt6vgz-6s-"><a href="https://www.youtube.com/watch?v=TDJT6VGz-6s">jQuery Internals (4/5) - John Resig - jQuery Camp 2008 (MIT)</a></h4>
+<ul>
+<li>Namespaced events useful for plug-ins</li>
+<li>Special events</li>
+<li>Animation</li>
+<li>Browser sniffing</li>
+<li>Testing</li>
+<li>qUnit</li>
+</ul>
+<h4 id="-jquery-internals-5-5-john-resig-jquery-camp-2008-mit-https-www-youtube-com-watch-v-tdjt6vgz-6s-"><a href="https://www.youtube.com/watch?v=TDJT6VGz-6s">jQuery Internals (5/5) - John Resig - jQuery Camp 2008 (MIT)</a></h4>
+<ul>
+<li>Profiling</li>
+</ul>
+<h4 id="-john-resig-building-jquery-https-www-youtube-com-watch-v-b7aut4ouuvs-"><a href="https://www.youtube.com/watch?v=B7Aut4OUuvs">John Resig: Building jQuery</a></h4>
+<ul>
+<li>Before jQuery<ul>
+<li>prototype.js</li>
+<li>css_selector.js</li>
+</ul>
+</li>
+<li>Initial intent: DOM manipulation and event binding<ul>
+<li>Animations and Ajax are added to meet the needs of the community</li>
+</ul>
+</li>
+<li>Important decisions:<ul>
+<li>Plugin framework from the scratch</li>
+<li>Good documentation: before jQuery, most JS libraries don&#39;t have documentations!</li>
+</ul>
+</li>
+</ul>
+<h2 id="css">CSS</h2>
+<h3 id="-cssconf-oakland-2014-tab-atkins-the-future-of-css-https-www-youtube-com-watch-v-ad1wq0qzrmq-"><a href="https://www.youtube.com/watch?v=ad1Wq0qZrMQ">CSSConf Oakland 2014 | Tab Atkins: The Future of CSS</a></h3>
+<p>Continuing...</p>
+<h4 id="grid">Grid</h4>
+<ul>
+<li><code>grid-template</code> to specify the grids, <code>grid-area</code> to place the selected elements into the grids</li>
+</ul>
+<h4 id="new-selectors">New selectors</h4>
+<ul>
+<li><code>:nth-child(even of .foo)</code> to specify what you want to count</li>
+<li><p><code>:matches()</code> to shorten selectors</p>
+<pre><code class="lang-css"><span class="hljs-tag">table</span><span class="hljs-class">.foo</span> <span class="hljs-tag">td</span> <span class="hljs-tag">p</span><span class="hljs-class">.bar</span>,
+<span class="hljs-tag">table</span><span class="hljs-class">.foo</span> <span class="hljs-tag">th</span> <span class="hljs-tag">p</span><span class="hljs-class">.bar</span> <span class="hljs-rules">{ }</span>
+</code></pre>
+<p>is the same as</p>
+<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">table.foo </span>:<span class="hljs-value"><span class="hljs-function">matches</span>(td, th) p.bar { }</span></span>
+</code></pre>
+</li>
+</ul>
+<h4 id="css-variables">CSS variables</h4>
+<pre><code class="lang-css"><span class="hljs-pseudo">:root</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">--a-name</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#fff</span></span></span>;
+}</span>
+
+<span class="hljs-tag">a</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--a-name)</span></span>;
+}</span>
+</code></pre>
+<h4 id="color">Color</h4>
+<ul>
+<li>4/8 digit hex colors for alpha</li>
+<li>Alpha accepts percentages, hue accept angles</li>
+<li><code>hwb()</code>: hue-whiteness-blackness</li>
+<li><code>gray(A)</code> for <code>rgb(A, A, A)</code>, <code>gray(A, B)</code> for <code>rgb(A, A, B)</code></li>
+<li><code>color()</code> to adjust the color(useful with variables)</li>
+</ul>
+<h4 id="media-queries">Media Queries</h4>
+<ul>
+<li>More queries on features/abilities</li>
+<li>e.g. pointers course/fine, hover yes/no</li>
+</ul>
+<h4 id="animation">Animation</h4>
+<ul>
+<li>Expose hardware-accelerated CSS animations to JS with a jQuery-like syntax</li>
+<li>Motion paths adopted from SVG</li>
+</ul>
+<h4 id="polyfill">Polyfill</h4>
+<ul>
+<li>Custom media queries: <code>CSS.customMedia.set</code></li>
+<li>Custom pseudo-classes/functions/at-rules</li>
+<li>mixins</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

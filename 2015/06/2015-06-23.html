@@ -1,0 +1,98 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 23, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 23, 2015</h1></header><div class="content"><div class="diary"><h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-collections-https-hacks-mozilla-org-2015-06-es6-in-depth-collections-"><a href="https://hacks.mozilla.org/2015/06/es6-in-depth-collections/">ES6 In Depth: Collections</a></h3>
+<p>A few side notes -- Why can&#39;t we just copy an existing module system from another language? Because JS needs <strong>asynchronous</strong> module loading!!</p>
+<p>FYI, CommonJS in Node is synchronous, so <code>require()</code> is slow.</p>
+<h4 id="why-we-still-needs-collections-when-we-have-objects">Why we still needs collections when we have objects</h4>
+<ul>
+<li>Lookup table + methods = risk of collision, so you need <code>Object.create(null)</code>, because normal objects have their prototype chains leading to <code>Object</code>, you get <code>toString</code> and whatnot.</li>
+<li>Only strings/symbols can be keys. What happens if you want <strong>an object to be your key</strong>?</li>
+<li>There is no efficient way to know <strong>the size(number of keys) of your object</strong></li>
+<li>In ES6, you can&#39;t loop through plain objects with <code>for-of</code> and can&#39;t spread them with <code>...</code> since they <strong>don&#39;t have built-in iterators</strong></li>
+</ul>
+<p>So in ES6:</p>
+<ul>
+<li>You can&#39;t get data via <code>collection[key]</code>, you need to <code>collection.get(key)</code></li>
+<li>Data in collections won&#39;t be inherited</li>
+</ul>
+<h4 id="set">Set</h4>
+<ul>
+<li>It can have any value as its member(objects, etc.)</li>
+<li><code>.has()</code> is much faster than <code>indexOf()</code></li>
+<li>Operations<ol>
+<li><code>new Set()</code> and <code>new Set(iterable)</code></li>
+<li><code>set.size</code></li>
+<li><code>set.has(value)</code>, <code>set.add(value)</code>, <code>set.delete(value)</code>, <code>set.clear(value)</code></li>
+<li><code>set[Symbol.iterator]()</code>, <code>set.keys()</code>, <code>set.values()</code>, <code>set.entries()</code> and <code>set.forEach()</code></li>
+</ol>
+</li>
+<li>Lacks<ul>
+<li>Functional helpers like <code>.map()</code>, <code>.filter()</code></li>
+<li>Union and intersections</li>
+<li>Add all/has all/delete all</li>
+</ul>
+</li>
+</ul>
+<h4 id="map">Map</h4>
+<ul>
+<li>Operations<ol>
+<li><code>New Map()</code>, <code>new Map(map)</code>, <code>new Map(pairs)</code>(<code>pairs</code> should be like <code>[[&quot;foo&quot;, 2], [&quot;bar&quot;, 3]]</code> or a generator generating two-elements arrays)</li>
+<li><code>map.size</code></li>
+<li><code>map.has(key)</code>, <code>map.get(key)</code>, <code>map.set(key, value)</code>, <code>map.delete(key)</code></li>
+<li><code>map[Symbol.iterator]()</code>, <code>map.keys()</code>, <code>map.values()</code>, <code>map.entries()</code> and <code>map.forEach()</code></li>
+</ol>
+</li>
+<li>Lacks<ul>
+<li>Default values like python&#39;s <code>collections.defaultdict</code></li>
+<li>Object-to-map conversion</li>
+</ul>
+</li>
+</ul>
+<h4 id="glitches-surprises">Glitches &amp; Surprises</h4>
+<ul>
+<li>JS doesn&#39;t have equality overloading, and you can&#39;t implement custom hash code for classes</li>
+<li>Collections in ES6 are <strong>predictable</strong>! They will be iterated in the order of insertion<ul>
+<li>The de-factor enumeration order on the Web is just...this...</li>
+<li>It&#39;s really <a href="https://wiki.mozilla.org/User:Jorend/Deterministic_hash_tables">not that slow</a> to track the order</li>
+</ul>
+</li>
+<li>Putting DOM objects in a collection could cause memory leaks...the solution? Use a week collection!<ul>
+<li>Use case: tracking flags when adding symbols to a bunch of short-lived objects is not a good idea. a WeakMap/WeakSet would be better</li>
+</ul>
+</li>
+</ul>
+<h4 id="weakmap-and-weakset">WeakMap and WeakSet</h4>
+<ul>
+<li><code>WeakSet</code> and <code>WeakMap</code> don&#39;t have <code>.size</code> and functionalities about iterators<ul>
+<li>Only CRUD(1 and 3 above)</li>
+<li>Not iterable</li>
+</ul>
+</li>
+<li>Stored values must be objects(essentially, these are a bunch of <strong>weak references</strong>)</li>
+<li>These restrictions mean that weak collections <strong>won&#39;t prevent GC</strong> from cleaning out the objects they (weakly) references</li>
+<li>Implementations: <a href="http://www.jucs.org/jucs_14_21/eliminating_cycles_in_weak/jucs_14_21_3481_3497_barros.pdf">ephemeron tables</a></li>
+</ul>
+<h4 id="why-not-just-add-weak-references-to-js-">Why not just add weak references to JS?</h4>
+<ol>
+<li>Weak references expose details of GC behavior</li>
+<li>Underlying details make compatibility issues worse</li>
+<li>Hard to reason about</li>
+</ol>
+<h2 id="improvements-on-the-diary">Improvements on the diary</h2>
+<ol>
+<li>Update instructions about git submodules and branches</li>
+<li><code>gulp-webpack</code> is deprecated, use <code>webpack-stream</code> instead</li>
+<li>Move CSS4 variables into one file and let the other files import them</li>
+<li>Fix the unresponsive footer</li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
