@@ -1,0 +1,136 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>June 26, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>June 26, 2015</h1></header><div class="content"><div class="diary"><h2 id="node">Node</h2>
+<h3 id="-npm-3-0-beta-released-https-github-com-npm-npm-releases-tag-v3-0-0-"><a href="https://github.com/npm/npm/releases/tag/v3.0.0">npm 3.0 (beta) released</a></h3>
+<p>Finally! I don&#39;t have to worry about the long paths nested inside <code>node_modules</code> under Windows anymore...</p>
+<h2 id="web-audio">Web Audio</h2>
+<p><a href="http://webaudio.github.io/demo-list/">These Demos</a> looks amazing!</p>
+<h3 id="-chris-lowis-a-brief-history-of-synthesis-with-the-web-audio-api-https-www-youtube-com-watch-v-d8tcq0xlnv4-"><a href="https://www.youtube.com/watch?v=d8TCq0xLnV4">Chris Lowis: A Brief History of Synthesis with the Web Audio API</a></h3>
+<ul>
+<li><a href="https://github.com/chrislo/synth_history">GitHub Repo</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Synthesizer">Synthesizer - Wikipedia, the free encyclopedia</a></li>
+</ul>
+<h4 id="monophonic-synthesis-theremin">Monophonic Synthesis - Theremin</h4>
+<p>One oscillator -&gt; one gain -&gt; one output</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> context = <span class="hljs-keyword">new</span> AudioContext
+<span class="hljs-keyword">var</span> osc = context.createOscillator();
+<span class="hljs-keyword">var</span> gain = context.createGain();
+osc.connect(gain);
+gain.connect(context.destination);
+</code></pre>
+<p>Frequency control:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> now = context.currentTime;
+<span class="hljs-comment">// The frequency gradually ramp to 2000 linearly in 2 seconds</span>
+osc.frequency.linearRampToValueAtTime(<span class="hljs-number">2000</span>, now + <span class="hljs-number">2</span>)
+</code></pre>
+<p>Volume control:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> param = volume.gain
+<span class="hljs-comment">// The volume gradually ramp to 0 linearly in 2 seconds</span>
+param.linearRampToValueAtTime(<span class="hljs-number">0</span>, now + <span class="hljs-number">2</span>)
+</code></pre>
+<h4 id="additive-synthesis-fourier-series-">Additive Synthesis(Fourier series)</h4>
+<p>Multiple oscillators -&gt; each have a gain -&gt; one output</p>
+<pre><code>for <span class="hljs-list">(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span><span class="hljs-comment">; i &lt; 10; ++i) {</span>
+  var osc = context.createOscillator<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+  var gain = context.createGain<span class="hljs-list">()</span><span class="hljs-comment">;</span>
+  osc.connect<span class="hljs-list">(<span class="hljs-keyword">gain</span>)</span><span class="hljs-comment">;</span>
+  gain.connect<span class="hljs-list">(<span class="hljs-keyword">context</span>.destination)</span><span class="hljs-comment">;</span>
+}</span>
+</code></pre><p>Can simulate instruments like trumpets/organs</p>
+<h4 id="subtractive-synthesis">Subtractive synthesis</h4>
+<p>Work on a predefined sound(with filters, etc.).</p>
+<pre><code class="lang-js">oscillator = context.createOscillator();
+oscillator.type = <span class="hljs-string">"sawtooth"</span>;
+
+filter.context.createBiquadFilter();
+filter.type = <span class="hljs-string">"lowpass"</span>
+oscillator.connect(filter);
+filter.connect(context.desination);
+
+lfo = context.createOscillator();
+lfo.frequency.value = <span class="hljs-number">0.1</span>;
+lfo.type = <span class="hljs-string">"triangle"</span>;
+lfo.connect(filter.frequency);
+</code></pre>
+<p>Much less parameters to think about.</p>
+<h4 id="frequency-modulation-synthesis">Frequency Modulation Synthesis</h4>
+<p>Connect oscillator(carrier) to oscillator(modulator).</p>
+<pre><code class="lang-js">carrier = context.createOscillator();
+modulator = context.createOscillator();
+
+modulator.connect(carrier.frequency);
+carrier.connect(context.destination);
+</code></pre>
+<h4 id="sampling-synthesis">Sampling Synthesis</h4>
+<p>Work on a recording of real instruments.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> request = <span class="hljs-keyword">new</span> XMLHttpRequest();
+request.open(<span class="hljs-string">"GET"</span>, url, <span class="hljs-literal">true</span>);
+request.responseType = <span class="hljs-string">"arrayBuffer"</span>;
+request.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  context.decodeAudioData(request.response, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">buffer</span>) </span>{
+      source = context.createBufferSource();
+      source.buffer(buffer);
+      source.loop = <span class="hljs-literal">true</span>;
+
+      source.connect(context.destination);
+      source.start();
+    });
+}
+</code></pre>
+<h4 id="granular-synthesis">Granular Synthesis</h4>
+<p>Split the samples into small pieces(aka grains)</p>
+<pre><code class="lang-js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) {
+  <span class="hljs-comment">// Hann window</span>
+  window_fn = <span class="hljs-number">0.5</span> * (<span class="hljs-number">1</span> - <span class="hljs-built_in">Math</span>.cos(<span class="hljs-number">2</span> * <span class="hljs-built_in">Math</span>.PI / (n - <span class="hljs-number">1</span>)));
+  windowed_buffer[i] = buffer[i] * window_fn;
+}
+</code></pre>
+<h3 id="-guitar-tuner-https-aerotwist-com-blog-guitar-tuner-"><a href="https://aerotwist.com/blog/guitar-tuner">Guitar Tuner</a></h3>
+<p>Web Audio API, Polymer, ES6.</p>
+<p>Read this later...</p>
+<h2 id="css">CSS</h2>
+<h3 id="-useful-flexbox-technique-alignment-shifting-wrapping-https-css-tricks-com-useful-flexbox-technique-alignment-shifting-wrapping-"><a href="https://css-tricks.com/useful-flexbox-technique-alignment-shifting-wrapping/">Useful Flexbox Technique: Alignment Shifting Wrapping</a></h3>
+<p>HTML</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">h3</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"title flex-title"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"title-main"</span>&gt;</span>Main Title Here<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"title-note"</span>&gt;</span>This is a good look, right here.<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">h3</span>&gt;</span>
+</code></pre>
+<p>SCSS</p>
+<pre><code class="lang-scss"><span class="hljs-class">.flex-title</span> {
+  <span class="hljs-attribute">display</span><span class="hljs-value">: flex;</span>  <span class="hljs-comment">/* 1 */</span>
+  <span class="hljs-attribute">align-items</span><span class="hljs-value">: flex-end;</span>  
+  <span class="hljs-attribute">flex-wrap</span><span class="hljs-value">: wrap;</span>  <span class="hljs-comment">/* 3 */</span>
+  &gt; <span class="hljs-tag">span</span> {
+    <span class="hljs-attribute">white-space</span><span class="hljs-value">: nowrap;</span>
+  }
+  <span class="hljs-class">.title-main</span> {
+    <span class="hljs-attribute">flex-grow</span><span class="hljs-value">: <span class="hljs-number">1</span>;</span>  <span class="hljs-comment">/* 2 */</span>
+  }
+}
+</code></pre>
+<h3 id="-conical-gradients-today-http-lea-verou-me-2015-06-conical-gradients-today-"><a href="http://lea.verou.me/2015/06/conical-gradients-today/">Conical gradients, today!</a></h3>
+<ul>
+<li><a href="http://www.w3.org/TR/css4-images/#conic-gradients">Spec(in CSS Image Values and Replaced Content Module Level 4)</a></li>
+<li>No popularity, no implementation</li>
+<li><a href="http://libregraphicsworld.org/blog/entry/mesh-gradients-in-cairo-now-official">Mesh gradients in Cairo</a> makes the implementation possible</li>
+<li><a href="http://leaverou.github.io/conic-gradient/">Polyfill</a></li>
+<li><p>Create a pie chart in a snap</p>
+<pre><code class="lang-css"><span class="hljs-class">.pie</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">5em</span></span></span>; <span class="hljs-comment">/* size */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">conic-gradient</span>(gold <span class="hljs-number">40%</span>, crimson <span class="hljs-number">0</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-number">50%</span></span></span>; <span class="hljs-comment">/* make it round */</span>
+}</span>
+</code></pre>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
