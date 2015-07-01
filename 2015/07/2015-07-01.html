@@ -1,0 +1,413 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 1, 2015</h1></header><div class="content"><div class="diary"><p>Been reviewing CG all day...</p>
+<h2 id="ch1-basics">CH1 Basics</h2>
+<ul>
+<li>Pixel: elementary unit of image<ul>
+<li>Image: array of pixels</li>
+<li>Area</li>
+<li>Color</li>
+</ul>
+</li>
+<li>Frame buffer<ul>
+<li>A buffer that stores the contents of an image pixel by pixel, usually on graphic cars</li>
+</ul>
+</li>
+<li>Double buffering: two separate buffers, one is displayed when the other is being filled, repeatedly swapped to avoid flicker</li>
+<li>Resolution: the number of pixels per square inch on a computer-generated display</li>
+<li>Raster: TODO</li>
+</ul>
+<h3 id="pipeline">Pipeline</h3>
+<ol>
+<li>Geometry Content</li>
+<li>Geometry Processing<ul>
+<li>Model/View Transform</li>
+<li>Lighting</li>
+<li>Perspective Transform</li>
+<li>Clipping</li>
+</ul>
+</li>
+<li>Rasterization<ul>
+<li>Scan Conversion</li>
+<li>Texturing</li>
+</ul>
+</li>
+<li>Fragment Processing<ul>
+<li>Depth Test</li>
+<li>Blending</li>
+</ul>
+</li>
+<li>Frame buffer</li>
+</ol>
+<p>Primitives in, pixels out.</p>
+<h3 id="primitives">Primitives</h3>
+<ul>
+<li>Complex shapes: spheres, cones, etc.</li>
+<li>Simple shapes: triangles</li>
+<li>Complex primitives with parameters<ul>
+<li>Functions</li>
+<li>Splines, NURBS</li>
+<li>Implicit</li>
+</ul>
+</li>
+</ul>
+<h4 id="mathematical-representation">Mathematical representation</h4>
+<ul>
+<li>Explicit functions(mostly works in 2D)<ul>
+<li>Curves<ul>
+<li>y = sin(x)</li>
+</ul>
+</li>
+<li>Surfaces<ul>
+<li>z = sin(x) + cos(y)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Parametric functions<ul>
+<li>Curves<ul>
+<li>C(t) = [cost, sint, t]</li>
+</ul>
+</li>
+<li>Surfaces<ul>
+<li>S(phi, theta) = [cos(phi)cos(theta), sin(phi)cos(theta), sin(theta)]</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Implicit<ul>
+<li>Surfaces<ul>
+<li>Defined by zero sets(roots) of functions</li>
+<li>e.g. S(x, y, z): x^2 + y^2 + z^2 -1 = 0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="model-view-transformation">Model/View Transformation</h3>
+<ul>
+<li>Modeling transformation<ul>
+<li>Local coor -&gt; world coor</li>
+<li>Placing objects</li>
+</ul>
+</li>
+<li>Viewing transformation<ul>
+<li>World coor -&gt; camera coor</li>
+<li>Placing camera</li>
+</ul>
+</li>
+<li>Types of transformations<ul>
+<li>Rotation</li>
+<li>Scaling</li>
+<li>Shearing</li>
+</ul>
+</li>
+</ul>
+<h3 id="lighting">Lighting</h3>
+<ul>
+<li>Brightness, material property and light position</li>
+<li>Per vertex</li>
+</ul>
+<h3 id="perspective-transform">Perspective Transform</h3>
+<ul>
+<li>3D geometry -&gt; 2D image plane</li>
+<li>Eye coor -&gt; device coor</li>
+</ul>
+<h3 id="clipping">Clipping</h3>
+<ul>
+<li>Remove pixels not in viewport</li>
+</ul>
+<h3 id="rasterization-scan-conversion">Rasterization Scan conversion</h3>
+<ul>
+<li>Continuous -&gt; discrete</li>
+<li>Triangle setup -&gt; triangle traversal -&gt; pixel shading -&gt; merging</li>
+</ul>
+<h3 id="texture-mapping">Texture mapping</h3>
+<ul>
+<li>Glue image onto geometry</li>
+<li>Look up the image for fragment colors</li>
+</ul>
+<h3 id="depth-test">Depth Test</h3>
+<ul>
+<li>Remove parts of geometry hidden behind others</li>
+<li>Per fragment<ul>
+<li>Depth buffer</li>
+</ul>
+</li>
+<li>Object space<ul>
+<li>Clipping polygons</li>
+<li>Sort by distance from camera</li>
+</ul>
+</li>
+</ul>
+<h3 id="blending">Blending</h3>
+<ul>
+<li>Write fragments to pixels</li>
+<li>From farthest to nearest</li>
+<li>Blending colors</li>
+</ul>
+<h2 id="ch2-opengl">CH2 OpenGL</h2>
+<ul>
+<li>Display list<ul>
+<li>Pre compiled</li>
+<li>Fast</li>
+<li>Stored on GPU</li>
+</ul>
+</li>
+</ul>
+<h2 id="how-opengl-works">How OpenGL Works</h2>
+<ul>
+<li>3 stages<ul>
+<li>Define objects in the world</li>
+<li>Modeling and viewing transformations</li>
+<li>Render</li>
+</ul>
+</li>
+<li>It&#39;s a state machine<ul>
+<li>Has defaults</li>
+<li>Won&#39;t change until you specify</li>
+</ul>
+</li>
+</ul>
+<h3 id="details-of-opengl-program">Details of OpenGL Program</h3>
+<ul>
+<li>Context</li>
+<li>Viewport<ul>
+<li>A region of pixels on the screen that can see the context</li>
+<li>Part of the window</li>
+<li>Can have multiple viewports in one window <code>glViewport()</code></li>
+</ul>
+</li>
+<li>States<ul>
+<li><code>glEnable()</code>, <code>glDisable()</code></li>
+<li>Color, camera(location, orientation, fov), lighting, primitives(fixed pipeline), line width/shape...</li>
+</ul>
+</li>
+<li><code>glBegin()</code>, <code>glVertex*()</code>, <code>glEnd()</code></li>
+<li><code>glFlush()</code>, <code>glFinish()</code> </li>
+</ul>
+<h3 id="matrices">Matrices</h3>
+<ul>
+<li>Camera is always at (0, 0, 0) looking at -z direction, so you are actually moving the scene instead of the camera.</li>
+<li>Push and pop matrices onto stacks.</li>
+<li>Column-major and right-multiply top of the stack</li>
+<li>Last pushed, first applied</li>
+<li><code>glMatrixMode</code></li>
+</ul>
+<h4 id="modelview">ModelView</h4>
+<ul>
+<li>3D -&gt; 3D</li>
+<li>Object coordinates to eye</li>
+<li>Model + view transformation</li>
+<li>Model<ul>
+<li>Positioning the object</li>
+<li>Rotate, translate, scale</li>
+</ul>
+</li>
+<li>View<ul>
+<li>Positioning the camera</li>
+</ul>
+</li>
+<li><code>glTranslate</code>, <code>glRotate</code>(counter-clockwise, degrees), <code>glScale</code></li>
+<li><code>gluLookAt</code>(eye, at, up).<ul>
+<li>Image you are looking at <code>at</code> when your head is at <code>eye</code>, then your head can be pointing at any direction(tilting),  so you need the <code>up</code> vector to specify where your head is pointing at.</li>
+</ul>
+</li>
+</ul>
+<h4 id="projection">Projection</h4>
+<ul>
+<li>3D -&gt; 2D</li>
+<li>Eye coordinates to clip(device) coordinates</li>
+<li>Projection &amp; clipping</li>
+<li>Perspective<ul>
+<li>foreshortening</li>
+<li>Like a truncated pyramid, aka <strong>frustum</strong></li>
+<li><code>glFrustum</code> and <code>gluPerspective</code></li>
+</ul>
+</li>
+<li>Orthographic<ul>
+<li>Not foreshortening, everything is just flat</li>
+<li><code>glOrtho</code>, <code>glOrtho2D</code><ul>
+<li><code>glOrtho2D</code> clips in [-1.0, 1.0] in z, so in 2D mode the frustum is the viewport.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="transforms">Transforms</h4>
+<ul>
+<li>4x4 matrices</li>
+<li><code>glLoadIdentity</code>, <code>glLoadMatrix*</code>, <code>glMultMatrix*</code></li>
+<li><strong>column-major</strong>, the opposite of how C/C++ store matrices(you count the numbers first top-to-bottom, then left-to-right)</li>
+<li>Last transform(in code) is applied first.<ul>
+<li>Usually you want to rotate first, then translate so you can rotate the object around its center. Then in your code you need to translate first, then rotate.</li>
+</ul>
+</li>
+</ul>
+<h2 id="ch3-rasterization">CH3 Rasterization</h2>
+<h3 id="requirements-for-line-conversion">Requirements for line conversion</h3>
+<ul>
+<li>Close to the ideal line</li>
+<li>Straight</li>
+<li>Constant brightness</li>
+<li>Start and end should be accurate</li>
+<li>Efficient</li>
+<li>Possible for different line styles</li>
+</ul>
+<h3 id="dda">DDA</h3>
+<ul>
+<li><code>X1 + i =&gt; y</code> ?(rounding)
+*<code>y - mx + c = 0</code>, slope is m<ul>
+<li><code>x[i] = x[i-1] + 1</code>, <code>y[i] = y[i-1] + m</code></li>
+<li>Illuminate <code>[x[i], round(y[i])]</code></li>
+</ul>
+</li>
+<li>Problem: when <code>m &gt; 1</code>, the line is not continuous<ul>
+<li>Solution: Illuminate by stepping y: <code>x[i] = x[i-1] + 1/m</code>,<code>y[i] = y[i-1] + 1</code></li>
+</ul>
+</li>
+</ul>
+<pre><code>int dx = xb - xa,
+    dy = yb - ya,
+    steps;
+
+float incx, incy;  <span class="hljs-comment">// increment</span>
+float x = xa, y = ya;  <span class="hljs-comment">// current</span>
+
+<span class="hljs-comment">// m &gt; 1?</span>
+<span class="hljs-keyword">if</span> <span class="hljs-params">(abs<span class="hljs-params">(dx)</span> &gt; abs<span class="hljs-params">(dy)</span>)</span>
+  steps = <span class="hljs-built_in">abs</span><span class="hljs-params">(dx)</span>;
+<span class="hljs-keyword">else</span>
+  steps = <span class="hljs-built_in">abs</span><span class="hljs-params">(dy)</span>;
+
+incx = dx / <span class="hljs-params">(float)</span>steps;  <span class="hljs-comment">// 1 or 1/m</span>
+incy = dy / <span class="hljs-params">(float)</span> steps;  / m or <span class="hljs-number">1</span>
+
+setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, round<span class="hljs-params">(y)</span>)</span>; <span class="hljs-comment">// start</span>
+<span class="hljs-keyword">for</span> <span class="hljs-params">(int i = <span class="hljs-number">0</span>; i &lt; steps; ++i)</span> {
+  x += incx; y += incy;
+  setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, round<span class="hljs-params">(y)</span>)</span>;
+}
+</code></pre><h3 id="bresenham">Bresenham</h3>
+<h4 id="consider-distance-and-choose-between-two-points">Consider distance and choose between two points</h4>
+<ul>
+<li>Assume<code>y&#39;[i+1] = mx&#39;[i+1] + B</code> and m &lt;= 1, For <code>x[i], y[i]</code>, the next point must be <code>x[i]+1, y[i]</code>(right) or <code>x[i]+1, y[i] + 1</code>(top-right)</li>
+<li>Compare distance<ul>
+<li><code>dupper = y[i] + 1 - y&#39;[i+1] = y[i] + 1 - mx&#39;[i+1] - B</code></li>
+<li><code>dlower = y&#39;[i+1] - y[i] =  mx&#39;[i+1] + B - y[i]</code></li>
+<li><code>dlower - dupper = 2m(x&#39;[i] + 1) - 2y[i] + 2B - 1</code></li>
+<li>Same sign as <code>p[i] = dx * (dlower - dupper)</code></li>
+</ul>
+</li>
+<li>If <code>p[i] &gt; 0</code>, choose top-right, if <code>p[i] &lt; 0</code>, choose the right one, else anyone(prefer right).</li>
+<li>Note <code>p[i+1] - p[i] = ... = 2dy - 2dx(y[i+1] - y[i])</code><ul>
+<li>If <code>p[i] &lt;= 0</code>, <code>y[i+1] = y[i]</code>, so <code>p[i+1] = p[i] + 2dy</code>(right)</li>
+<li>Else <code>y[i+1] - y[i] = 1</code> so <code>p[i+1] = p[i] + 2dy - 2dx</code>(top-right)</li>
+</ul>
+</li>
+</ul>
+<pre><code>line<span class="hljs-params">(x1, y1, x2, y2)</span> {
+  int x = x1, y = y1,
+      dx = x2 - x1,
+      dy = y2 - y1,
+      p = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> dy - dx,
+      de = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> dy  <span class="hljs-comment">// step for right</span>
+      dne = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> <span class="hljs-params">(dy - dx)</span>;  <span class="hljs-comment">// step for top-right</span>
+
+  setPixel<span class="hljs-params">(x, y)</span>;  <span class="hljs-comment">// start</span>
+
+  while<span class="hljs-params">(x &lt; x2)</span> {
+    <span class="hljs-keyword">if</span> <span class="hljs-params">(p &lt; <span class="hljs-number">0</span>)</span> {
+      x += <span class="hljs-number">1</span>;  <span class="hljs-comment">// right</span>
+      p += de;  <span class="hljs-comment">// update</span>
+    } <span class="hljs-keyword">else</span> {
+      x += <span class="hljs-number">1</span>; y += <span class="hljs-number">1</span>;  <span class="hljs-comment">// top right</span>
+      p += dne;  <span class="hljs-comment">// update</span>
+    }
+    setPixel<span class="hljs-params">(x, y)</span>; <span class="hljs-comment">// draw this new pixel</span>
+  }
+}
+</code></pre><h3 id="flood-fill">Flood fill</h3>
+<ul>
+<li>Hard to determine if the point is inside</li>
+<li>Multiple checks</li>
+<li>Double the memory to store visited flags</li>
+</ul>
+<pre><code>floodFill<span class="hljs-params">(Polygon p, int x, int y)</span> {
+  <span class="hljs-keyword">if</span> <span class="hljs-params">(!p.onBoundary<span class="hljs-params">(x, y)</span> &amp;&amp; !p.colored<span class="hljs-params">(x, y)</span>)</span> {
+    setPixel<span class="hljs-params">(x, y)</span>;
+    floodFill<span class="hljs-params">(p, x+<span class="hljs-number">1</span>, y)</span>;  <span class="hljs-comment">// right</span>
+    floodFill<span class="hljs-params">(p, x, y+<span class="hljs-number">1</span>)</span>;  <span class="hljs-comment">// down</span>
+    floodFill<span class="hljs-params">(p, x, y-<span class="hljs-number">1</span>)</span>;  <span class="hljs-comment">// top</span>
+    floodFill<span class="hljs-params">(p, x-<span class="hljs-number">1</span>, y)</span>;  <span class="hljs-comment">// left</span>
+  }
+}
+</code></pre><h3 id="scan-line">Scan line</h3>
+<ul>
+<li>Find intersections of edges and the scan line</li>
+<li>Sort intersections by x</li>
+<li>Fill pixels between pair of intersections</li>
+<li>Improvement<ul>
+<li>Use slope to calculate the x for the next intersection</li>
+<li>Maintain list of active edges</li>
+<li>Good for convex polygons, much better for triangles</li>
+</ul>
+</li>
+<li>Sp cases<ul>
+<li>Intersection with two edges and the scanline</li>
+<li>Horizontal edges</li>
+</ul>
+</li>
+<li>Advantages<ul>
+<li>Efficient</li>
+<li>Each px is visited once</li>
+<li>Good for shading, convex, triangles</li>
+</ul>
+</li>
+</ul>
+<h4 id="edge-walking-trapezoid">Edge walking: trapezoid</h4>
+<pre><code>scanTrapezoid<span class="hljs-params">(xL, xR, yB, yT, dxL, dxR)</span> {
+  <span class="hljs-comment">// xL, xR: x for left/right foot</span>
+  <span class="hljs-comment">// yB, yT: y for bottom/top edge</span>
+  <span class="hljs-comment">// dxL, dxR: slope for left/right edge</span>
+  <span class="hljs-keyword">for</span> <span class="hljs-params">(y: yB...yT)</span> {
+    <span class="hljs-keyword">for</span> <span class="hljs-params">(x: xL...xR)</span> {  <span class="hljs-comment">// line</span>
+      setPixel<span class="hljs-params">(x, y)</span>;
+    }
+    xL += dxL; xR+= dxR; <span class="hljs-comment">// update x</span>
+  }
+}
+</code></pre><h4 id="convex">Convex</h4>
+<ul>
+<li>For every pair of point in the shape, any point on the line through them is also in the shape</li>
+<li>For all x and y in C and all t:[0, 1], (1-t)x + ty is in C</li>
+</ul>
+<h4 id="edge-walking-triangles">Edge Walking: triangles</h4>
+<ul>
+<li>Split triangles into two by a horizontal line</li>
+<li>Edge walk these two triangles</li>
+<li>Problem<ul>
+<li>Small triangles needs huge setup cost</li>
+<li>Clipping produces non-triangles(re-triangulation)</li>
+</ul>
+</li>
+</ul>
+<h4 id="rasterization-issues">Rasterization Issues</h4>
+<ul>
+<li>Which pixels? Insiders of course, but what about edges? </li>
+</ul>
+<h3 id="bounding-box">Bounding box</h3>
+<ul>
+<li>Boundary: min and max of x and y of vertices for the triangle</li>
+<li>Traverse every pixels in the box, lit anyone inside the triangle</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
