@@ -44,13 +44,133 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <h4 id="size-of-message">Size of message</h4>
 <ul>
 <li>Transferring message<ul>
-<li>The sender can no longer use it once cent</li>
+<li>The sender can no longer use it once sent</li>
 <li>Almost instantaneous</li>
 <li>Only ArrayBuffer can be transferred</li>
 </ul>
 </li>
 <li>45kb/ms for <code>postMessage</code>, 6kb/ms for broadcasting</li>
 <li>To fit the frame rate, keep the data under 350MB for <code>postMessage</code> and under 50MB when using broadcast channels.</li>
-<li>Objects will take longer to post. Try serialize it into a binary format like <a href="https://developers.google.com/protocol-buffers/"><code>Protocol Buffer</code></a></li>
+<li>Objects will take longer to post. Try serialize them into a binary format like <a href="https://developers.google.com/protocol-buffers/"><code>Protocol Buffer</code></a></li>
+</ul>
+<h2 id="docker">Docker</h2>
+<h3 id="-introduction-to-docker-https-www-youtube-com-watch-v-q5poumhxw-0-"><a href="https://www.youtube.com/watch?v=Q5POuMHxW-0">Introduction to Docker</a></h3>
+<ul>
+<li>Started out as a side project in DotCloud</li>
+<li>Standards of containers<ul>
+<li>Software stack and versions</li>
+</ul>
+</li>
+<li>The spectrum<ul>
+<li>VM ---------- Docker ------------ Binaries/packages</li>
+</ul>
+</li>
+<li>Made possible by Linux Namespace/Control groups for sandboxing</li>
+<li>Docker is much more concise and simple than the old system used in dotCloud<ul>
+<li>It should be an ingredient for a system</li>
+</ul>
+</li>
+<li>Static binary with CLI, run as a daemon</li>
+</ul>
+<h4 id="demo">Demo</h4>
+<ul>
+<li><code>docker ps</code> to list running processes</li>
+<li><code>docker image</code> to see the available images</li>
+<li><code>docker run &lt;repo&gt;:&lt;tag&gt; &lt;process&gt;</code> to run the image(create a copy for it like a fork!)</li>
+<li>LMAO hahahahha he <code>rm -fr /bin</code> to prove his point!</li>
+<li><code>docker diff &lt;containerid&gt;</code> to see the changes in the container</li>
+<li><code>docker commit</code> to commit the changes</li>
+<li><code>docker push</code>, <code>docker pull</code><ul>
+<li>docker does versioning(copy-on-write)</li>
+<li>Only changes will be transferred, so the push and pull are fast</li>
+</ul>
+</li>
+</ul>
+<h4 id="integration-with-ci">Integration with CI</h4>
+<ul>
+<li>Create a container, install dependencies in it, upload the code, compile</li>
+<li>The base image is fat, but the upper layer is thin</li>
+</ul>
+<h4 id="network-services-containers-depending-on-containers">Network services/Containers depending on containers</h4>
+<ul>
+<li><code>-p &lt;port&gt;</code> to tell docker the container is gonna expose something through <code>&lt;port&gt;</code> when doing <code>docker run</code></li>
+<li>Docker will configure the iptables for you</li>
+<li><code>docker ps</code> will show which port on the host is mapped to the specified port on the container(e.g. <code>40132(host)-&gt;8000(container)</code>)</li>
+<li>Docker is not responsible for service discovery(UNIX KISS principle)</li>
+<li>Container links</li>
+<li>Recommendation: pack external dependencies into containers<ul>
+<li>So you can do dependency injection in all layers of your stack</li>
+<li>e.g. a mock database container/mock API container &amp; a production database container/real API</li>
+<li>You don&#39;t even need network connections when doing integration tests!</li>
+</ul>
+</li>
+</ul>
+<h4 id="about-git">About git</h4>
+<ul>
+<li>Docker is used as binary...You don&#39;t merge binaries LOL</li>
+<li>Just rebuild on check</li>
+</ul>
+<h3 id="-docker-and-go-why-did-we-decide-to-write-docker-in-go-http-www-slideshare-net-jpetazzo-docker-and-go-why-did-we-decide-to-write-docker-in-go-"><a href="http://www.slideshare.net/jpetazzo/docker-and-go-why-did-we-decide-to-write-docker-in-go">Docker and Go: why did we decide to write Docker in Go?</a></h3>
+<h4 id="pros">Pros</h4>
+<ol>
+<li>Static binaries with just <code>go build</code><ul>
+<li>Easy to install/test/adopt</li>
+<li>Good for bootstrap</li>
+</ul>
+</li>
+<li>Neutral(hmm...)</li>
+<li>Async, low-level, standard library, data types, strong duck typing</li>
+<li>Dev environment<ul>
+<li><code>go doc</code> (see docs)</li>
+<li><code>go get</code> (fetch dependencies)</li>
+<li><code>go fmt</code> (tabs v.s. spaces)</li>
+<li><code>go test</code></li>
+<li><code>go run</code> (REPL)</li>
+</ul>
+</li>
+<li>Multi-arch build(easily portable)</li>
+</ol>
+<h4 id="cons">Cons</h4>
+<ul>
+<li>Doesn&#39;t solve any problem?<ul>
+<li>Easier than Erlang</li>
+<li>More real than Rust</li>
+<li>Dv2? hmm...</li>
+</ul>
+</li>
+<li>Maps are not thread-safe<ul>
+<li>They are fast because of it</li>
+<li>You need to protect it your self</li>
+<li>Channels of channels</li>
+</ul>
+</li>
+<li><code>go get</code> can&#39;t pin a particular revision<ul>
+<li>Had to import the source code</li>
+<li>Private repos need manual operations</li>
+</ul>
+</li>
+<li><code>go test</code>doesn&#39;t have cleanups<ul>
+<li><code>z_final_test.go</code></li>
+</ul>
+</li>
+<li><code>go build</code><ul>
+<li>Painful to build multiple binaries sharing common code</li>
+<li>Programs has to be on its own, and be <code>main</code></li>
+</ul>
+</li>
+<li>flag package is crippled<ul>
+<li>Just don&#39;t use it!</li>
+<li>Use getopt or go-flags</li>
+</ul>
+</li>
+<li>Error handling (LOL)<ul>
+<li>Use panic/recover internally</li>
+<li>One-off utility types</li>
+</ul>
+</li>
+<li>Can&#39;t select on readers/writers<ul>
+<li>Reduce everything to channels</li>
+</ul>
+</li>
 </ul>
 </div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
