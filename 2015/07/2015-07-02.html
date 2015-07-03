@@ -1,0 +1,607 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 2, 2015</h1></header><div class="content"><div class="diary"><p>Today is CG Exam...</p>
+<h2 id="ch5-transformation">CH5 Transformation</h2>
+<h3 id="vectors">Vectors</h3>
+<ul>
+<li>Inner product: a scalar, |u||v|cos(theta), u.v = 0 &lt;=&gt; u is vertical to v</li>
+<li>Ourter product: a vector of length |u||v|sin(theta), vertical to the plane containing u and v<ul>
+<li>u x v = 0 means u is parallel to v</li>
+</ul>
+</li>
+<li>Normal: n = u x v<ul>
+<li>Nx = UyVz - UzVy</li>
+<li>Ny = UzVx - UxVz</li>
+<li>Nz = UxVy - UyVx</li>
+</ul>
+</li>
+</ul>
+<h3 id="convex">Convex</h3>
+<ul>
+<li>The line segment connecting any two points on the object is also within the object</li>
+<li>For <code>P = a1P1 + a2P2 + ... + anPn</code>, if <code>a1 + a2 + ... + an = 1</code>, the result is the <strong>affine convex combination</strong> for P1, P2 , ..., Pn.</li>
+<li>And if ai &gt;= 0, we get the <strong>convex hull</strong> for these points<ul>
+<li>The minimun convex containing these points</li>
+</ul>
+</li>
+</ul>
+<h3 id="shapes">Shapes</h3>
+<ul>
+<li>Lines: P(a) = P0 + ad(a point and a vector and a parameter a)<ul>
+<li>Linear interpolation: P(t) = (1-t)A + tB</li>
+</ul>
+</li>
+<li>Curves: P(a), non linear</li>
+<li>Surface: P(a, b): non linear</li>
+<li>Plane: 2 vectors or 3 points</li>
+</ul>
+<h3 id="homogeneous-coordinate">Homogeneous coordinate</h3>
+<ul>
+<li>Confusion between vectors and points(points have an origin for reference)</li>
+<li>Add another dimension for the coordinates<ul>
+<li>w</li>
+<li>The original 3-dimension coordinate is (x/w, y/w, z/w)</li>
+<li>When w is 0, P is a vector</li>
+</ul>
+</li>
+<li>In homogenous coordinate, a straight line through the origin is mapping to a point in 3-dimensional space</li>
+</ul>
+<h4 id="coordinate-transformation">Coordinate transformation</h4>
+<ul>
+<li>Use one basis to represent another</li>
+<li>a = MTb</li>
+<li>(P0, v1, v2, v3) and (Q0, u1, u2, u3)</li>
+<li>Add Q0 = y41v1 + y42v2 + y43v3 + P0</li>
+<li>Use M to compute the changes in the representation<ul>
+<li>Determined by 12 coefficients</li>
+</ul>
+</li>
+</ul>
+<h4 id="frame">Frame</h4>
+<ul>
+<li>Change of the frame is defined by a 4 x 4 matrix</li>
+<li>World frame -&gt; Camera frame</li>
+<li>Initially the world frame and the camera frame are the same</li>
+</ul>
+<h4 id="affine-transformation">Affine transformation</h4>
+<ul>
+<li>Remain linearity</li>
+<li>All affine transformations can be represented as matrix multiplications in homogeneous coordinates</li>
+</ul>
+<h3 id="translation">Translation</h3>
+<ul>
+<li>P&#39; = P + d</li>
+<li>P = [x, y, z, 1]T, P&#39; = [x&#39;, y&#39;, z&#39;, 1], d = [dx, dy, dz, 0]</li>
+<li>Simply [x+dx, y+dy, z+dz, 1]</li>
+<li><p>The matrix</p>
+<pre><code><span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">dx</span>
+<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-pseudo">dy</span>
+<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-pseudo">dz</span>
+<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+</code></pre></li>
+</ul>
+<h3 id="rotation-counter-clockwise-">Rotation(counter-clockwise)</h3>
+<h4 id="2d">2D</h4>
+<p>In 2D, use r, cos and sins...</p>
+<p>The matrix</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span> -<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span>
+<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>
+</code></pre><h4 id="around-z-axis-z-coordinate-unchanged-">Around z-axis(z coordinate unchanged)</h4>
+<p>Same as 2d, add two more identity</p>
+<p>Notice the third column/row.</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span> -<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">1</span> <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">0</span> <span class="hljs-number">1</span>
+</code></pre><h4 id="around-x-or-y-axis-x-or-y-coordinate-unchanged-">Around x or y-axis(x or y coordinate unchanged)</h4>
+<p>X: notice the first column/row</p>
+<pre><code><span class="hljs-number">1</span> <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">0</span>
+<span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span> -<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span>
+<span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span> <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">1</span>
+</code></pre><p>Y: notice the second column/row, and the signs</p>
+<pre><code><span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>           <span class="hljs-number">1</span> <span class="hljs-number">0</span>           <span class="hljs-number">0</span>
+-<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>           <span class="hljs-number">0</span> <span class="hljs-number">0</span>           <span class="hljs-number">1</span>
+</code></pre><h4 id="around-some-general-axis-through-the-origin">Around some general axis through the origin</h4>
+<ul>
+<li>Project the axis onto the three planes to get thetax, thetay, thetaz</li>
+<li>R(theta) = Rz(thetaz)Ry(thetay)Rz(thetay)</li>
+<li>It must be z, y, x. The order matters</li>
+</ul>
+<h4 id="around-some-general-axis-not-intersecting-with-the-origin">Around some general axis not intersecting with the origin</h4>
+<ul>
+<li>Move the fixed point of the vector(along the axis) to origin</li>
+<li>Rotate</li>
+<li>Move the point back</li>
+</ul>
+<h4 id="tips">Tips</h4>
+<p>To rotate something around its center, translate it so that the center is at the origin, then rotate it, then translate it back</p>
+<h3 id="non-rigid-body-transformation">Non-rigid Body Transformation</h3>
+<h4 id="scaling">Scaling</h4>
+<pre><code><span class="hljs-title">sx</span> <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>  sy <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  sz <span class="hljs-number">0</span>
+<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>
+</code></pre><h4 id="shearing">Shearing</h4>
+<p>TODO</p>
+<h3 id="transformations-as-matrices">Transformations as matrices</h3>
+<ul>
+<li>Q = M * P</li>
+<li>4x4 matrices</li>
+<li>Product as composition</li>
+<li>The rightmost one is applied first</li>
+<li>Not commutative, but associative</li>
+</ul>
+<h3 id="inverse-of-transformations">Inverse of transformations</h3>
+<ul>
+<li>T-1(dx, dy, dz) = T(-dx, -dy, -dz)</li>
+<li>R-1(theta) = R(-theta)</li>
+<li>S-1(sx, sy, sz) = S(1/sx, 1/sy, 1/sz)</li>
+</ul>
+<h4 id="quaternions">Quaternions</h4>
+<ul>
+<li>For rotations</li>
+<li>Vector + scalar: (q0, q1, q2, q3) = (q0, q)</li>
+<li>i^2 + j^2 + k^2 = ijk = -1, q = q1i + q2j + q3k</li>
+<li>Operations<ul>
+<li>Addition: (p0 + q0, p + q)</li>
+<li>Multiplication: (p0q0 - pq, q0p + p0q + pxq)</li>
+<li>Magnitude: |a|^2 = q0^2 + q.q</li>
+<li>Inverse: (q0, -q)/|a|^2</li>
+</ul>
+</li>
+<li>When p0 = 0, p is the location of the point in space</li>
+<li>Rotation<ul>
+<li>When p0 = cos(theta/2), q = sin(theta/2)v and v has unit length, the quaternion is a <strong>unit quaternion</strong> r and r^(-1) = (cos(theta/2), -sin(theta/2)v)</li>
+<li>Say p&#39; = rp(r^(-1)), then it&#39;s a representation of the point <code>p</code> rotated <code>theta</code> degrees about <code>v</code></li>
+</ul>
+</li>
+<li>Can represents rotations(replace transformation matrices)</li>
+<li>Efficient, can be interpolated to create smooth rotation</li>
+</ul>
+<h2 id="ch6-viewing">CH6 Viewing</h2>
+<h3 id="2d">2D</h3>
+<ul>
+<li>screenSize/2 + (x-xCenter)*scaleFactor   (or y)</li>
+</ul>
+<h3 id="camera-in-opengl">Camera in OpenGL</h3>
+<h4 id="three-phases-in-the-pipeline">Three phases in the pipeline</h4>
+<ul>
+<li>Model-view transform<ul>
+<li>You can&#39;t actually transform the camera, you need to transform the scene</li>
+</ul>
+</li>
+<li>Projection transformation<ul>
+<li>Set the lens</li>
+</ul>
+</li>
+<li>Clipping<ul>
+<li>Frustum</li>
+</ul>
+</li>
+</ul>
+<h4 id="default">Default</h4>
+<ul>
+<li>Initial world frame and camera frame are the same</li>
+<li>Located at the origin</li>
+<li>Look at -z</li>
+<li>Frustum is a cube, side length 2(1+1), center at the origin</li>
+</ul>
+<h3 id="view-reference-coordinates-uvn-">View reference coordinates(uvn)</h3>
+<ul>
+<li>n = -viewDirection</li>
+<li>u = upVector x n</li>
+<li>v = n x u</li>
+<li>Then you need to move this coordinate system to the view reference point</li>
+<li>After the coordinate system is defined, project the 3D world onto the view reference plane(uv)</li>
+</ul>
+<h3 id="projection">Projection</h3>
+<ul>
+<li>When uvn is overlapped with xyz, the projection is very simple: ignore z-coordinate</li>
+</ul>
+<h4 id="view-orientation-matrix-world-to-view-">View orientation matrix(World-to-view)</h4>
+<ul>
+<li>Translate uvn by -vrp then reorient</li>
+<li>Effect: World coordinate to view coordinate</li>
+<li>V = R^(-1)T^(-1)<ul>
+<li>Normalized vectors</li>
+<li>a = Peye - Plook</li>
+<li>r = up x a</li>
+<li>u = a x r</li>
+</ul>
+</li>
+</ul>
+<pre><code>|<span class="hljs-string">rx ry rz 0</span>|<span class="hljs-string">1 0 0 -eyex</span>|<span class="hljs-string">   </span>|<span class="hljs-string">rx ry rz -r.vrp</span>|<span class="hljs-string">(u)
+</span>|<span class="hljs-string">ux uy uz 0</span>|<span class="hljs-string">0 1 0 -eyey</span>|<span class="hljs-string">   </span>|<span class="hljs-string">ux uy uz -u.vrp</span>|<span class="hljs-string">(v)
+</span>|<span class="hljs-string">ax ay az 0</span>|<span class="hljs-string">0 0 1 -eyez</span>|<span class="hljs-string">  =</span>|<span class="hljs-string">ax ay az -a.vrp</span>|<span class="hljs-string">(n)
+</span>|<span class="hljs-string">0  0  0  1</span>|<span class="hljs-string">0 0 0 1    </span>|<span class="hljs-string">   </span>|<span class="hljs-string">0  0  0  1     </span>|
+</code></pre><h4 id="view-to-world-transform-matrix">View-to-world transform matrix</h4>
+<p>E = TR</p>
+<pre><code>|<span class="hljs-string">1 0 0 eyex</span>|<span class="hljs-string">rx ux ax 0</span>|<span class="hljs-string">   </span>|<span class="hljs-string">rx ux ax eyex</span>|
+|<span class="hljs-string">0 1 0 eyey</span>|<span class="hljs-string">ry uy ay 0</span>|<span class="hljs-string">   </span>|<span class="hljs-string">ry uy ay eyey</span>|
+|<span class="hljs-string">0 0 1 eyez</span>|<span class="hljs-string">rz uz az 0</span>|<span class="hljs-string">  =</span>|<span class="hljs-string">rz uz az eyez</span>|
+|<span class="hljs-string">0 0 0 1   </span>|<span class="hljs-string">0  0  0  1</span>|<span class="hljs-string">   </span>|<span class="hljs-string">0  0  0  1   </span>|
+</code></pre><h3 id="orthognal-projection">Orthognal Projection</h3>
+<ol>
+<li>World-to-view(View orientation matrix)</li>
+<li>Parallel projection(make z=0)</li>
+<li>use u and v</li>
+</ol>
+<pre><code>   (2)       (1)
+|<span class="hljs-string">1 0 0 0</span>|<span class="hljs-string">ux uy uz -ru.vrp</span>|
+|<span class="hljs-string">0 1 0 0</span>|<span class="hljs-string">vx vy vz -rv.vrp</span>|
+|<span class="hljs-string">0 0 0 0</span>|<span class="hljs-string">nx ny nz -rn.vrp</span>|
+|<span class="hljs-string">0 0 0 1</span>|<span class="hljs-string">0  0  0  1      </span>|
+</code></pre><h3 id="perspective-projection">Perspective Projection</h3>
+<ul>
+<li>prp(in view coordinate) on the axis passing though the center of the view window(on the view plane) and parallel to n</li>
+<li>d is the distance between prp and the view plane</li>
+<li>This will make w=1 -&gt; w=z/d<ul>
+<li>Note that when w!=1, you have to divide x, y and z by it. So later you will have<ul>
+<li>x = xd/z</li>
+<li>y = yd/z</li>
+<li>z = d</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>This is not linear, but will keep the lines</li>
+<li><p>Non-inversible</p>
+</li>
+<li><p>World-to-view</p>
+</li>
+<li>Translate the center of the view to the origin(by -cx, -cy where cx and cy are coordinates for the center of the view window)</li>
+<li>Perspective projection</li>
+<li>2D viewing transform(u and v)</li>
+</ul>
+<pre><code>    (3)       (2)         (1)
+|<span class="hljs-string">1 0 0   0</span>|<span class="hljs-string">1 0 0 -cx</span>|<span class="hljs-string">ux uy uz -ru.vrp</span>|
+|<span class="hljs-string">0 1 0   0</span>|<span class="hljs-string">0 1 0 -cy</span>|<span class="hljs-string">vx vy vz -rv.vrp</span>|
+|<span class="hljs-string">0 0 1   0</span>|<span class="hljs-string">0 0 1  0 </span>|<span class="hljs-string">nx ny nz -rn.vrp</span>|
+|<span class="hljs-string">0 0 1/d 0</span>|<span class="hljs-string">0 0 0  1 </span>|<span class="hljs-string">0  0  0  1      </span>|
+</code></pre><h3 id="tips">Tips</h3>
+<p>The volume is made finite by specifying the front and back clipping plane</p>
+<h2 id="ch7-clipping">CH7 Clipping</h2>
+<h3 id="2d-lines">2D lines</h3>
+<ol>
+<li>Both vertices are in the window: original line</li>
+<li>Both outside and at the same side of an edge: discard</li>
+<li>One inside, one outside: at least calculate intersections once</li>
+<li>Both outside, but not at the same side of an edge: at least calculate intersections once</li>
+</ol>
+<h3 id="cohen-sutherland-clipping">Cohen-Sutherland Clipping</h3>
+<ul>
+<li>Mask for ymin, ymax, xmax, xmin(out = 1, in = 0)</li>
+<li>o1 | o2 == 0: inside</li>
+<li>o1 &amp; o2 != 0: outside</li>
+<li>o1 &amp; o2 == 0: could be one of them<ul>
+<li>Find an intersection to replace one endpoint</li>
+</ul>
+</li>
+<li>3D: 6bit</li>
+</ul>
+<h3 id="sutherland-hodgeman">Sutherland-Hodgeman</h3>
+<ul>
+<li>Draw edges, leave the parts that are inside, and connect the endpoints finally</li>
+</ul>
+<h3 id="tips">Tips</h3>
+<ul>
+<li>Bounding box</li>
+<li>Re-triangulation</li>
+</ul>
+<h3 id="hidden-surface-removal">Hidden Surface Removal</h3>
+<h4 id="image-space-method">Image Space Method</h4>
+<ul>
+<li>Per pixel/fragment scan conversion</li>
+<li>Faster, resolution dependent</li>
+<li>Z-Buffer/Depth-buffer</li>
+</ul>
+<pre><code><span class="hljs-keyword">for</span> <span class="hljs-keyword">each</span> pixel <span class="hljs-operator">in</span> <span class="hljs-operator">the</span> image:
+  connect <span class="hljs-operator">the</span> pixel <span class="hljs-operator">and</span> <span class="hljs-operator">the</span> viewpoint
+  find <span class="hljs-operator">the</span> nearest object
+  compute <span class="hljs-operator">the</span> color
+</code></pre><ul>
+<li>O(nN)</li>
+</ul>
+<h4 id="z-buffer">Z-buffer</h4>
+<pre><code>Initialize frame buffer
+Initialize <span class="hljs-function"><span class="hljs-title">z-buffer</span><span class="hljs-params">(by zmax)</span></span>
+For each polygon <span class="hljs-keyword">in</span> the world:
+  For each pixel <span class="hljs-keyword">in</span> the polygon
+    compute <span class="hljs-function"><span class="hljs-title">z</span><span class="hljs-params">(x, y)</span></span>
+    <span class="hljs-keyword">if</span> <span class="hljs-function"><span class="hljs-title">z</span><span class="hljs-params">(x, y)</span></span> &gt; <span class="hljs-function"><span class="hljs-title">zbuffer</span><span class="hljs-params">(x, y)</span></span>:
+      Compute <span class="hljs-function"><span class="hljs-title">i</span><span class="hljs-params">(x, y)</span></span>
+      <span class="hljs-function"><span class="hljs-title">frameBuffer</span><span class="hljs-params">(x, y)</span></span> = <span class="hljs-function"><span class="hljs-title">i</span><span class="hljs-params">(x, y)</span></span>
+      <span class="hljs-function"><span class="hljs-title">zbuffer</span><span class="hljs-params">(x, y)</span></span> = <span class="hljs-function"><span class="hljs-title">z</span><span class="hljs-params">(x, y)</span></span>
+</code></pre><ul>
+<li>Simple, easy</li>
+<li>Arbitrary traversal, handles interpenetration</li>
+<li>Cons<ul>
+<li>Poor for high depth complexity</li>
+<li>Shared edges/overlaps</li>
+<li>Memory requirement</li>
+<li>Hard to do transparency</li>
+</ul>
+</li>
+</ul>
+<h4 id="object-space-method">Object Space Method</h4>
+<ul>
+<li>Per object, before scan conversion</li>
+<li>Independent of resolution</li>
+</ul>
+<pre><code><span class="hljs-keyword">for</span> <span class="hljs-keyword">each</span> object <span class="hljs-operator">in</span> <span class="hljs-operator">the</span> world:
+  find unobstructed parts <span class="hljs-operator">of</span> objects
+  draw those parts
+</code></pre><ul>
+<li>O(n2)</li>
+</ul>
+<h4 id="back-face-culling">Back face culling</h4>
+<ul>
+<li>n.v &lt; 0: invisible</li>
+<li>n.v &gt; 0: visible</li>
+</ul>
+<h2 id="ch8-lighting">CH8 Lighting</h2>
+<h3 id="illumination-model">Illumination model</h3>
+<ul>
+<li>Local illumination - fast</li>
+<li>Global illumination - slow</li>
+</ul>
+<h3 id="light-sources">Light sources</h3>
+<ul>
+<li>Point light<ul>
+<li>All direction equally from a point</li>
+<li>Inversely proportional to distance</li>
+</ul>
+</li>
+<li>Parallel light(directional light)<ul>
+<li>Same angles</li>
+</ul>
+</li>
+<li>Ambient light<ul>
+<li>From all direction</li>
+<li>Simulate bouncing</li>
+<li>Ireflected = kambient * Iambient</li>
+</ul>
+</li>
+<li>Spot light<ul>
+<li>Falloff</li>
+</ul>
+</li>
+</ul>
+<h3 id="type-of-reflection">Type of reflection</h3>
+<ul>
+<li>Specular<ul>
+<li>Highlights</li>
+<li>Same angles(snell&#39;s law)</li>
+<li>Add falloff to simulate</li>
+<li>Ispecular = ks <em> Ilight </em> (v.r)^(nshiny)<ul>
+<li>v is unit vector towards the viewer, r is the ideal reflection direction</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Diffuse<ul>
+<li>Rough</li>
+<li>Equal in all direction</li>
+<li>The smaller the angle between L and N, the brighter(proportional to cos)</li>
+<li>Idiffuse = kd <em> Ilight </em> (n.l) (n and l are normalized)</li>
+</ul>
+</li>
+<li>Phong<ul>
+<li>Ambient + diffuse + specular</li>
+<li>I = Ka <em> Ia + sum(Ii(kd </em> (n.l) + ks * (v.y^)n))</li>
+</ul>
+</li>
+</ul>
+<h3 id="lighting-v-s-shading">Lighting v.s. Shading</h3>
+<ul>
+<li>Lighting: compute luminous intensity at <strong>3D points</strong></li>
+<li>Shading: compute colors for pixels</li>
+</ul>
+<h3 id="shading">Shading</h3>
+<ul>
+<li>Flat<ul>
+<li>Once per polygon</li>
+<li>Not smooth, but very fast</li>
+</ul>
+</li>
+<li>Gouraud<ul>
+<li>Compute normals for each vertex, then color for each vertex, then interpolate colors for other pixels</li>
+<li>Interpolate <strong>colors</strong> along edges(on)/scan line(inside)</li>
+<li>Mach bands</li>
+</ul>
+</li>
+<li>Phong<ul>
+<li>Compute averaged vertex normals(by face normals), then interpolate <strong>normals</strong> for each pixel, then calculate colors</li>
+<li>Expensive</li>
+<li>Natural</li>
+</ul>
+</li>
+</ul>
+<h2 id="ch9-texturing">CH9 Texturing</h2>
+<h3 id="polygonal-texture-mapping">Polygonal texture mapping</h3>
+<ul>
+<li>2D -&gt; 2D</li>
+<li>Map pixels to polygons, then map polygons  to texture map</li>
+<li>Weighted average</li>
+</ul>
+<h3 id="two-part-mapping">Two-part mapping</h3>
+<ul>
+<li>Map the texture to a simple intermediate surface, then map to the object</li>
+<li>Cube mapping<ul>
+<li>Easy for simple orthographic projection</li>
+<li>Environmen maps</li>
+</ul>
+</li>
+<li>Cylinder mapping</li>
+<li>SpherICAL mapping</li>
+</ul>
+<h3 id="mipmap">Mipmap</h3>
+<ul>
+<li>Precomputed levels of detail</li>
+<li>Use the one that matches the polygon apparent size best</li>
+</ul>
+<h3 id="other-techniques">Other techniques</h3>
+<ul>
+<li>Environment mapping<ul>
+<li>Reflections</li>
+<li>Reflected ray</li>
+</ul>
+</li>
+<li>Bump mapping<ul>
+<li>Perturbing normal vectors</li>
+<li>Bumps</li>
+</ul>
+</li>
+<li>Displacement mapping<ul>
+<li>Change the actual geometric position</li>
+<li>Height map, texture map</li>
+</ul>
+</li>
+</ul>
+<h2 id="ch10-mesh">CH10 Mesh</h2>
+<h3 id="adjacent-matrix">Adjacent matrix</h3>
+<ul>
+<li>3 Tables<ol>
+<li>Vertex, coordinates(v1, (x1, y1, z1))</li>
+<li>Face, vertices(f1, (v1, v2, v3))</li>
+<li>Ajdacent matrix for vertices</li>
+</ol>
+</li>
+<li>Properties<ul>
+<li>Query vertices of face: O(1)</li>
+<li>Query adjacency of vertices: O(1)</li>
+<li>Query adjacency of faces: O(F)</li>
+</ul>
+</li>
+<li>Pro<ul>
+<li>Info about adjacency</li>
+<li>Stores non-manifold meshes</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>No connection from vertices to faces</li>
+</ul>
+</li>
+</ul>
+<h3 id="half-edge">Half-edge</h3>
+<ul>
+<li>3 tables<ol>
+<li>Vertices, coordinates, a half-edge starting with it</li>
+<li>Faces, a half-edge that borders it</li>
+<li>Half-edges, starting vertex, opposite half-edges, face, next edge(, optional previous edge)</li>
+</ol>
+</li>
+<li>Traversal<ul>
+<li>Start with one vertex</li>
+<li>Outgoing half-edge</li>
+<li>Opposite half-edge</li>
+<li>Next half-edge</li>
+<li>Opposite half-edge</li>
+<li>Next....</li>
+</ul>
+</li>
+<li>Traverse vertices:<pre><code>half_edge = vertex-&gt;edge;
+<span class="hljs-keyword">do</span> {
+  half_dege = half_edge-&gt;opposite-&gt;<span class="hljs-keyword">next</span>;
+  vertex = half_edge-&gt;start;
+  <span class="hljs-regexp">//</span> <span class="hljs-keyword">do</span> something
+} <span class="hljs-keyword">while</span> (half_edge != vertex-&gt;half_edge)
+</code></pre></li>
+</ul>
+<h2 id="ch11-subdivision">CH11 Subdivision</h2>
+<ul>
+<li>Type<ul>
+<li>Approximating: remove original vertices</li>
+<li>Interpolating: keep original vertices</li>
+</ul>
+</li>
+<li>Why<ul>
+<li>LOD</li>
+<li>Compression</li>
+<li>Smooth</li>
+</ul>
+</li>
+<li>Valences: number of edges adjacent to the vertex</li>
+<li>Regular<ul>
+<li>For quads, valence = 4</li>
+<li>For triangles, valence = 6</li>
+<li>Extraordinary: valence &gt; 4(quad)/6(tri.)</li>
+</ul>
+</li>
+<li>Process<ul>
+<li>Add new vertices</li>
+<li>Adjust the vertices by some rules</li>
+</ul>
+</li>
+</ul>
+<h3 id="loop-subdivision-triangles-">Loop Subdivision(triangles)</h3>
+<ul>
+<li>Insert new points(linear combinations of old)</li>
+<li>Update point positions(linear combinations of adjacent points)</li>
+</ul>
+<h3 id="butterfly-subdivision-triangles-">Butterfly Subdivision(triangles)</h3>
+<ul>
+<li>Some inherit old locations</li>
+<li>Some computed by another mask</li>
+</ul>
+<h3 id="catmull-clark-subdivision-polygons-">Catmull-Clark Subdivision(polygons)</h3>
+<ul>
+<li>Calculate some points inside polygons</li>
+<li>Calculate some points on the edge by using the previous points</li>
+<li>Update some points</li>
+</ul>
+<h2 id="ch12-curves-surfaces">CH12 Curves &amp; Surfaces</h2>
+<h3 id="bezier-curves">Bezier Curves</h3>
+<h4 id="definition">Definition</h4>
+<ul>
+<li><code>R(t) = \sum_(i=0)^n R_i B_(i, n)(t)</code>, (0 &lt;= t &lt;= 1)</li>
+<li><code>B_(i, n)(t)</code> are Bernstein basis<ul>
+<li><code>B_(i, n)(t) = C^i_n(1-t)^(n-i)t^(i)</code></li>
+</ul>
+</li>
+<li><code>R_i</code> are control points</li>
+</ul>
+<h4 id="properties">Properties</h4>
+<ul>
+<li>Endpoint interpolation: R(0) = R0, R(1) = R1</li>
+<li>Tangent at endpoints: R&#39;(0) = n(R1 - R0), R&#39;(1) = n(Rn - (Rn-1))</li>
+<li>Symmetry</li>
+<li>Convexity</li>
+<li>Variation diminishing</li>
+<li>Geometric Invariant</li>
+</ul>
+<h4 id="de-casteljau">de Casteljau</h4>
+<pre><code>DeCasteljau(P, n, u) <span class="hljs-comment">{
+  for (int i = 0; i &lt;= n; ++i)
+    Q[i] = P[i];
+  for (int k = 1; k &lt;=n; ++k)
+    for (int i = 0; i &lt;= n-k; ++i)
+      Q[i] = (1.0 - u) * Q[i] + u * Q[i+1];
+  return Q[0]
+}</span>
+</code></pre><h4 id="disadvantages">Disadvantages</h4>
+<ul>
+<li>Global properrty</li>
+</ul>
+<h3 id="b-spline">B-spline</h3>
+<h4 id="definition">Definition</h4>
+<h3 id="bezier-surfaces">Bezier surfaces</h3>
+<ul>
+<li>Interpolation of four corner vertices</li>
+<li>Tangents at corner vertices</li>
+<li>Subdivision of surfaces</li>
+<li>Drawback: global property</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
