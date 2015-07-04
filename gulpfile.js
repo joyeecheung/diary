@@ -18,20 +18,41 @@ var submodule = config.repo.as_submodule;
 
 // --------------------------------
 // JavaScript packing
-gulp.task('js', function () {
-  return gulp.src("./src/js/index.js")
-    .pipe(webpack( require('./webpack.config.js') ))
-    .pipe(gulp.dest('./dist/js/'))
+// --------------------------------
+var webpackConfigPath = './webpack.config.js';
+var webpackPluginsPath = './webpack.plugins.config.js';
+
+function packjs(entry, dest, debug) {
+  var config = require(webpackConfigPath);
+  var p = require(webpackPluginsPath);
+
+  if (debug)
+    config.plugins = [p.sourcemap, p.common, p.ignoreLocale];
+  else
+    config.plugins = [p.uglify, p.common, p.ignoreLocale]
+
+  return gulp.src(entry)
+    .pipe(webpack(config))
+    .pipe(gulp.dest(dest))
     .pipe(plugins.livereload());
+}
+
+gulp.task('js', function () {
+  return packjs("./src/js/index.js", './dist/js/');
+});
+
+gulp.task('js-debug', function () {
+  return packjs("./src/js/index.js", './dist/js/', true);
 });
 
 // --------------------------------
 // PostCSS
+// --------------------------------
 function compileCSS(debug) {
   var theme = gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
     .pipe(gulp.dest('./dist/css/'))
 
-  var processors = [require('cssnext')()];
+  var processors = [require('cssnext')(), require('cssnano')()];
 
   var css = gulp.src('./src/css/**/*.css')
     .pipe(plugins.debug())
@@ -54,7 +75,7 @@ gulp.task('css', function () {
 
 // --------------------------------
 // Generate markup
-
+// --------------------------------
 function getFirstAndLastFile(files) {
   var sorted = files.map(function(file) {
     return path.basename(file).split('.')[0];  // strip out dir names
@@ -128,21 +149,25 @@ gulp.task('relayout', ['index'], function() {
   return generateDiary(true);
 });
 
-// watch
+// ------------------------
+//  Watch
+// ------------------------
 gulp.task('watch', ['server'], function() {
   plugins.livereload.listen({ basePath: 'dist' });
   gulp.watch(['./' + submodule + '/**/*.md'], ['markup']);
   gulp.watch(['./src/jade/index.jade'], ['index']);
   gulp.watch(['./src/jade/layout/*.jade'], ['relayout']);
   gulp.watch('./src/css/**/*.css', ['css']);
-  gulp.watch([ 'webpack.config.js', './src/js/**/*.js'], ['js']);
+  gulp.watch([ 'webpack.config.js', './src/js/**/*.js'], ['js-debug']);
 });
 
-gulp.task('build-debug', ['js','markup', 'css-debug']);
+gulp.task('build-debug', ['js-debug','markup', 'css-debug']);
 gulp.task('build', ['js','markup', 'css']);
 
-// Launch server
-gulp.task('server', ['build-debug'], function(done) {
+// ------------------------
+//  Launch server 
+// ------------------------
+function serve(done) {
   http.createServer(
     st({
       path: __dirname + '/dist',
@@ -151,9 +176,15 @@ gulp.task('server', ['build-debug'], function(done) {
       cache: false }
     )
   ).listen(8000, done);
-  console.log('Server listening on http://localhost:8000/diary/')
-});
+  console.log('Server listening on http://localhost:8000/diary/');
+}
 
+gulp.task('server', ['build-debug'], serve);
+gulp.task('preview', ['build'], serve);
+
+// ------------------------
+//  Deploy
+// ------------------------
 gulp.task('deploy', ['build'], function() {
   return gulp.src('./dist/**/*')
     .pipe(plugins.ghPages());

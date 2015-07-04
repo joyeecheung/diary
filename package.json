@@ -18,6 +18,7 @@
   "homepage": "https://github.com/joyeecheung/diary",
   "devDependencies": {
     "bluebird": "^2.9.30",
+    "cssnano": "^2.0.3",
     "cssnext": "^1.4.0",
     "gulp": "^3.8.11",
     "gulp-changed": "^1.2.1",
