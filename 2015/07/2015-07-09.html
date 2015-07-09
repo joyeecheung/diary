@@ -1,0 +1,110 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 9, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 9, 2015</h1></header><div class="content"><div class="diary"><h2 id="first-day-in-alibaba-">First day in Alibaba!</h2>
+<p>Things I need a recap for in the next a few days: jQuery, <a href="http://www.highcharts.com/docs">HighCharts</a>, Atom(sibling of Arale?), <a href="https://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html">velocity</a>.</p>
+<h2 id="history-of-web-charting">History of web charting</h2>
+<h3 id="html-image-map">HTML Image Map</h3>
+<ul>
+<li>CGI outputs Images</li>
+<li>PHP and GD graphic module, JpGraph<ul>
+<li><code>&lt;img src=&quot;pie_chart.php&quot; border=0 align=&quot;left&quot;&gt;</code></li>
+<li>streams image data back</li>
+<li>Chart navigation: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area"><code>&lt;area&gt;</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map"><code>&lt;map&gt;</code></a> tag</li>
+</ul>
+</li>
+</ul>
+<h3 id="java-applet">Java Applet</h3>
+<ul>
+<li><code>java.awt.Graphics2D</code> and <code>java.awt.geom</code></li>
+<li>Run as <code>Applet</code>(client-side) or <code>Servelet</code>(server-side)</li>
+<li>JFreeChart</li>
+</ul>
+<h3 id="flash">Flash</h3>
+<ul>
+<li>SWF and <code>&lt;object&gt;</code> tags</li>
+<li><code>&lt;param name=&quot;flashVars&quot; value=...&gt;</code> to pass data</li>
+<li>YUI2 Flash charts</li>
+</ul>
+<h3 id="svg">SVG</h3>
+<ul>
+<li>Lossless(vector-based), SMIL and events</li>
+<li>Declarative</li>
+</ul>
+<h3 id="canvas">Canvas</h3>
+<ul>
+<li><code>&lt;canvas&gt;</code>, imperative JavaScript</li>
+<li>pixel-based</li>
+</ul>
+<h3 id="javascript-charts">JavaScript Charts</h3>
+<ul>
+<li>amCharts</li>
+<li>ExtJS 5 charts(since 4)</li>
+<li>D3
+*　Focuses on transformation in document elements<ul>
+<li><em>selections</em> joined by APIs</li>
+<li>Good for complex graphs, good performance</li>
+<li>Steep learning curve</li>
+</ul>
+</li>
+<li>FusionCharts<ul>
+<li>Flash and JavaScript</li>
+<li>Payed</li>
+</ul>
+</li>
+<li>Raphael<ul>
+<li>SVG and VML</li>
+</ul>
+</li>
+</ul>
+<h3 id="highcharts">HighCharts</h3>
+<ul>
+<li>Adapters to make it pluggable in other frameworks</li>
+<li>Good animations, nice design</li>
+<li>Constructor expecting specifiers for settings</li>
+</ul>
+<h4 id="quick-tutorial">Quick Tutorial</h4>
+<ul>
+<li><code>exporting-server</code><ul>
+<li>Server-side Java implementation</li>
+<li>PhantomJS toolkit for server-side</li>
+<li>Server script to serve the chart export using Batik</li>
+</ul>
+</li>
+<li>js<ul>
+<li><code>.src.js</code> is not minified, <code>.js</code> is</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-js">Chart = <span class="hljs-keyword">new</span> Highcharts.Chart({
+  chart: {
+    renderTo: <span class="hljs-string">'container'</span>,  <span class="hljs-comment">// id for the container</span>
+    type: <span class="hljs-string">'spline'</span> <span class="hljs-comment">// default for series data</span>
+  }, title: {
+    text: <span class="hljs-string">'...'</span>
+  }, subtitle: { 
+    text: <span class="hljs-string">'...'</span>
+  }, xAxis: {
+    categories: [ <span class="hljs-string">'Jan 2008'</span>, <span class="hljs-string">'Feb'</span>, .... ],  <span class="hljs-comment">// labels on x-axis</span>
+    tickInterval: <span class="hljs-number">3</span>  <span class="hljs-comment">// intervals for ticks</span>
+  }, yAxis: {
+    title: {
+      text: <span class="hljs-string">'...'</span>
+    },
+    min: <span class="hljs-number">0</span>  <span class="hljs-comment">// default will also show negatives</span>
+  }, plotOptions: {  <span class="hljs-comment">// how it should be drawn</span>
+    series: {
+      lineWidth: <span class="hljs-number">2</span>
+    }
+  }, series : [{...}, {...}, ...]
+});
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
