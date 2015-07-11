@@ -1,0 +1,101 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 11, 2015</h1></header><div class="content"><div class="diary"><h2 id="cg">CG</h2>
+<p>Finish the assignment(quick and ugly/dirty) with glm and FLTK...Not my style really, but they can do the job real quick(Really don&#39;t have much time for this right now...). Can&#39;t get MinGW linking FLTK properly so I just gave up and use VS.</p>
+<h3 id="glm">glm</h3>
+<p>This is the glm libary written by Nate Robins(a pretty old library). There are only two files <code>glm.c</code> and <code>glm.h</code>. To make the compilers work properly, you need to rename <code>glm.c</code> to <code>glm.cpp</code>.</p>
+<p>glm has a quirk -- <code>strdup</code> is not in the standard, so I shimmed it like this(never thought of the day when I need to shim C++...o_O) </p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">char</span>* _strdup_(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* s) {
+    <span class="hljs-keyword">char</span>* p = (<span class="hljs-keyword">char</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in">strlen</span>(s)+<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">if</span> (p) <span class="hljs-built_in">strcpy</span>(p, s);
+    <span class="hljs-keyword">return</span> p;
+}
+</code></pre>
+<p>(Why <code>_strdup_</code>? Apparently VS has <code>_strdup</code>...WTF?)</p>
+<p>glm only handles simple materials(with no images), but it is really easy to use:</p>
+<pre><code class="lang-cpp">GLMmodel* model_obj = NULL;
+<span class="hljs-function">GLuint <span class="hljs-title">loadObjIntoList</span><span class="hljs-params">(<span class="hljs-keyword">char</span> * modelfile)</span> </span>{
+    <span class="hljs-comment">// release and read</span>
+    <span class="hljs-keyword">if</span> (model_obj) glmDelete(model_obj);
+    model_obj = glmReadOBJ(modelfile);
+
+    <span class="hljs-comment">// fails</span>
+    <span class="hljs-keyword">if</span> (!model_obj) <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-comment">// succeeds, generate normals</span>
+    glmFacetNormals(model_obj);
+    glmVertexNormals(model_obj, MAX_NORMAL_ANGLE);
+
+    <span class="hljs-keyword">if</span> (model_obj-&gt;nummaterials &gt; <span class="hljs-number">0</span>) {  <span class="hljs-comment">// has material</span>
+        <span class="hljs-keyword">return</span> glmList(model_obj, GLM_SMOOTH | GLM_MATERIAL);
+    } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// no material</span>
+        <span class="hljs-keyword">return</span> glmList(model_obj, GLM_SMOOTH);
+    }
+}
+</code></pre>
+<h3 id="fltk">FLTK</h3>
+<p>Callbacks(event handlers)!</p>
+<p>A few notes:</p>
+<ol>
+<li>You can&#39;t use <code>item-&gt;label(new_label)</code> on <code>FL_Menu_Item</code> because this will have pointer issues. <code>label(const char *)</code> only copies the address of the pointer, not the content. And yeah, <code>FL_Menu_Item</code> doesn&#39;t even have <code>copy_label()</code>...</li>
+<li><p>Instead of using <code>FL_File_Choose</code>, you can use <code>Fl_Native_File_Chooser</code>. They works a little bit differently though.</p>
+<pre><code class="lang-cpp">Fl_Native_File_Chooser chooser;
+chooser.directory(<span class="hljs-string">"./data/"</span>);
+chooser.title(<span class="hljs-string">"Pick a .obj file"</span>);
+chooser.type(Fl_Native_File_Chooser::BROWSE_FILE);
+chooser.filter(<span class="hljs-string">"Wavefront OBJ\t*.obj\n"</span>);
+
+<span class="hljs-comment">// Show native chooser</span>
+<span class="hljs-keyword">switch</span> (chooser.show()) {
+   <span class="hljs-keyword">case</span> -<span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">"ERROR: %s\n"</span>, chooser.errmsg()); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// ERROR</span>
+   <span class="hljs-keyword">case</span>  <span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">"*** CANCEL\n"</span>); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// CANCEL</span>
+   <span class="hljs-keyword">default</span>: <span class="hljs-comment">// PICKED FILE</span>
+       <span class="hljs-keyword">if</span> (chooser.filename()) {
+           <span class="hljs-keyword">char</span> buffer[<span class="hljs-number">2048</span>] = { <span class="hljs-number">0</span> };
+           <span class="hljs-built_in">strcpy</span>(buffer, chooser.filename());
+           canvas.setList(loadObjIntoList(buffer));
+           canvas.render();
+       }
+       <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+</li>
+<li><p>To use glut with fltk, you need to use the freeglut that comes bundled inside fltk! It&#39;s pretty up-to-date though.</p>
+<pre><code class="lang-cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/gl.h&gt;</span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/glu.h&gt;</span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/glut.h&gt;</span>
+</code></pre>
+</li>
+<li><p>To initialize a window:</p>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *argv[])</span> </span>{
+ <span class="hljs-function">Fl_Window <span class="hljs-title">win</span><span class="hljs-params">(WIDTH, HEIGHT + MENU_HEIGHT, "OBJ Viwer")</span></span>;
+ <span class="hljs-comment">// Setup some widgets...</span>
+
+ win.show(argc, argv);  <span class="hljs-comment">// things passed down from main</span>
+ win.begin();  <span class="hljs-comment">// call this first</span>
+
+   <span class="hljs-comment">// then you write your glut code</span>
+   <span class="hljs-comment">// Note: don't call glutInit(&amp;argc, argv). You've got fltk setting up the window already</span>
+   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+   glutInitWindowSize(WIDTH, HEIGHT);
+   glutInitWindowPosition(<span class="hljs-number">0</span>, MENU_HEIGHT);
+   glutCreateWindow(<span class="hljs-string">"OBJ loader"</span>);
+
+   <span class="hljs-comment">// ...</span>
+   <span class="hljs-comment">// You can use glut callbacks for keyboard/mouse controls, .etc as usual.</span>
+   glutMainLoop();
+ win.end();
+ <span class="hljs-keyword">return</span>(Fl::run());  <span class="hljs-comment">// return for main</span>
+}
+</code></pre>
+</li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
