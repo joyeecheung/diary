@@ -1,0 +1,183 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 12, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 12, 2015</h1></header><div class="content"><div class="diary"><h2 id="js-engine">JS engine</h2>
+<h3 id="-compacting-garbage-collection-in-spidermonkey-https-hacks-mozilla-org-2015-07-compacting-garbage-collection-in-spidermonkey-"><a href="https://hacks.mozilla.org/2015/07/compacting-garbage-collection-in-spidermonkey/">Compacting Garbage Collection in SpiderMonkey</a></h3>
+<h4 id="arena">Arena</h4>
+<ul>
+<li>Blocks of memory, 4K in total, the JS heap<ul>
+<li>Divided into fixed-size cells</li>
+<li>Cells in the same arena have the same size and kind</li>
+</ul>
+</li>
+<li>Type of cells<ul>
+<li>JS objects, strings, symbols(most memory)</li>
+<li>Scripts(JS code)</li>
+<li>Shapes(represent layout of objects)</li>
+<li>JIT code</li>
+</ul>
+</li>
+<li>Problem<ul>
+<li>Can&#39;t be free as long as it has live cells</li>
+<li>Fragmentation: many arena have only a few cells, but can&#39;t be filled with cells of other kinds/sizes</li>
+<li>Can&#39;t be returned to OS when memory is low</li>
+</ul>
+</li>
+</ul>
+<h4 id="measure-wasted-memory">Measure wasted memory</h4>
+<ul>
+<li>To see the memory report, enter <code>about:memory</code><ul>
+<li><code>js-main-runtime-gc-heap-commited/unused/gc-things</code></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Performance/about:memory">Doc</a></li>
+</ul>
+</li>
+<li>Reduce 2% of total allocations/8% OF JS heap</li>
+</ul>
+<h4 id="compacting">Compacting</h4>
+<ul>
+<li>Merge live cells in sparse arenas, reuse memory</li>
+<li>Difficulties:<ul>
+<li>Update every pointer to the moved cells</li>
+<li>Scanning could be expensive<ul>
+<li>Solution: only do this when memory is low/user is inactive</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Steps<ol>
+<li>Figure out the cells to move</li>
+<li>Move them</li>
+<li>Update pointers to them</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-selecting-cells-to-move">1. Selecting cells to move</h4>
+<ul>
+<li>Goal<ul>
+<li>Move minimum amount of data</li>
+<li>No need for additional memory</li>
+</ul>
+</li>
+<li>How<ol>
+<li>Sort all non-full arena by number of free cells</li>
+<li>Split in two, the first one have <strong>enough free space to accommodate cells in the other</strong></li>
+<li>The second half will be moved</li>
+</ol>
+</li>
+</ul>
+<h4 id="2-move-the-cells">2. Move the cells</h4>
+<ol>
+<li>Allocate a new cell in one of the arenas in the first half</li>
+<li>Move the data over</li>
+<li>Update self-contained pointers</li>
+<li>Update the original location with a pointer to the new location(GC will know it&#39;s been moved)</li>
+</ol>
+<h4 id="3-update-pointers">3. Update pointers</h4>
+<ul>
+<li>The heap is split into zones(e.g. one zone per tab)<ul>
+<li>Compacting is performed per zone, because usually there are no cross-zone pointers</li>
+</ul>
+</li>
+<li>Some kinds of cells can be excluded(can&#39;t have pointers anyway)</li>
+<li>Parallelize</li>
+<li>This needs exact stack rooting for avoiding overwriting unrelated data on the stack</li>
+</ul>
+<h4 id="triggers">Triggers</h4>
+<ol>
+<li>Run out of memory</li>
+<li>Memory pressure event by OS</li>
+<li>User has been inactive for some length of time(e.g. 20s)</li>
+</ol>
+<h2 id="architecture">Architecture</h2>
+<h3 id="-5-common-server-setups-for-your-web-application-https-www-digitalocean-com-community-tutorials-5-common-server-setups-for-your-web-application-"><a href="https://www.digitalocean.com/community/tutorials/5-common-server-setups-for-your-web-application">5 Common Server Setups For Your Web Application</a></h3>
+<h4 id="1-everything-on-one-server">1. Everything on one server</h4>
+<ul>
+<li>e.g. LAMP</li>
+<li>Web server, application server, database server all-in-one</li>
+<li>Use case: quick setup</li>
+<li>Pros<ul>
+<li>Simple</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>App and DB contend for resources</li>
+<li>Not scalable</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-seperate-db-server">2. Seperate DB server</h4>
+<ul>
+<li>Use case: quick setup with a few improvements, vertical scaling</li>
+<li>Pros<ul>
+<li>No competition between DB and app</li>
+<li>You can scale each tier</li>
+<li>Security: DB doesn&#39;t connect to DMZ(public networks)</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>More complex</li>
+<li>Latency of connection between the two servers is critical</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-load-balancer-reverse-proxy-">3. Load Balancer(Reverse Proxy)</h4>
+<ul>
+<li>e.g. HAProxy, Nginx, Varnish</li>
+<li>Use case: Horizontal scaling(add more servers)</li>
+<li>Pros<ul>
+<li>Horizontal scaling</li>
+<li>Protection against DDOS</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>Configuration of the load balancer is important. It can become the bottleneck.</li>
+<li>Complexities(e.g. SSL termination, sticky sessions)</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-http-accelerator-caching-reverse-proxy-">4. HTTP Accelerator(Caching Reverse Proxy)</h4>
+<ul>
+<li>Cache HTTP response</li>
+<li>e.g. Varnish, Squid, Nginx</li>
+<li>Use case: content-heavy dynamic web applications, commonly accessed file</li>
+<li>Pros<ul>
+<li>Performance</li>
+<li>Also serve as a reverse proxy load balancer</li>
+<li>Caching against DDOS</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>Configuration is critical</li>
+<li>Low cache-hit rate can reduce the performance</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-master-slave-database-replication">5. Master-Slave Database Replication</h4>
+<ul>
+<li>Updates are sent to the master, reads are distributed across all nodes(or slaves)</li>
+<li>Use case: read is more frequent than writes</li>
+<li>Pros<ul>
+<li>DB performance</li>
+</ul>
+</li>
+<li>Cons<ul>
+<li>App needs to be aware of this</li>
+<li>Updates to slaves are asynchronous, so their content could be out-of-date sometimes</li>
+<li>Can&#39;t update anymore if the master fails, and doesn&#39;t have failover for it.</li>
+</ul>
+</li>
+</ul>
+<h4 id="combined">Combined</h4>
+<ul>
+<li>Load balance caching servers and application servers</li>
+<li>Use database replication</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

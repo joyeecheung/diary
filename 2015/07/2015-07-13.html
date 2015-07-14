@@ -1,0 +1,89 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 13, 2015</h1></header><div class="content"><div class="diary"><h2 id="python">Python</h2>
+<p>Save an Ipython session with: <code>%save [filename] [line_start]-[line_end]</code></p>
+<h2 id="cv">CV</h2>
+<h3 id="digits-detection-recognition">Digits detection/recognition</h3>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> cv2
+<span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image, ImageDraw
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">detect</span><span class="hljs-params">(im)</span>:</span>
+    digit_cascade = cv2.CascadeClassifier(<span class="hljs-string">'../asset/classifier/cascade.xml'</span>)
+    digits = digit_cascade.detectMultiScale(gray)
+    <span class="hljs-keyword">return</span> digits
+
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">'__main__'</span>:
+    img = cv2.imread(<span class="hljs-string">'../asset/test/2.jpg'</span>)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    im = Image.open(<span class="hljs-string">'../asset/test/2.jpg'</span>)
+    draw = draw = ImageDraw.Draw(im)
+    digits = detect(img)
+    <span class="hljs-keyword">for</span> (x, y, w, h) <span class="hljs-keyword">in</span> digits:
+        draw.rectangle((x, y, x+w, y+h), outline=<span class="hljs-number">128</span>)
+    im.show()
+</code></pre>
+<p><a href="http://docs.opencv.org/master/dd/d3b/tutorial_py_svm_opencv.html">Use OpenCV SVM</a> to classify the detected regions.</p>
+<h2 id="highcharts">Highcharts</h2>
+<ul>
+<li>Load jQuery and highcharts. HC has an automatic adapter for <code>$</code>.</li>
+<li><code>$(&#39;selector&#39;).highcharts(options)</code> to kick it off</li>
+<li>Under the hood it uses SVG for plotting</li>
+</ul>
+<h3 id="options">Options</h3>
+<ul>
+<li><code>tooltip.pointFormat</code> specifies text in the tooltip.</li>
+</ul>
+<h3 id="specify-data">Specify Data</h3>
+<p>Specify <code>series.data</code> with an array of objects.</p>
+<ol>
+<li>Use an array. x will be the indices, y will be the value in the elements.</li>
+<li>Use an array of two-element arrays.</li>
+<li>Use an array with objects. Each object should have <code>name</code> and <code>y</code> for values. Advanced options(e.g. event handlers) are specified per-element too.</li>
+</ol>
+<p>Note: The types of array elements can be mixed!</p>
+<h3 id="specify-tooltips">Specify Tooltips</h3>
+<ul>
+<li><code>tooltip.headerFormat</code>, <code>tooltip.pointFormat</code>, <code>tooltip.footerFormat</code> accepts templates. Use <code>{variable}</code> for templating, HTML tags are allowed. Use <code>{series}</code> to access the series object(in <code>series</code> option), <code>{point}</code> to access the element object.</li>
+<li><code>tooltip.formatter</code> accepts a function returning templates.</li>
+</ul>
+<h3 id="labels">Labels</h3>
+<ul>
+<li><code>plotOptions.[chartType].dataLabels.format</code> uses a template to specify the label text. Use <code>point</code> to access the data point(elements in <code>series.data</code>).</li>
+</ul>
+<h3 id="remove-watermark">Remove watermark</h3>
+<pre><code class="lang-js">credits: {
+  enabled: <span class="hljs-literal">false</span>
+}
+</code></pre>
+<h2 id="jquery-ui">jQuery UI</h2>
+<h3 id="-jquery-ui-with-jquery2-http-www-reddit-com-r-jquery-comments-1wdhcs-jquery_ui_with_jquery2-"><a href="http://www.reddit.com/r/jquery/comments/1wdhcs/jquery_ui_with_jquery2/">Jquery UI with Jquery2?</a></h3>
+<blockquote>
+<p>you can
+The difference between 1.x and 2.x is browser support.
+the API is the same between the two (starting at 1.9)</p>
+</blockquote>
+<h2 id="jquery">jQuery</h2>
+<p><code>$.map</code>:</p>
+<pre><code class="lang-js">$.map(data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">element, key</span>) </span>{
+
+});
+</code></pre>
+<p><code>$.each</code>:</p>
+<pre><code class="lang-js">$.each(data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, element</span>) </span>{
+
+});
+</code></pre>
+<p>Notice the different orders of arguments. P.S. They both work on objects, not just arrays.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
