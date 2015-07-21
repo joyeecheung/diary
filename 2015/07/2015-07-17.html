@@ -1,0 +1,135 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 17, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 17, 2015</h1></header><div class="content"><div class="diary"><h2 id="work">Work</h2>
+<p>It&#39;s too hard to develop in the code base directly...so I tried to work on a local demo first, then integrate it into the code base.</p>
+<h3 id="-inline-block-ie7-hack"><code>inline-block</code> IE7 hack</h3>
+<p>I just keep forgetting about how it&#39;s done...</p>
+<pre><code class="lang-css"><span class="hljs-class">.selector</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-block</span></span>;
+  <span class="hljs-comment">/* IE7 hack begins */</span>
+  *<span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">zoom</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+  <span class="hljs-comment">/* IE7 hack ends */</span>
+}</span>
+</code></pre>
+<p>This only happens to elements that should have been <code>block</code>.</p>
+<h2 id="polymer">Polymer</h2>
+<h3 id="-uncss-"><code>uncss</code></h3>
+<p>The polymer starter kit comes with this. It needs Phantom.js to work, but if you don&#39;t want to build it(on Windows it takes quite some time to build), don&#39;t use it.</p>
+<h3 id="-app-layout-https-github-com-polymerelements-app-layout-templates-"><a href="https://github.com/PolymerElements/app-layout-templates">App layout</a></h3>
+<p>It&#39;s quite simple actually...Used this layout in my project.</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">template</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- Nav drawer starts --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">paper-drawer-panel</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"navDrawerPanel"</span> <span class="hljs-attribute">responsive-width</span>=<span class="hljs-value">"1280px"</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"nav"</span> <span class="hljs-attribute">drawer</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- Nav Content --&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- Main drawer starts --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">paper-drawer-panel</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"mainDrawerPanel"</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"main-drawer-panel"</span> <span class="hljs-attribute">main</span> <span class="hljs-attribute">responsive-width</span>=<span class="hljs-value">"600px"</span>
+        <span class="hljs-attribute">drawer-width</span>=<span class="hljs-value">"[[_computeListWidth(_isMobile)]]"</span> <span class="hljs-attribute">drawer-toggle-attribute</span>=<span class="hljs-value">"list-toggle"</span>
+        <span class="hljs-attribute">narrow</span>=<span class="hljs-value">"{{_isMobile}}"</span>&gt;</span>
+
+      <span class="hljs-comment">&lt;!-- List panel starts --&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">paper-header-panel</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"list-panel"</span> <span class="hljs-attribute">drawer</span>&gt;</span>
+
+        <span class="hljs-comment">&lt;!-- List Toolbar --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">paper-toolbar</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">paper-icon-button</span> <span class="hljs-attribute">icon</span>=<span class="hljs-value">"menu"</span> <span class="hljs-attribute">paper-drawer-toggle</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">paper-icon-button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">paper-toolbar</span>&gt;</span>
+
+        <span class="hljs-comment">&lt;!-- List --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">paper-menu</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"list"</span> <span class="hljs-attribute">on-iron-activate</span>=<span class="hljs-value">"_listTap"</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">paper-item</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">paper-item</span>&gt;</span>
+          <span class="hljs-comment">&lt;!-- And more paper items... --&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">paper-menu</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;/<span class="hljs-title">paper-header-panel</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- List panel ends --&gt;</span>
+
+      <span class="hljs-comment">&lt;!-- Content panel starts --&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">paper-header-panel</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"content-panel"</span> <span class="hljs-attribute">main</span>&gt;</span>
+
+        <span class="hljs-comment">&lt;!-- Main Toolbar --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">paper-toolbar</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-title">paper-icon-button</span> <span class="hljs-attribute">icon</span>=<span class="hljs-value">"arrow-back"</span> <span class="hljs-attribute">list-toggle</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">paper-icon-button</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">paper-toolbar</span>&gt;</span>
+
+        <span class="hljs-comment">&lt;!-- Main Content --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"content"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;/<span class="hljs-title">paper-header-panel</span>&gt;</span>
+      <span class="hljs-comment">&lt;!-- Content panel ends --&gt;</span>
+
+    <span class="hljs-tag">&lt;/<span class="hljs-title">paper-drawer-panel</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- List drawer ends --&gt;</span>
+
+  <span class="hljs-tag">&lt;/<span class="hljs-title">paper-drawer-panel</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- Nav drawer ends --&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-title">template</span>&gt;</span>
+</code></pre>
+<h3 id="import">import</h3>
+<p>You can do import in an <code>elements.html</code>, or only import some sub elements in the parent HTML file.</p>
+<h2 id="page-js">Page.js</h2>
+<ol>
+<li><p>To set up routes:</p>
+<pre><code class="lang-js">page(<span class="hljs-string">'/route/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+ <span class="hljs-comment">// you can use data.params.id here</span>
+});
+</code></pre>
+</li>
+<li><p>To go to a route</p>
+<pre><code class="lang-js">page(<span class="hljs-string">'some/route'</span>);
+</code></pre>
+</li>
+</ol>
+<h2 id="mongoose">Mongoose</h2>
+<h3 id="paginate">Paginate</h3>
+<p>Just use <a href="https://github.com/edwardhotchkiss/mongoose-paginate">mongoose-paginate</a> (Unfortunately it doesn&#39;t seems to return a Promise though...)</p>
+<p>In your model</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+<span class="hljs-keyword">var</span> paginate = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose-paginate'</span>);
+
+<span class="hljs-keyword">var</span> Schema = mongoose.Schema;
+
+<span class="hljs-keyword">var</span> SomeSchema = <span class="hljs-keyword">new</span> Schema({
+  <span class="hljs-comment">// your schema definition here...</span>
+});
+
+SomeSchema.plugin(paginate);
+
+<span class="hljs-keyword">var</span> Some = mongoose.model(<span class="hljs-string">'Some'</span>,  SomeSchema);
+<span class="hljs-built_in">module</span>.exports = Some;
+</code></pre>
+<p>To use it</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> Some = <span class="hljs-built_in">require</span>(<span class="hljs-string">'some-model.js'</span>);
+
+Some.paginate({
+    <span class="hljs-comment">// your query here</span>
+  },
+  {
+    page: <span class="hljs-number">2</span>,  <span class="hljs-comment">// current page</span>
+    limit: <span class="hljs-number">10</span>,  <span class="hljs-comment">// items per page</span>
+    columns: <span class="hljs-string">'title'</span>,  <span class="hljs-comment">// which columns to project</span>
+    populate: <span class="hljs-string">'some_ref'</span>,  <span class="hljs-comment">// you know</span>
+    sortBy: {
+      title: -<span class="hljs-number">1</span>  <span class="hljs-comment">// sort it</span>
+    }
+  },
+  <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, docs</span>) </span>{
+    <span class="hljs-comment">// Use docs</span>
+  }
+);
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

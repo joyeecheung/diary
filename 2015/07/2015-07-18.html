@@ -1,0 +1,82 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 18, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 18, 2015</h1></header><div class="content"><div class="diary"><h2 id="polymer">Polymer</h2>
+<h3 id="-iron-ajax-"><code>&lt;iron-ajax&gt;</code></h3>
+<p>If you just need to file request to some constant API, then declare <code>&lt;iron-ajax&gt;</code> in your HTML is a good choice. But if the request needs to be generated dynamically...well you can do <code>document.createElement(&#39;iron-ajax&#39;)</code> and then <code>ajax.generateRequest()</code>!</p>
+<p>A simple POST with JSON data:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> ajax = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'iron-ajax'</span>);
+    ajax.url = <span class="hljs-string">'/api'</span>  <span class="hljs-comment">/* your API url here*/</span>
+    ajax.body = <span class="hljs-built_in">JSON</span>.stringify({
+    <span class="hljs-comment">/* your data here */</span>
+      });
+    ajax.method = <span class="hljs-string">'POST'</span>;
+    ajax.contentType=<span class="hljs-string">"application/json"</span>;
+    ajax.addEventListener(<span class="hljs-string">'response'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-comment">// when you succeed...</span>
+    });
+    ajax.generateRequest();
+</code></pre>
+<h3 id="observer">Observer</h3>
+<p>If you go with the declarative way, Polymer doesn&#39;t always bind your new data...e.g. when you change an array, the existing elements that got replaced will not be rebind.</p>
+<p>Solution: use the <code>observer</code> property of the attributes and a handler to do the work.</p>
+<h3 id="-deep-"><code>/deep/</code></h3>
+<p>When you nest some custom elements(e.g. paper eleements!) with some other elements(therefore creating scopes), you might need this to make the nested elements look what you want...</p>
+<h3 id="-paper-item-leak"><code>&lt;paper-item&gt;</code> leak</h3>
+<p>Doesn&#39;t have a proper fix. Damn it(and you call yourself 1.0....)</p>
+<h2 id="node">Node</h2>
+<h3 id="markdown-and-sanitize">Markdown and sanitize</h3>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> showdown  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'showdown'</span>),
+    converter = <span class="hljs-keyword">new</span> showdown.Converter(),
+    sanitizeHtml = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sanitize-html'</span>);
+
+<span class="hljs-keyword">var</span> html = converter.makeHtml(text);
+<span class="hljs-keyword">var</span> result = sanitizeHtml(html);
+</code></pre>
+<h3 id="mocha-supertests">Mocha, supertests</h3>
+<p>You can setup the request destination in a file, then export it so multiple test files can share it.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/**** setup.js ***/</span>
+
+<span class="hljs-keyword">var</span> supertest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'supertest'</span>);
+
+<span class="hljs-comment">// test a local app</span>
+<span class="hljs-comment">// module.exports = supertest(require('../server'));</span>
+
+<span class="hljs-comment">// test a url(remote or local)</span>
+<span class="hljs-built_in">module</span>.exports = supertest(<span class="hljs-string">'http://localhost:3000'</span>);
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> should = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>).should(),
+  expect = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>).expect;
+
+<span class="hljs-keyword">var</span> api = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./setup'</span>);
+
+describe(<span class="hljs-string">'Your test name here'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  it(<span class="hljs-string">"your test description here"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+    api
+      .get(<span class="hljs-string">'/api/node/hot'</span>)
+      .expect(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-regexp">/json/</span>)
+      .expect(<span class="hljs-number">200</span>)
+      .end(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, res</span>) </span>{
+        <span class="hljs-comment">// do something with your res e.g. expect them</span>
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> done(err);
+        <span class="hljs-keyword">return</span> done();
+      });
+  });
+});
+</code></pre>
+<h3 id="pm2">pm2</h3>
+<p>Install it globally, then start the server with:</p>
+<pre><code>pm2 <span class="hljs-operator"><span class="hljs-keyword">start</span> <span class="hljs-keyword">server</span>.js</span>
+</code></pre><p>List the servers with:</p>
+<pre><code>pm2 <span class="hljs-type">list</span>
+</code></pre><p>Shutdown an app with:</p>
+<pre><code>pm2 <span class="hljs-built_in">kill</span>
+</code></pre></div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 15, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 15, 2015</h1></header><div class="content"><div class="diary"><h2 id="svm">SVM</h2>
+<h3 id="opencv">OpenCV</h3>
+<ol>
+<li><p>deskew the image:</p>
+<pre><code class="lang-python">SZ = <span class="hljs-number">100</span> <span class="hljs-comment"># size of the image, assuming squares</span>
+affine_flags = cv2.WARP_INVERSE_MAP | cv2.INTER_LINEAR
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">deskew</span><span class="hljs-params">(img)</span>:</span>
+   m = cv2.moments(img)
+   <span class="hljs-keyword">if</span> abs(m[<span class="hljs-string">'mu02'</span>]) &lt; <span class="hljs-number">1e-2</span>:
+       <span class="hljs-keyword">return</span> img.copy()
+   skew = m[<span class="hljs-string">'mu11'</span>]/m[<span class="hljs-string">'mu02'</span>]
+   M = np.float32([[<span class="hljs-number">1</span>, skew, -<span class="hljs-number">0.5</span>*SZ*skew], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>]])
+   img = cv2.warpAffine(img, M, (SZ, SZ), flags=affine_flags)
+   <span class="hljs-keyword">return</span> img
+</code></pre>
+</li>
+<li><p>Get the HOG descriptor</p>
+<pre><code class="lang-python"><span class="hljs-comment"># bin_n = 16  # Number of bins</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hog</span><span class="hljs-params">(img)</span>:</span>
+   gx = cv2.Sobel(img, cv2.CV_32F, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)
+   gy = cv2.Sobel(img, cv2.CV_32F, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)
+   mag, ang = cv2.cartToPolar(gx, gy)
+   <span class="hljs-comment"># quantizing binvalues in (0...16)</span>
+   bins = np.int32(bin_n * ang / (<span class="hljs-number">2</span> * np.pi))
+   bin_cells = bins[:<span class="hljs-number">10</span>, :<span class="hljs-number">10</span>], bins[<span class="hljs-number">10</span>:, :<span class="hljs-number">10</span>], bins[:<span class="hljs-number">10</span>, <span class="hljs-number">10</span>:], bins[<span class="hljs-number">10</span>:, <span class="hljs-number">10</span>:]
+   mag_cells = mag[:<span class="hljs-number">10</span>, :<span class="hljs-number">10</span>], mag[<span class="hljs-number">10</span>:, :<span class="hljs-number">10</span>], mag[:<span class="hljs-number">10</span>, <span class="hljs-number">10</span>:], mag[<span class="hljs-number">10</span>:, <span class="hljs-number">10</span>:]
+   hists = [np.bincount(b.ravel(), m.ravel(), bin_n)
+            <span class="hljs-keyword">for</span> b, m <span class="hljs-keyword">in</span> zip(bin_cells, mag_cells)]
+   hist = np.hstack(hists)     <span class="hljs-comment"># hist is a 64 bit vector</span>
+   <span class="hljs-keyword">return</span> hist
+</code></pre>
+</li>
+<li><p>Reshape</p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">preprocess</span><span class="hljs-params">(images, rows, cols)</span>:</span>
+   deskewed = [deskew(im.reshape(rows, cols)) <span class="hljs-keyword">for</span> im <span class="hljs-keyword">in</span> images]
+   hogdata = [hog(im) <span class="hljs-keyword">for</span> im <span class="hljs-keyword">in</span> deskewed]
+   <span class="hljs-keyword">return</span> np.float32(hogdata).reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">64</span>)
+</code></pre>
+</li>
+<li><p>Feed it to <code>cv2.SVM</code></p>
+<pre><code class="lang-python">svm_params = dict(kernel_type=cv2.SVM_LINEAR,
+               svm_type=cv2.SVM_C_SVC)
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">cvtrain</span><span class="hljs-params">(images, labels, num, rows, cols)</span>:</span>
+ svc = cv2.SVM()
+ traindata = preprocess(images, rows, cols)
+ responses = np.float32(labels[:, <span class="hljs-keyword">None</span>])
+ svc.train(traindata, responses, params=svm_params)
+ <span class="hljs-keyword">return</span> svc
+</code></pre>
+</li>
+</ol>
+<h3 id="sklearn">sklearn</h3>
+<p>So much easier.....</p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sktrain</span><span class="hljs-params">(images, labels)</span>:</span>
+    svc = svm.SVC(kernel=<span class="hljs-string">'linear'</span>)
+    svc.fit(images, labels)
+    <span class="hljs-keyword">return</span> svc
+</code></pre>
+<h2 id="python">Python</h2>
+<h3 id="pillow-imagefont-">pillow <code>ImageFont</code></h3>
+<pre><code class="lang-python">TEST_FONT = <span class="hljs-string">'5'</span>
+FONT_FILE = <span class="hljs-string">'arial.ttf'</span>
+FONT_SIZE = <span class="hljs-number">30</span>
+
+font = ImageFont.truetype(FONT_FILE, FONT_SIZE)
+
+<span class="hljs-comment"># test how big your font actually is</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_font_size</span><span class="hljs-params">(font)</span>:</span>
+    <span class="hljs-keyword">return</span> max(font.getsize(TEST_FONT))
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">drawText</span><span class="hljs-params">(im, regions, text, font, color)</span>:</span>
+  clone = im.copy()  <span class="hljs-comment"># avoid changing the original</span>
+  draw = ImageDraw.Draw(clone)
+  <span class="hljs-keyword">for</span> idx, (x, y) <span class="hljs-keyword">in</span> enumerate(regions):
+      draw.text((x, y), text[idx], font=font, fill=color)
+  <span class="hljs-keyword">return</span> clone
+</code></pre>
+<h3 id="draw-rectangles">Draw rectangles</h3>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">drawRectangle</span><span class="hljs-params">(im, regions, color)</span>:</span>
+    clone = im.copy()
+    draw = ImageDraw.Draw(clone)
+    <span class="hljs-keyword">for</span> (x, y, w, h) <span class="hljs-keyword">in</span> regions:
+        draw.rectangle((x, y, x+w, y+h), outline=color)
+    <span class="hljs-keyword">return</span> clone
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
