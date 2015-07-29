@@ -1,0 +1,113 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 29, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 29, 2015</h1></header><div class="content"><div class="diary"><h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-generators-continued-https-hacks-mozilla-org-2015-07-es6-in-depth-generators-continued-"><a href="https://hacks.mozilla.org/2015/07/es6-in-depth-generators-continued/">ES6 In Depth: Generators, continued</a></h3>
+<ul>
+<li>The action is synchronous and single-threaded</li>
+</ul>
+<h4 id="-generator-return-"><code>generator.return()</code></h4>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">gen</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">yield</span> <span class="hljs-string">'A'</span>;
+    <span class="hljs-keyword">yield</span> <span class="hljs-string">'B'</span>;
+    <span class="hljs-keyword">yield</span> <span class="hljs-string">'C'</span>;
+    <span class="hljs-comment">// ... yield some more values ...</span>
+  } <span class="hljs-keyword">finally</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'cleaning up'</span>);
+  }
+}
+
+<span class="hljs-keyword">var</span> generator = gen();
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> value <span class="hljs-keyword">of</span> generator) {
+  <span class="hljs-built_in">console</span>.log(value);
+  <span class="hljs-keyword">if</span> (value === <span class="hljs-string">'B'</span>)
+    generator.return();  <span class="hljs-comment">// shows 'cleaning up', and no 'C' later</span>
+}
+</code></pre>
+<ul>
+<li>If you call <code>generator.return()</code>, the <code>finally</code> block in the generator will be executed<ul>
+<li>Good for exceptions/early breaks</li>
+<li>Note: it&#39;s like change the <code>yield</code> in your generator into <code>return</code>, which will also cause the <code>finally</code> block to be executed</li>
+</ul>
+</li>
+<li>Not supported in Chrome yet: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return">MDN</a></li>
+<li>It&#39;s possible for a generator to be garbage collected before executing its <code>finally</code> block(e.g. you directly <code>break</code> out of the <code>for-of</code> without calling <code>generator.return()</code>)</li>
+<li><p>Usually you use it like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> value <span class="hljs-keyword">of</span> generator) {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-comment">// do something with value</span>
+  } <span class="hljs-keyword">catch</span> {
+    generator.return();
+    <span class="hljs-comment">// do its own error handling</span>
+  }
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="generator-for-async-operation">Generator for async operation</h4>
+<ul>
+<li>The key is: inside a generator function, <code>yield</code> can return a value. It returns what&#39;s passed by the caller in <code>generator.next(something)</code>, which means you have a way to let the generator know what to do next by using the information passed by its caller.</li>
+<li>So your generator function can not only pass things to its caller, but also receive things from its caller -- and most importantly, what it receives can be changed over each stage! (It&#39;s not like your normal parameter passing because in that case you can only pass data once at the beginning)</li>
+<li>Typically, you <code>yield</code> promises</li>
+<li><p>In this way, you can keep calling generators, <strong>pass its return value to itself</strong> until it finishes:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runGeneratorOnce</span>(<span class="hljs-params">g, result</span>) </span>{
+  <span class="hljs-keyword">var</span> status = g.next(result);
+  <span class="hljs-keyword">if</span> (status.done) {
+    <span class="hljs-keyword">return</span>;  <span class="hljs-comment">// phew!</span>
+  }
+
+  <span class="hljs-comment">// The generator has asked us to fetch something and</span>
+  <span class="hljs-comment">// call it back when we're done.</span>
+  doAsynchronousWork(
+    status.value,
+    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, nextResult</span>)  </span>{
+      <span class="hljs-keyword">if</span> (err) g.throw(err);
+      runGeneratorOnce(g, nextResult);
+    };
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> * <span class="hljs-title">generator</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">yield</span> <span class="hljs-string">'A'</span>;
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">yield</span> b;
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">yield</span> c;
+    } <span class="hljs-keyword">catch</span> {
+      <span class="hljs-comment">// can catch errors from the caller</span>
+    }
+
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="-generator-throw-"><code>generator.throw()</code></h4>
+<ul>
+<li>Using this, you can let the caller notify the generator it bumps into somehing wrong, and the generator might need to know it.</li>
+<li>You can catch the error generated by the caller in your generator, but if you don&#39;t catch it inside the generator whose <code>.throw()</code> is called, the error will be thrown right back at the caller</li>
+</ul>
+<h4 id="-yield-"><code>yield *</code></h4>
+<ul>
+<li><p><code>yield</code>s everything inside the generator.</p>
+<pre><code><span class="hljs-keyword">yield</span> *iter;
+<span class="hljs-comment">// is like</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> <span class="hljs-keyword">value</span> of iter) {
+  <span class="hljs-keyword">yield</span> <span class="hljs-keyword">value</span>
+}
+</code></pre></li>
+<li>You can use it to maintain the order of your operations. If you <code>yield *</code> something, you can be sure that it will have nothing more to <code>yield</code> before the <code>yield *</code> statment ends.</li>
+</ul>
+<h2 id="this-looks-interesting">This looks interesting</h2>
+<p>jQuery-like, but much simpler.</p>
+<ul>
+<li><a href="https://github.com/webpro/DOMtastic">DOMtastic</a></li>
+<li><a href="https://medium.com/@webprolific/domtastic-s-baseclass-437f142e8bf4">DOMtastic’s $.baseClass</a></li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>July 27, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>July 27, 2015</h1></header><div class="content"><div class="diary"><h2 id="svg">SVG</h2>
+<h3 id="reuse-with-defs-and-use-">Reuse with <code>&lt;defs&gt;</code> and <code>&lt;use&gt;</code></h3>
+<p>Note you need <code>xlink:href</code> to link your <code>id</code>.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-title">defs</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- A circle of radius 200 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">circle</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"s1"</span> <span class="hljs-attribute">cx</span>=<span class="hljs-value">"200"</span> <span class="hljs-attribute">cy</span>=<span class="hljs-value">"200"</span> <span class="hljs-attribute">r</span>=<span class="hljs-value">"200"</span> <span class="hljs-attribute">fill</span>=<span class="hljs-value">"yellow"</span> <span class="hljs-attribute">stroke</span>=<span class="hljs-value">"black"</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">defs</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">use</span> <span class="hljs-attribute">x</span>=<span class="hljs-value">"100"</span> <span class="hljs-attribute">y</span>=<span class="hljs-value">"100"</span> <span class="hljs-attribute">xlink:href</span> = "#<span class="hljs-attribute">s1</span>"/&gt;</span>
+</code></pre>
+<h3 id="-marker-s"><code>&lt;marker&gt;</code>s</h3>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-title">defs</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">marker</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"Triangle"</span>
+            <span class="hljs-attribute">viewBox</span>=<span class="hljs-value">"0 0 10 10"</span> 
+            <span class="hljs-attribute">refX</span>=<span class="hljs-value">"1"</span> <span class="hljs-attribute">refY</span>=<span class="hljs-value">"5"</span>
+            <span class="hljs-attribute">markerWidth</span>=<span class="hljs-value">"6"</span> 
+            <span class="hljs-attribute">markerHeight</span>=<span class="hljs-value">"6"</span>
+            <span class="hljs-attribute">orient</span>=<span class="hljs-value">"auto"</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- What's inside your marker --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">path</span> <span class="hljs-attribute">d</span>=<span class="hljs-value">"M 0 0 L 10 5 L 0 10 z"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">marker</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">defs</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">polyline</span> <span class="hljs-attribute">points</span>=<span class="hljs-value">"10,90 50,80 90,20"</span>
+          <span class="hljs-attribute">fill</span>=<span class="hljs-value">"none"</span> <span class="hljs-attribute">stroke</span>=<span class="hljs-value">"black"</span> 
+          <span class="hljs-attribute">stroke-width</span>=<span class="hljs-value">"2"</span>
+          <span class="hljs-attribute">marker-end</span>=<span class="hljs-value">"url(#Triangle)"</span> /&gt;</span>
+          <span class="hljs-comment">&lt;!-- Notice `marker-end` --&gt;</span>
+</code></pre>
+<h2 id="css">CSS</h2>
+<h3 id="-border-radius-50-or-border-radius-100-http-jessica-eldredge-com-2014-09-07-border-radius-50-or-100-percent-"><a href="http://jessica-eldredge.com/2014/09/07/border-radius-50-or-100-percent/"><code>border-radius: 50%</code> or <code>border-radius: 100%</code></a></h3>
+<ul>
+<li>Percentages are calculated against the width and the height of your element, so <code>50%</code> is what you really want(The radius is half of the width/height, which is very reasonable)</li>
+<li>Why does <code>100%</code> work? Because by the spec, if the rounded shape is larger than it&#39;s original slice, the browser need to <strong>scale the shape until it fits inside its original slice</strong></li>
+<li>So, use <code>50%</code>!</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
