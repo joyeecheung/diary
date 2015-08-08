@@ -1,0 +1,72 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 8, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 8, 2015</h1></header><div class="content"><div class="diary"><h2 id="compilers">Compilers</h2>
+<h3 id="-differences-between-just-in-time-compilation-and-on-stack-replacement-http-stackoverflow-com-questions-9105505-differences-between-just-in-time-compilation-and-on-stack-replacement-9105846-9105846-"><a href="http://stackoverflow.com/questions/9105505/differences-between-just-in-time-compilation-and-on-stack-replacement/9105846#9105846">Differences between Just in Time compilation and On Stack Replacement</a></h3>
+<ul>
+<li>JIT - Compiles native code at run time</li>
+<li>OSR - Switching between different implementations of the same function(e.g. unoptimized code/JITed code)</li>
+</ul>
+<h2 id="c-">C++</h2>
+<h3 id="-what-do-people-mean-when-they-say-c-has-undecidable-grammar-http-stackoverflow-com-questions-794015-what-do-people-mean-when-they-say-c-has-undecidable-grammar-794116-794116-"><a href="http://stackoverflow.com/questions/794015/what-do-people-mean-when-they-say-c-has-undecidable-grammar/794116#794116">What do people mean when they say C++ has “undecidable grammar”?</a></h3>
+<ul>
+<li>C++&#39;s template system is Turing complete</li>
+<li>Some apparently valid C++ programs can&#39;t be compiled because the compiler just can&#39;t decide if it is valid - remember the halting problem?</li>
+<li>C++ grammer is ambiguous and needs context, so it&#39;s impossible to separate syntax analysis from semantic analysis.</li>
+<li>Since in C++ semantic analysis is undecideable, so is syntax analysis.</li>
+</ul>
+<h3 id="need-to-read-them-again">Need to read them again</h3>
+<ul>
+<li><a href="https://isocpp.org/faq">C++ FAQ</a></li>
+<li><a href="http://yosefk.com/c++fqa/">C++ FQA Lite</a></li>
+<li><a href="http://www.cprogramming.com/tutorial/">C++ Tutorials</a></li>
+</ul>
+<h3 id="-determining-the-size-of-a-class-object-http-www-cprogramming-com-tutorial-size_of_class_object-html-"><a href="http://www.cprogramming.com/tutorial/size_of_class_object.html">Determining the Size of a Class Object</a></h3>
+<ul>
+<li>Size of all non-static data members<ul>
+<li>Static data members won&#39;t be counted</li>
+</ul>
+</li>
+<li>Order of data members<ul>
+<li>Padding(why padding? Because otherwise you need to do more memory access/modify cycles)</li>
+<li>Most compilers won&#39;t reorder in the layout</li>
+</ul>
+</li>
+<li>Byte alignment or byte padding<ul>
+<li>Before C++11(with <code>alignas</code> and <code>alignof</code>), you need to use complier extension to give them hints</li>
+</ul>
+</li>
+<li>Size of its immediate base class<ul>
+<li>Size of base classes is included since the subclass object will have a base class object of its own</li>
+</ul>
+</li>
+<li>The existence of virtual function(s)<ul>
+<li>On virtual table pointer for each virtual function, usually it&#39;s the same size as a normal pointer</li>
+<li>Virtual table pointer will be common across the class hierarchy, so if you have a virtual function in your base class and another in your subclass, they will only add 1 pointer to your memory layout.</li>
+</ul>
+</li>
+<li>Compiler being used<ul>
+<li>e.g. MSVC will add padding between base classes and subclasses, but gcc won&#39;t</li>
+</ul>
+</li>
+<li>Mode of inheritance<ul>
+<li>Virtual inheritance will add a pointer to the object</li>
+<li>The final class in the diamond problem solved with virtual inheritance will only have one virtual class pointer though.</li>
+</ul>
+</li>
+</ul>
+<h3 id="reversing-microsoft-visual-c-">Reversing Microsoft Visual C++</h3>
+<ul>
+<li><a href="http://www.openrce.org/articles/full_view/21">Part I</a></li>
+<li><a href="http://www.openrce.org/articles/full_view/23">Part II</a></li>
+<li><a href="http://www.openrce.org/articles/files/jangrayhood.pdf">C++: Under the Hood</a></li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

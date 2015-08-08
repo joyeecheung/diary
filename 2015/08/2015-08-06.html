@@ -11,4 +11,217 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-63818301-1', 'auto');
 ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 6, 2015</h1></header><div class="content"><div class="diary"><h2 id="-javascript-quiz-http-perfectionkills-com-javascript-quiz-"><a href="http://perfectionkills.com/javascript-quiz/">JavaScript Quiz</a></h2>
 <p>Got 2 wrong. Can see that I&#39;m not quite familiar with <code>delete</code>(you can&#39;t delete a primitive, the value will still be there) and how the shadowing of names inside functions works(the function name can be shadowed inside the function).</p>
+<h2 id="promise">Promise</h2>
+<h3 id="promise-and-future">Promise and Future</h3>
+<p>Usually Promise refers to the data structure encapsulating a future value, and Future refers to that value.</p>
+<h3 id="promisify-xmlhttprequest-">Promisify <code>XMLHttpRequest</code></h3>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> ajax = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-pi">  'use strict'</span>;
+  <span class="hljs-keyword">var</span> DONE = <span class="hljs-number">4</span>,
+      OK = <span class="hljs-number">200</span>;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">serialize</span>(<span class="hljs-params">obj</span>) </span>{
+     <span class="hljs-keyword">var</span> str = [];
+     <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> p <span class="hljs-keyword">in</span> obj) {
+         <span class="hljs-keyword">if</span> (obj.hasOwnProperty(p)) {
+             str.push(<span class="hljs-built_in">encodeURIComponent</span>(p) + <span class="hljs-string">"="</span> + <span class="hljs-built_in">encodeURIComponent</span>(obj[p]));
+         }
+     }
+     <span class="hljs-keyword">return</span> str.join(<span class="hljs-string">"&amp;"</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">core</span>(<span class="hljs-params">method, url, data, headers</span>) </span>{
+    <span class="hljs-keyword">if</span> (method === <span class="hljs-string">'GET'</span> &amp;&amp; data) {
+      url += <span class="hljs-string">'?'</span> + serialize(data);
+    }
+
+    <span class="hljs-comment">// Establishing a promise in return</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+      <span class="hljs-comment">// Instantiates the XMLHttpRequest</span>
+      <span class="hljs-keyword">var</span> xhr = <span class="hljs-keyword">new</span> XMLHttpRequest();
+      xhr.open(method, url, <span class="hljs-literal">true</span>);
+
+      <span class="hljs-keyword">if</span> (headers) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> headers) {
+          <span class="hljs-keyword">if</span> (headers.hasOwnProperty(key)) {
+            xhr.setRequestHeader(key, headers[key])
+          }
+        }
+      }
+
+      xhr.onreadystatechange = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-keyword">if</span> (xhr.readyState === DONE) {
+          <span class="hljs-keyword">if</span> (xhr.status === OK) {  <span class="hljs-comment">// pass to then arg1</span>
+            resolve(xhr.responseText);
+          } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// pass to catch/then arg2</span>
+            reject(<span class="hljs-built_in">Error</span>(xhr.statusText));
+          }
+        }
+      };
+
+      xhr.onerror = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        reject(<span class="hljs-built_in">Error</span>(<span class="hljs-string">"XMLHttpRequest failed"</span>));
+      }
+
+      <span class="hljs-keyword">if</span> (method === <span class="hljs-string">'GET'</span> || !data) {
+        xhr.send();
+      } <span class="hljs-keyword">else</span> {
+        xhr.send(data);
+      }
+    });
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-string">'get'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, data, headers</span>) </span>{
+      <span class="hljs-keyword">return</span> core(<span class="hljs-string">'GET'</span>, url, data, headers);
+    },
+    <span class="hljs-string">'post'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, data, headers</span>) </span>{
+      <span class="hljs-keyword">return</span> core(<span class="hljs-string">'POST'</span>, url, data, headers);
+    },
+    <span class="hljs-string">'put'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, data, headers</span>) </span>{
+      <span class="hljs-keyword">return</span> core(<span class="hljs-string">'PUT'</span>, url, data, headers);
+    },
+    <span class="hljs-string">'delete'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">url, headers</span>) </span>{
+      <span class="hljs-keyword">return</span> core(<span class="hljs-string">'DELETE'</span>, url, headers);
+    }
+  };
+}());
+
+<span class="hljs-keyword">var</span> p = ajax
+  .get(<span class="hljs-string">'http://foo.com/api/normal/123'</span>, {id: <span class="hljs-number">1234</span>})
+  .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(response);
+    <span class="hljs-keyword">var</span> data = <span class="hljs-built_in">JSON</span>.parse(response);
+    <span class="hljs-keyword">return</span> ajax.post(<span class="hljs-string">'http://foo.com/api/normal'</span>,
+        <span class="hljs-built_in">JSON</span>.stringify({id: data.content}),
+        { <span class="hljs-string">"Content-Type"</span>: <span class="hljs-string">"application/json"</span> });
+  }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(response);
+  }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(err);
+  });
+</code></pre>
+<h2 id="promises-and-generators">Promises and generators</h2>
+<p>To use generators with promises, you need to create a helper <code>spawn</code>(this is somewhat similar to what co privides, although co is much more powerful)</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncOperation</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(resolve =&gt; {
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      resolve(<span class="hljs-built_in">Math</span>.random());
+    }, <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">3000</span>);
+  });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">syncOperation</span>(<span class="hljs-params">value</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(value);
+}
+
+<span class="hljs-comment">// Taken from the spec, modified with ES6</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">spawn</span>(<span class="hljs-params">genF, self</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>((resolve, reject) =&gt; { 
+    <span class="hljs-keyword">let</span> gen = genF.call(self);  <span class="hljs-comment">// get the iterator out of the generator</span>
+
+    <span class="hljs-comment">// nextF could return a generator</span>
+    <span class="hljs-comment">// that throws or returns values/Promises</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span>(<span class="hljs-params">nextF</span>) </span>{
+
+      <span class="hljs-keyword">let</span> next;
+
+      <span class="hljs-keyword">try</span> {
+        next = nextF();  <span class="hljs-comment">// yield is executed here</span>
+      } <span class="hljs-keyword">catch</span>(e) {
+        reject(e);  <span class="hljs-comment">// fails</span>
+        <span class="hljs-keyword">return</span>;
+      }
+
+      <span class="hljs-keyword">if</span> (next.done) {  <span class="hljs-comment">// finished and succeed</span>
+        <span class="hljs-comment">// spawn finished, next.value be will passed</span>
+        <span class="hljs-comment">// to the then() of the spawn return value</span>
+        resolve(next.value);
+        <span class="hljs-keyword">return</span>;
+      } <span class="hljs-keyword">else</span> { <span class="hljs-comment">// succeed but not finished i.e. more yield</span>
+        <span class="hljs-comment">// wrap it and pass to next tick</span>
+        <span class="hljs-built_in">Promise</span>.resolve(next.value)
+        .then( v =&gt; {
+            tick(() =&gt; gen.next(v));  <span class="hljs-comment">// pass outside</span>
+        }, e =&gt; {
+            tick(() =&gt; gen.throw(e));  <span class="hljs-comment">// throw outside</span>
+        });  <span class="hljs-comment">// pass the async result to tick</span>
+      }
+    }
+
+    tick(() =&gt; gen.next(<span class="hljs-literal">undefined</span>));  <span class="hljs-comment">// kickoff</span>
+  });
+}
+
+spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"start"</span>);
+
+  <span class="hljs-comment">// what passed to next() will be yielded here</span>
+  <span class="hljs-keyword">let</span> a = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"first async result: "</span> + a);
+  <span class="hljs-keyword">let</span> b = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"second async result: "</span> + b);
+  <span class="hljs-keyword">let</span> c = <span class="hljs-keyword">yield</span> asyncOperation();
+  syncOperation(<span class="hljs-string">"third async result: "</span> + c);
+
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"done"</span>);
+  <span class="hljs-keyword">return</span> a + b + c;  <span class="hljs-comment">// this will be resolved</span>
+}, <span class="hljs-keyword">this</span>).then(result =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Final result: "</span> + result));
+</code></pre>
+<h2 id="promises-and-async-await">Promises and async/await</h2>
+<p>With ES7 async, you don&#39;t need to write the helper yourself.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params"><span class="hljs-comment">/* args */</span></span>) </span>{
+    <span class="hljs-comment">/* body */</span>
+}
+</code></pre>
+<p>is equivalent to</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params"><span class="hljs-comment">/* args */</span></span>) </span>{
+    <span class="hljs-keyword">return</span> spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">/* body */</span>
+    }, <span class="hljs-keyword">this</span>);
+}
+</code></pre>
+<p>where you replace <code>await</code> with <code>yield</code></p>
+<h2 id="comparison">Comparison</h2>
+<p>Taken from <a href="https://tc39.github.io/ecmascript-asyncawait/">the spec of async/await</a>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsPromise</span>(<span class="hljs-params">elem, animations</span>) </span>{
+    <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">let</span> p = currentPromise;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> anim <span class="hljs-keyword">of</span> animations) {
+        p = p.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>) </span>{
+            ret = val;
+            <span class="hljs-keyword">return</span> anim(elem);
+        })
+    }
+    <span class="hljs-keyword">return</span> p.catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+        <span class="hljs-comment">/* ignore and keep going */</span>
+    }).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> ret;
+    });
+}
+</code></pre>
+<p>Generators(less boilerplate, needs a <code>spawn</code> helper):</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsGenerator</span>(<span class="hljs-params">elem, animations</span>) </span>{
+    <span class="hljs-keyword">return</span> spawn(<span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> anim <span class="hljs-keyword">of</span> animations) {
+                ret = <span class="hljs-keyword">yield</span> anim(elem);
+            }
+        } <span class="hljs-keyword">catch</span>(e) { <span class="hljs-comment">/* ignore and keep going */</span> }
+        <span class="hljs-keyword">return</span> ret;
+    });
+}
+</code></pre>
+<p>Async(even less boilerplate):</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chainAnimationsAsync</span>(<span class="hljs-params">elem, animations</span>) </span>{
+    <span class="hljs-keyword">let</span> ret = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> anim <span class="hljs-keyword">of</span> animations) {
+            ret = <span class="hljs-keyword">await</span> anim(elem);
+        }
+    } <span class="hljs-keyword">catch</span>(e) { <span class="hljs-comment">/* ignore and keep going */</span> }
+    <span class="hljs-keyword">return</span> ret;
+}
+</code></pre>
 </div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
