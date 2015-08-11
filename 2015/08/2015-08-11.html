@@ -1,0 +1,195 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 11, 2015</h1></header><div class="content"><div class="diary"><h3 id="what-i-m-thinking-when-i-m-writing-c-c-">What I&#39;m thinking when I&#39;m writing C/C++</h3>
+<p>If I&#39;m writing C</p>
+<ul>
+<li>I&#39;ll use raw pointers and arrays</li>
+<li>I&#39;ll implement a lot of containers and algorithms</li>
+<li>I&#39;ll use function pointers</li>
+<li>I&#39;ll frequently manage the memory myself</li>
+<li>I&#39;ll use <code>malloc</code> and free and <code>realloc</code> and break type safety</li>
+<li>I&#39;ll use macros to do metaprogramming and generic programming, albeit a limited one</li>
+<li>I&#39;ll use <code>struct</code>s like they are aggregates</li>
+<li>When I encounter something wrong, I&#39;ll return an error code</li>
+<li>When I need to return a large amount of data, I pass a pointer to a function</li>
+<li>I usually thinks procedure-oriented</li>
+<li>I uses pointers for I/O</li>
+<li>I uses explicit namespaces(prefix the variables)</li>
+<li>In my for-loop usually are indices and pointers</li>
+</ul>
+<p>If I&#39;m writing C++</p>
+<ul>
+<li>I&#39;ll use smart pointers, references, iterators and vectors</li>
+<li>I&#39;ll use STL</li>
+<li>I&#39;ll use functors, or the more powerful lambda functions</li>
+<li>I&#39;ll delegate tons of memory management works to RAII and smart pointers</li>
+<li>I&#39;ll use new and delete and doRAII with constructors and destructors</li>
+<li>I&#39;ll use templates, concepts, <code>constexpr</code> to do metaprogramming and generic programming, which is much more powerful</li>
+<li>I&#39;ll have classes, and I&#39;ll have encapsulation, polymorphism, inheritance</li>
+<li>When I encounter something wrong, I&#39;ll throw an exception</li>
+<li>When I need to return a large amount of data, I use move semantics, or rely on RVO</li>
+<li>I can think object-oriented, or functional, or generic, etc.</li>
+<li>I use streams for I/O</li>
+<li>I use the real namespace</li>
+<li>In my for-loop, I use <code>auto</code> :)</li>
+</ul>
+<h3 id="when-should-static_cast-dynamic_cast-const_cast-and-reinterpret_cast-be-used-">When should <code>static_cast</code>, <code>dynamic_cast</code>, <code>const_cast</code> and <code>reinterpret_cast</code> be used?</h3>
+<ul>
+<li>Use <code>dynamic_cast</code> for converting pointers/references within an inheritance hierarchy.</li>
+<li>Use <code>static_cast</code> for ordinary type conversions(when it is reasonable e.g. float to int).</li>
+<li>Use <code>reinterpret_cast</code> for low-level reinterpreting of bit patterns. Use with extreme caution.</li>
+<li>Use <code>const_cast</code> for casting away const/volatile. Avoid this unless you are stuck using a const-incorrect API.</li>
+</ul>
+<h3 id="tcp-congestion-control">TCP congestion control</h3>
+<ol>
+<li>Slow start: power of 2</li>
+<li>Congestion avoidance: when a packet loss happened<ul>
+<li>Tahoe<ul>
+<li>Halve the slow start threshold</li>
+<li>Set congestion window to 1MSS</li>
+<li>Enter slow start</li>
+</ul>
+</li>
+<li>Reno<ul>
+<li>Halve the slow start threshold(like Tahoe)</li>
+<li>Set congestion window to half of the previous slow start threshold(unlink Tahoe)</li>
+<li>Enter fast recovery(retransmit, if it is lost again, then go back to slow start)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>When the ACK times out, Reno is the same as Tahoe</li>
+</ol>
+<h3 id="-bringing-componentization-to-the-web-an-overview-of-web-components-http-blogs-windows-com-msedgedev-2015-07-14-bringing-componentization-to-the-web-an-overview-of-web-components-"><a href="http://blogs.windows.com/msedgedev/2015/07/14/bringing-componentization-to-the-web-an-overview-of-web-components/">Bringing componentization to the web: An overview of Web Components</a></h3>
+<p>Web Components consists of:</p>
+<ul>
+<li>Custom Elements</li>
+<li>HTML Templates</li>
+<li>Shadow DOM</li>
+<li>HTML Imports</li>
+</ul>
+<h4 id="css-style-isolation">CSS style isolation</h4>
+<ul>
+<li>Shadow document and boundaries<ul>
+<li>Two ways to break the boundaries:<ol>
+<li>Parts styling: create <strong>custom pseudo elements</strong> to expose to the outside world(so they can style them)</li>
+<li>Custom properties: inherited variables(which cross the boundaries), useful for theming</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>Selector isolation<ul>
+<li><code>@media</code></li>
+<li><code>@page</code></li>
+<li><code>@supports</code></li>
+<li><code>@document</code>(proposal)</li>
+</ul>
+</li>
+<li><a href="CSS Custom Properties for Cascading Variables Module Level 1">CSS scoping</a>: <code>@scope</code><ul>
+<li>Also intended to be used with <a href="https://drafts.csswg.org/css-scoping/#scope">the DOM</a></li>
+<li>One-way: selectors in that <code>@scope</code> can&#39;t access elements in the outside world, but selectors outside that <code>@scope</code> can select inside the <code>@scope</code><ul>
+<li>Which means you need to be very careful when using selectors that are not scoped</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="http://dev.w3.org/csswg/css-containment/">CSS Containment</a><ul>
+<li>More about layout isolation</li>
+<li>Blocks some inheritance</li>
+<li>Promises containment with <code>contain</code></li>
+<li>Allow browsers to optimize layout and rendering: dirty layout in the subtree doesn&#39;t affect the outside world, so only that sub-tree needs to be updated</li>
+</ul>
+</li>
+</ul>
+<h4 id="javascript-isolation">JavaScript isolation</h4>
+<ul>
+<li>Lexical scopes in JS</li>
+<li>Workers<ul>
+<li>Clean &amp; fresh global object, with security boundaries</li>
+</ul>
+</li>
+<li>The good old <code>&lt;iframe&gt;</code><ul>
+<li>Risks: breaching isolation boundaries with things like <code>contentWindow</code>(Same-origin policy helps though)</li>
+<li><code>&lt;iframe sandbox&gt;</code><ul>
+<li>Protect the host from unwanted scripting, popups, navigation, etc.</li>
+</ul>
+</li>
+<li>Style isolation creates a significant <em>seam</em>, can be sovled with <code>&lt;iframe seamless&gt;</code></li>
+<li>No deep integration e.g. for events</li>
+<li>Each iframe comes with a global object, which is expensive</li>
+<li>No reuse of the host element&#39;s content model</li>
+<li><code>seamless</code> is not that good</li>
+<li>In general, the question of what to style should belong to the component</li>
+<li>No good APIs and lifecycle management</li>
+</ul>
+</li>
+</ul>
+<h4 id="historical-proposals">Historical proposals</h4>
+<ul>
+<li><a href="http://www.w3.org/TR/NOTE-HTMLComponents">HTML Components</a>(1998) by M$, started in IE5.5, obsoleted in IE10</li>
+<li><a href="http://www.w3.org/TR/2001/NOTE-xbl-20010223/">XBL</a>(2001) AND <a href="http://www.w3.org/TR/xbl/">XBL2</a>(2007) by Mozilla, companion to XUL</li>
+<li>Web Components by Google</li>
+</ul>
+<h4 id="first-generation">First generation</h4>
+<ul>
+<li>Custom elements<ul>
+<li>Not about boundary, but about attaching APIs</li>
+<li><code>is</code> attribute to tell the browser to attach APIs to a normal element</li>
+</ul>
+</li>
+<li>Shadow DOM<ul>
+<li>Imperative API for connecting subtrees to the host</li>
+<li>Reuse the host element&#39;s content model with <code>&lt;slot&gt;</code>, event target fixup, and closed/open modes of operation</li>
+<li>Great impact on many things like the focus model</li>
+<li>Related to CSS Scoping</li>
+</ul>
+</li>
+<li><code>&lt;template&gt;</code><ul>
+<li>inertness: don&#39;t trigger download/respond to user input</li>
+<li>Declaratively create a disconnected element</li>
+<li>Template stamping, data-binding, conveying the content of a shadow DOM, etc.</li>
+</ul>
+</li>
+<li>Custom properties(CSS variables)</li>
+</ul>
+<h4 id="the-next-generation">The next generation</h4>
+<ul>
+<li>Declarative shadow DOM<ul>
+<li>About serialization</li>
+</ul>
+</li>
+<li>Fully Isolated Components<ul>
+<li>About isolated global object and API</li>
+<li>3 different proposals, but pretty much aligned</li>
+</ul>
+</li>
+<li>Accessibility primitives<ul>
+<li><code>is</code> is for extending existing native elements because they carry <strong>accessibility behaviors</strong> that are not available to JS</li>
+<li>We need accessibility extension points for real components(without <code>is</code>)</li>
+</ul>
+</li>
+<li>Unified native control styling<ul>
+<li>Shadow DOM can be used to implement a unified control system</li>
+<li>There are ideas in CSS, but lacks momentum</li>
+</ul>
+</li>
+<li>CSS parts styling<ul>
+<li><strong>Expose</strong> parts of the component for styling</li>
+<li>Especially import for native controls</li>
+</ul>
+</li>
+<li>Parser customization<ul>
+<li>Customize beyond open/close tags</li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

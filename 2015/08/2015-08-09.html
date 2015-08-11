@@ -1,0 +1,326 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 9, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 9, 2015</h1></header><div class="content"><div class="diary"><h2 id="c-">C++</h2>
+<h3 id="-bjarne-stroustrup-the-essence-of-c-https-www-youtube-com-watch-v-d5mesboj9fc-"><a href="https://www.youtube.com/watch?v=D5MEsboj9Fc">Bjarne Stroustrup - The Essence of C++</a></h3>
+<h4 id="what-c-is-was-designed-with-in-mind">What C++ is/was designed with in mind</h4>
+<ul>
+<li>Type safety</li>
+<li>Resource safety</li>
+<li>Performance</li>
+<li>Predictability</li>
+<li>Teachability</li>
+<li>Readability</li>
+</ul>
+<h4 id="what-is-was-c-for">What is/was C++ for</h4>
+<ul>
+<li>System programming</li>
+<li>Embedded systems</li>
+<li>Resource constrained systems</li>
+<li>Large systems</li>
+</ul>
+<h4 id="what-does-c-offer">What does C++ offer</h4>
+<ol>
+<li>Map to hardware(the C part)<ul>
+<li>values, handles</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li>Construction/destruction</li>
+</ul>
+</li>
+<li>Inheritance<ul>
+<li>Abstraction(virtual), insulation from implementation</li>
+<li>Data in derived classes, interfaces in abstract classes</li>
+<li>Needs dynamic memory/resource management</li>
+</ul>
+</li>
+<li>Generic programming<ul>
+<li>Templates are about GP first, MP second.</li>
+</ul>
+</li>
+</ol>
+<h4 id="what-s-not-c-">What&#39;s not C++</h4>
+<ul>
+<li>GC</li>
+<li>Guarantee for type safety<ul>
+<li>Compatibility for C needs to break type safety</li>
+</ul>
+</li>
+<li>VM<ul>
+<li>What will be used to implement a VM anyway? :)</li>
+</ul>
+</li>
+<li>Huge standard library<ul>
+<li>No sugar daddy, no central authority</li>
+</ul>
+</li>
+<li>Standards(for applications)</li>
+</ul>
+<h4 id="resource-management">Resource management</h4>
+<ul>
+<li>Resources -- handles<ul>
+<li>Memory(containers), locks, files, sockets, threads...</li>
+</ul>
+</li>
+<li>Constructors and destructors</li>
+<li>Handles are usually scoped, so its lifetime is predictable</li>
+<li>Needs to be required and release, needs an owner</li>
+<li>RAII: acquisition is initialization<ul>
+<li>Acquire in construction, Release in destruction</li>
+</ul>
+</li>
+<li>Throw exception in case of failure</li>
+<li>Never throw while holding a resource not owned by a handle<ul>
+<li>E.g. allocate memory for a local raw pointer, then throw/return without deletion</li>
+</ul>
+</li>
+<li>In general, leave established invariants intact when leaving a scope</li>
+</ul>
+<h4 id="comparisons">Comparisons</h4>
+<p>Raw pointer:</p>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fn</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n, <span class="hljs-keyword">int</span> x)</span> </span>{
+  Gadget *p = <span class="hljs-keyword">new</span> Gadget{n};
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">100</span>) <span class="hljs-keyword">throw</span> <span class="hljs-built_in">std</span>::runtime_error{<span class="hljs-string">"Oh!"</span>}; <span class="hljs-comment">// leak</span>
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">200</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// leak</span>
+  <span class="hljs-keyword">delete</span> p;  <span class="hljs-comment">// may or may not be executed</span>
+}
+</code></pre>
+<p>Smart pointer(leaving the local scope will reclaim the resource):</p>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fn</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n, <span class="hljs-keyword">int</span> x)</span> </span>{
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">shared_ptr</span>&lt;Gadget&gt; p{<span class="hljs-keyword">new</span> Gadget{n}};
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">100</span>) <span class="hljs-keyword">throw</span> <span class="hljs-built_in">std</span>::runtime_error{<span class="hljs-string">"Oh!"</span>}; <span class="hljs-comment">// no leak</span>
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">200</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// no leak</span>
+  <span class="hljs-keyword">delete</span> p;  <span class="hljs-comment">// may or may not be executed</span>
+}
+</code></pre>
+<p><code>shared_ptr</code> is a form of GC, but if you don&#39;t want GC, try <code>unique_ptr</code> when you are not sharing.</p>
+<p>But why do you even need pointers?</p>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fn</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n, <span class="hljs-keyword">int</span> x)</span> </span>{
+  Gadget g{n};
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">100</span>) <span class="hljs-keyword">throw</span> <span class="hljs-built_in">std</span>::runtime_error{<span class="hljs-string">"Oh!"</span>}; <span class="hljs-comment">// no leak</span>
+  <span class="hljs-keyword">if</span> (x &lt; <span class="hljs-number">200</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// no leak</span>
+  <span class="hljs-keyword">delete</span> p;  <span class="hljs-comment">// may or may not be executed</span>
+}
+</code></pre>
+<p>Use scoped variables instead of pointers whenever you can.</p>
+<h4 id="what-are-pointers-references-iterators-for-">What are pointers/references/iterators for?</h4>
+<ul>
+<li>Reference resources from <strong>within a handle</strong><ul>
+<li>Handles are things that you don&#39;t need to worry about its resource management, e.g. smart pointer(so typically they overload <code>-&gt;</code> and <code>*</code>)</li>
+</ul>
+</li>
+<li>Positions(careful)</li>
+<li><p>For <strong>passing</strong> large amount of data e.g. const reference</p>
+</li>
+<li><p>Not for ownership!</p>
+</li>
+<li>Not for <strong>returning</strong> large amount of data!<ul>
+<li>Use move operations instead.</li>
+</ul>
+</li>
+</ul>
+<h4 id="how-to-get-a-lot-of-data-cheaply-out-of-a-function">How to get a lot of data cheaply out of a function</h4>
+<ol>
+<li>Return a pointer to a <code>new</code>ed object<ul>
+<li>Problem: who does the <code>delete</code>?</li>
+</ul>
+</li>
+<li>Return a reference to a <code>new</code>ed object<ul>
+<li>Problem: who does the <code>delete</code>? Delete what?</li>
+</ul>
+</li>
+<li>Pass a target object<ul>
+<li>Are you from the Stone Age?</li>
+<li>Source of confusion</li>
+</ul>
+</li>
+<li>Return an object(typically with RVO)<ul>
+<li>Copies are expensive</li>
+<li>Tricky to avoid copying</li>
+</ul>
+</li>
+<li>Solution: return a handle!<ol>
+<li>Return a Matrix</li>
+<li>Define move constructor for Matrix<ul>
+<li>Steal the internal pointer, put a nullptr in the old object</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="principles-for-managing-resources">Principles for managing resources</h4>
+<ol>
+<li>Store data in containers</li>
+<li>Manage all resources with handles<ul>
+<li>RAII</li>
+<li>Remember sockets, file handles, etc.</li>
+</ul>
+</li>
+<li>Use smart pointers</li>
+<li>Plugin a GC</li>
+</ol>
+<p>BS have implemented <code>auto</code> in the 1990s but he took it out for compatibility reasons</p>
+<h4 id="class-hierarchies">Class Hierarchies</h4>
+<ul>
+<li>Protection model<ul>
+<li><code>public</code> - all users</li>
+<li><code>protected</code> - derived classes</li>
+<li><code>private</code> - own members</li>
+</ul>
+</li>
+<li>Why no universal base class<ul>
+<li>The concept is not reasonable itself</li>
+<li>Unnecessary, implementation-oriented</li>
+<li>Space and time overheads</li>
+<li>Underspecified(overly general) interfaces</li>
+</ul>
+</li>
+<li>Multiple inheritance<ul>
+<li>Abstract classes provide the most stable interfaces</li>
+</ul>
+</li>
+<li>Minimal runtime type identification<ul>
+<li><code>dynamic_cast&lt;D*&gt;(p)</code></li>
+<li><code>typeid(p)</code></li>
+</ul>
+</li>
+<li>Only use inheritance when<ul>
+<li>The domain concepts are hierarchical</li>
+<li>There is a need for <strong>run-time selection</strong> among the alternatives</li>
+</ul>
+</li>
+<li>Think before you make a thing a member</li>
+</ul>
+<h3 id="generic-programming">Generic Programming</h3>
+<ul>
+<li>Aims<ul>
+<li>General/flexible</li>
+<li>Zero-overhead: vector/matrix v.s. C arrays</li>
+<li>Well-specified interfaces(Not achieved)</li>
+</ul>
+</li>
+<li><p>Templates - compile-time duck typing</p>
+<blockquote>
+<p>I used to think that sooner or later the compiler writers would become smart enough to write decent error messages, but it hasn&#39;t happened</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="algorithms">Algorithms</h4>
+<ul>
+<li>Avoid code from the scratch</li>
+<li>Algorithms operating on <code>[first, last)</code></li>
+<li>Parameterize over containers, element types, and <strong>actions</strong>(predicate)<ul>
+<li>Function objects with <code>()</code> overloaded, can carry state, and can be easily inlined</li>
+<li>Lambda notation: <strong>let the compiler write the function object for us</strong></li>
+</ul>
+</li>
+<li>For any forward iterator and any matching value type</li>
+<li>Container algorithms</li>
+</ul>
+<h4 id="problems-with-duck-typing">Problems with duck typing</h4>
+<ul>
+<li>No proper interfaces</li>
+<li>Error detections are too late</li>
+<li>Encourage people to look at implementation details</li>
+<li>Over-general</li>
+<li>Integration with other parts of the language is hard(to teach/maintain)</li>
+</ul>
+<h4 id="concepts">Concepts</h4>
+<ul>
+<li>State requirements on template arguments</li>
+<li>Checking on point of use</li>
+<li>Uses on template declaration, predicates on arguments</li>
+<li>For better error messages</li>
+<li>Shorthand notations</li>
+</ul>
+<p>....Then I am completely lost...</p>
+<h3 id="pointer-to-implementation-pimpl-">Pointer To Implementation (pImpl)</h3>
+<p>The interface class only have one data member -- a pointer to an implementation class object. Then when you need to change the members inside the implementation, you don&#39;t need to recompile.</p>
+<h4 id="why">Why</h4>
+<ul>
+<li>To hide more from the user</li>
+<li>The header file will change less often, which makes the compilation faster</li>
+</ul>
+<h4 id="how">How</h4>
+<p>Before:</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">class</span> Book {
+<span class="hljs-keyword">public</span>:
+  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span>;
+<span class="hljs-keyword">private</span>:
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>  m_Contents;
+};
+</code></pre>
+<p>And when we needs to change the data members, you need to change the header, so everything uses that header needs to recompile.</p>
+<p>After:</p>
+<pre><code class="lang-cpp"><span class="hljs-comment">/* public.h */</span>
+<span class="hljs-keyword">class</span> Book {
+<span class="hljs-keyword">public</span>:
+  Book();
+  ~Book();
+  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span>;
+<span class="hljs-keyword">private</span>:
+  <span class="hljs-keyword">class</span> BookImpl;  <span class="hljs-comment">// forward declaration</span>
+  BookImpl* m_p;  <span class="hljs-comment">// implementation</span>
+};
+</code></pre>
+<p>In another header</p>
+<pre><code class="lang-cpp"><span class="hljs-comment">/* private.h */</span>
+<span class="hljs-comment">// Notice you include the interface here</span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> "public.h"</span>
+<span class="hljs-comment">// Notice the Book:: here. This class is private to the Book,</span>
+<span class="hljs-comment">// and you define the implementation here</span>
+<span class="hljs-keyword">class</span> Book::BookImpl {
+<span class="hljs-keyword">public</span>:
+  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span>;
+<span class="hljs-keyword">private</span>:
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>  m_Contents;
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>  m_Title;
+};
+
+<span class="hljs-comment">// then you define the methods of Book</span>
+<span class="hljs-comment">// by forwarding them to the BookImpl</span>
+<span class="hljs-comment">// accordingly</span>
+</code></pre>
+<p>Since you&#39;ve only changed the implementation, not the interface, the clients of that interface don&#39;t need recompilation.</p>
+<p>P.S. Use smart pointers if you are using C++11.</p>
+<h3 id="copy-and-swap">Copy-and-swap</h3>
+<ul>
+<li>Assignment is essentially: <strong>destroy</strong> its old state, then <strong>construct</strong> its new state as a <strong>copy</strong> of another object.<ul>
+<li>Which are destructors and copy constructors are for</li>
+</ul>
+</li>
+<li>But because destruction mustn&#39;t fail while construction can, we need to <strong>construct before destruction</strong> to provide safety.</li>
+<li>So to use this idiom, you need to<ul>
+<li>Define a copy constructor <code>T(const T&amp; other)</code></li>
+<li>Define a destructor</li>
+<li>Define a <code>friend void swap(T &amp;first, T &amp;second)</code> where you swap the data members indivisually.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-cpp">T&amp; <span class="hljs-keyword">operator</span>=(T tmp) {  <span class="hljs-comment">// compiler does the copy here, in the paramter list!</span>
+    <span class="hljs-keyword">this</span>-&gt;swap(tmp);  <span class="hljs-comment">// replace with the new state</span>
+    <span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
+    <span class="hljs-comment">// when you leave the scope, tmp, which contains the old states now, will be destroyed</span>
+}
+</code></pre>
+<p>With C++11 in mind, you also need to define a move constructor, usually it looks like this</p>
+<pre><code class="lang-cpp">T(T &amp;&amp;other): T() { <span class="hljs-comment">// initialize via default constructor, C++11 only</span>
+  <span class="hljs-comment">// If your compiler can't do constructor delegation, do it yourself :(</span>
+  swap(*<span class="hljs-keyword">this</span>, other);
+}
+</code></pre>
+<p>Then <strong>the complier will pick the right constructor for you</strong> in the assignment operator. If it&#39;s a rvalue, the compiler will pick the move constructor, otherwise it will pick the copy constructor.</p>
+<h2 id="graphics">Graphics</h2>
+<h3 id="-vector-graphics-animation-with-time-varying-topology-siggraph-2015-https-www-youtube-com-watch-v-xk1_cugdyti-"><a href="https://www.youtube.com/watch?v=Xk1_CugdytI">Vector Graphics Animation with Time-Varying Topology (SIGGRAPH 2015)</a></h3>
+<p>This is really impressive...</p>
+<p>Paper: <a href="http://www.dalboris.com/research/vac/vac.pdf"></a></p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

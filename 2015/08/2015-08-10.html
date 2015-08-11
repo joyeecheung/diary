@@ -1,0 +1,65 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 10, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 10, 2015</h1></header><div class="content"><div class="diary"><h2 id="c-">C++</h2>
+<h3 id="non-virtual-interface">Non-Virtual Interface</h3>
+<p>Let the non-virtual &amp; public interface(base class) calls the virtual &amp; private implementations(in derived classes)</p>
+<h4 id="guidelines">Guidelines</h4>
+<ol>
+<li>Prefer to make <strong>interfaces nonvirtual</strong>, using Template Method design pattern.</li>
+<li>Prefer to make <strong>virtual functions private</strong>.</li>
+<li>Only if derived classes need to invoke the base implementation of a virtual function, make the virtual function <strong>protected</strong>.</li>
+<li>A <strong>base class destructor</strong> should be either <strong>public and virtual</strong>, or <strong>protected and nonvirtual</strong>.</li>
+</ol>
+<h4 id="examples">Examples</h4>
+<pre><code class="lang-cpp"><span class="hljs-keyword">class</span> Base {
+<span class="hljs-keyword">private</span>:
+    ReaderWriterLock lock_;
+    SomeComplexDataType data_;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">read_from</span><span class="hljs-params">( <span class="hljs-built_in">std</span>::istream &amp; i)</span>  </span>{ <span class="hljs-comment">// [1]</span>
+      lock_.acquire();
+      assert(data_.check_invariants()); <span class="hljs-comment">// must be true</span>
+
+      read_from_impl(i);  <span class="hljs-comment">// invokes the derived class virtual function</span>
+
+      assert(data_.check_invariants()); <span class="hljs-comment">// must be true</span>
+      lock_.release();
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">write_to</span><span class="hljs-params">( <span class="hljs-built_in">std</span>::ostream &amp; o)</span> <span class="hljs-keyword">const</span> </span>{ <span class="hljs-comment">// [1]</span>
+      lock_.acquire();
+      <span class="hljs-keyword">write_t</span>o_impl(o);
+      lock_.release();
+    }
+    <span class="hljs-keyword">virtual</span> ~Base() {}  <span class="hljs-comment">// Virtual because Base is a polymorphic base class. [4]</span>
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read_from_impl</span><span class="hljs-params">( <span class="hljs-built_in">std</span>::istream &amp; )</span> </span>= <span class="hljs-number">0</span>;  <span class="hljs-comment">// [2]</span>
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">write_to_impl</span><span class="hljs-params">( <span class="hljs-built_in">std</span>::ostream &amp; )</span> <span class="hljs-keyword">const</span> </span>= <span class="hljs-number">0</span>;  <span class="hljs-comment">// [2]</span>
+};
+
+<span class="hljs-keyword">class</span> XMLReaderWriter : <span class="hljs-keyword">public</span> Base {
+<span class="hljs-keyword">private</span>:  <span class="hljs-comment">// [2]</span>
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read_from_impl</span> <span class="hljs-params">(<span class="hljs-built_in">std</span>::istream &amp;)</span> </span>{
+      <span class="hljs-comment">// Read XML.</span>
+    }
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">write_to_impl</span> <span class="hljs-params">(<span class="hljs-built_in">std</span>::ostream &amp;)</span> <span class="hljs-keyword">const</span> </span>{
+      <span class="hljs-comment">// Write XML.</span>
+    }
+};
+
+<span class="hljs-keyword">class</span> TextReaderWriter : <span class="hljs-keyword">public</span> Base {
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read_from_impl</span> <span class="hljs-params">(<span class="hljs-built_in">std</span>::istream &amp;)</span> </span>{}
+    <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">write_to_impl</span> <span class="hljs-params">(<span class="hljs-built_in">std</span>::ostream &amp;)</span> <span class="hljs-keyword">const</span> </span>{}
+};
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
