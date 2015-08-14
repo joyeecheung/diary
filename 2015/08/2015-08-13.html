@@ -1,0 +1,127 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 13, 2015</h1></header><div class="content"><div class="diary"><h2 id="-es6-in-depth-proxies-https-hacks-mozilla-org-2015-07-es6-in-depth-proxies-and-reflect-"><a href="https://hacks.mozilla.org/2015/07/es6-in-depth-proxies-and-reflect/">ES6 In Depth: Proxies</a></h2>
+<p>Kinda like operator overloading in C++/builtin methods in Python, customizing behaviors of objects.</p>
+<h3 id="terms">Terms</h3>
+<ul>
+<li>Traps: kinda like traps in OS, methods that can be overriden</li>
+<li>Handler: collection of traps</li>
+<li>Target: objects virtualized by the proxy</li>
+</ul>
+<h3 id="available-traps">Available traps</h3>
+<ul>
+<li><code>getPrototoypeOf()</code>: <code>obj.__proto__</code> or <code>Object.getPrototypeOf(obj)</code></li>
+<li><code>setPrototypeOf()</code></li>
+<li><code>isExtensible()</code></li>
+<li><code>preventExtensions()</code></li>
+<li><code>getOwnPropertyDescriptor()</code></li>
+<li><code>defineProperty()</code></li>
+<li><code>has()</code>: <code>in</code></li>
+<li><code>get()</code></li>
+<li><code>set()</code></li>
+<li><code>deleteProperty()</code>: <code>delete</code></li>
+<li><code>enumerate()</code>: <code>for..in</code></li>
+<li><code>ownKeys()</code>: <code>getOwnPropertyNames()</code></li>
+<li><code>apply()</code>: for function calls, both <code>fun()</code> and <code>obj.method()</code></li>
+<li><code>construct()</code>: <code>new</code></li>
+</ul>
+<h3 id="how-to-use-it">How to use it</h3>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> target = {};  <span class="hljs-comment">//  the object to be modified</span>
+<span class="hljs-keyword">var</span> handler = {
+  <span class="hljs-comment">// put your overridden properties here</span>
+};
+<span class="hljs-keyword">var</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Proxy</span>(target, handler);  <span class="hljs-comment">// modified object</span>
+</code></pre>
+<h3 id="examples">Examples</h3>
+<h4 id="auto-population">Auto population</h4>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> handler = {
+  get: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">target, key, receiver</span>) </span>{
+    <span class="hljs-keyword">if</span> (!(key <span class="hljs-keyword">in</span> target)) {
+      target[key] = Tree();  <span class="hljs-comment">// auto-create a sub-Tree</span>
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Reflect</span>.get(target, key, receiver);
+  }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Tree</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Proxy</span>({}, handler);
+}
+
+<span class="hljs-keyword">var</span> tree = Tree();  <span class="hljs-comment">// now tree is {}</span>
+
+tree.branch1.branch2.twig = <span class="hljs-string">"green"</span>;  <span class="hljs-comment">// OK!</span>
+<span class="hljs-comment">// now tree is { branch1: { branch2: {twig: "green"}}}</span>
+</code></pre>
+<h4 id="logging">Logging</h4>
+<p>Note the <code>Reflect</code> API:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Proxy</span>({}, {
+  get: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">target, key, receiver</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`getting <span class="hljs-subst">${key}</span>!`</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Reflect</span>.get(target, key, receiver);
+  },
+  set: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">target, key, value, receiver</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`setting <span class="hljs-subst">${key}</span>!`</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Reflect</span>.set(target, key, value, receiver);
+  }
+});
+</code></pre>
+<h4 id="read-only">Read-only</h4>
+<p>Note: it&#39;s not enough to only override the mutation methods, you also need to override <code>get</code> method recursively to prevent the client from mutating its properties.</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">NOPE</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"can't modify read-only view"</span>);
+}
+
+<span class="hljs-keyword">var</span> handler = {
+  <span class="hljs-comment">// Override all five mutating methods.</span>
+  set: NOPE,
+  defineProperty: NOPE,
+  deleteProperty: NOPE,
+  preventExtensions: NOPE,
+  setPrototypeOf: NOPE
+
+  <span class="hljs-comment">// Wrap other results in read-only views.</span>
+  get: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">target, key, receiver</span>) </span>{
+    <span class="hljs-comment">// Start by just doing the default behavior.</span>
+    <span class="hljs-keyword">var</span> result = <span class="hljs-built_in">Reflect</span>.get(target, key, receiver);
+
+    <span class="hljs-comment">// Make sure not to return a mutable object!</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Object</span>(result) === result) {
+      <span class="hljs-comment">// result is an object, make it read-only too</span>
+      <span class="hljs-keyword">return</span> readOnlyView(result);
+    }
+    <span class="hljs-comment">// result is a primitive, so already immutable.</span>
+    <span class="hljs-keyword">return</span> result;
+  },
+
+  ...
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readOnlyView</span>(<span class="hljs-params">target</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Proxy</span>(target, handler);
+}
+</code></pre>
+<h3 id="use-cases">Use cases</h3>
+<ul>
+<li>Testing</li>
+<li>Debugging</li>
+<li>Logging</li>
+<li>Interesting extensions like auto population/defaultdict</li>
+<li>Wrap a proxy in another proxy with methods overridden with logging to see how it works</li>
+<li>Firefox uses proxies to implement security boundaries</li>
+</ul>
+<h4 id="tips">Tips</h4>
+<ul>
+<li>Proxies can work well with <code>WeakMap</code>s e.g. use them as caches for access methods</li>
+<li><code>Proxy.revocable(target, handler)</code> create a revocable proxy, which has <code>.proxy</code> and <code>.revoke()</code>. Once you call <code>.revoke()</code>, all its internal methods will throw.</li>
+<li>Proxies usually needs to report results consistent with its target, so when you see something like <code>&quot;proxy can&#39;t report a non-existent property as non-configurable&quot;</code>, this is the cause.</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
