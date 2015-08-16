@@ -12,5 +12,135 @@ ga('create', 'UA-63818301-1', 'auto');
 ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 14, 2015</h1></header><div class="content"><div class="diary"><h2 id="css">CSS</h2>
 <p>Discover a peculiar bug where IE7 won&#39;t apply <code>margin-left</code> to <code>float: left</code> divs, and solved it by adding classes to that div to force a reflow.</p>
 <p>The typical symptom: you apply the CSS via JS, it doesn&#39;t work -&gt; you tweak the styles in the devtools, it works immediately -&gt; you access that element in the console, it works immediately -&gt; et voila, you need a reflow to fix this bug!</p>
-<p>The simples way to trigger a reflow: add a class, like <code>reflow</code>.</p>
+<p>The simplest way to trigger a reflow: add a class, like <code>reflow</code>.</p>
+<h2 id="yeoman-generator">Yeoman Generator</h2>
+<ul>
+<li>The best way to start: use generator-generator to generate the skeleton.</li>
+<li>Writing the tests first, it will also help you to figure out what you need.</li>
+<li><p>The directory structure</p>
+<pre><code>  ├───package<span class="hljs-class">.json</span>
+  └───generators   <span class="hljs-comment">// code and templates</span>
+      ├───app
+      │   ├─── templates  <span class="hljs-comment">// folder storing templates</span>
+      │   └───index<span class="hljs-class">.js</span>  <span class="hljs-comment">// default generator, used when running `yo <span class="hljs-doctag"><span class="hljs-keyword">xxx</span></span>`</span>
+      └───router
+          ├─── templates  <span class="hljs-comment">// folder storing templates</span>
+          └───index<span class="hljs-class">.js</span>  <span class="hljs-comment">// used when running `yo <span class="hljs-doctag"><span class="hljs-keyword">xxx</span></span>:router`</span>
+</code></pre></li>
+<li>Use <code>npm link</code> to install it into your global space</li>
+<li>If you have a parent directory containing a <code>.yo-rc.json</code>, Yeoman will consider the parent directory as the root</li>
+<li>Yeoman uses ejs for templating(<code>&lt;%= variable %&gt;</code>), and you can apply templating to <strong>any file</strong>.</li>
+</ul>
+<h3 id="scaffolding-in-index-js-">Scaffolding in <code>index.js</code></h3>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> generators = <span class="hljs-built_in">require</span>(<span class="hljs-string">'yeoman-generator'</span>);
+
+<span class="hljs-built_in">module</span>.exports = generators.Base.extend({
+  <span class="hljs-comment">//...</span>
+});
+</code></pre>
+<h3 id="specify-arguments">Specify arguments</h3>
+<pre><code class="lang-javascript"><span class="hljs-comment">// <span class="hljs-doctag"><span class="hljs-keyword">note</span></span>: arguments and options should be defined in the constructor.</span>
+constructor: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  generators.Base.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+
+  <span class="hljs-comment">// This makes `appname` a required argument.</span>
+  <span class="hljs-comment">// When you run yo <span class="hljs-doctag"><span class="hljs-keyword">xxx</span></span> yyy, `this.appname` will be `yyy`</span>
+  <span class="hljs-keyword">this</span>.argument(<span class="hljs-string">'appname'</span>, { type: <span class="hljs-built_in">String</span>, required: <span class="hljs-literal">true</span> });
+}
+</code></pre>
+<h3 id="prompting">Prompting</h3>
+<pre><code class="lang-javascript">prompting: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> done = <span class="hljs-keyword">this</span>.async();
+
+  <span class="hljs-comment">// Have Yeoman greet the user.</span>
+  <span class="hljs-keyword">this</span>.log(yosay(
+    <span class="hljs-string">'Welcome to the wondrous '</span> + chalk.red(<span class="hljs-string">'XXX'</span>) + <span class="hljs-string">' generator!'</span>
+  ));
+
+  <span class="hljs-keyword">var</span> prompts = [{
+    type: <span class="hljs-string">'input'</span>,
+    name: <span class="hljs-string">'option1'</span>,
+    message: <span class="hljs-string">'Some message'</span>,
+    <span class="hljs-keyword">default</span>: <span class="hljs-keyword">this</span>.appname.replace(<span class="hljs-string">'yoo'</span>, <span class="hljs-string">''</span>)
+  }, {
+    type: <span class="hljs-string">'confirm'</span>,
+    name: <span class="hljs-string">'option2'</span>,
+    message: <span class="hljs-string">'Some message'</span>,
+    <span class="hljs-keyword">default</span>: <span class="hljs-literal">false</span>
+  }];
+
+  <span class="hljs-keyword">this</span>.prompt(prompts, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">props</span>) </span>{
+    <span class="hljs-comment">// To access props later use this.props.someOption;</span>
+    <span class="hljs-keyword">this</span>.props = props;
+    done();
+  }.bind(<span class="hljs-keyword">this</span>));
+}
+</code></pre>
+<h3 id="writing">Writing</h3>
+<pre><code class="lang-javascript">writing: {
+  <span class="hljs-comment">// target 1</span>
+  projectfiles: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.fs.copyTpl(
+      <span class="hljs-comment">// will search for templates/_package.json</span>
+      <span class="hljs-keyword">this</span>.templatePath(<span class="hljs-string">'_package.json'</span>),
+      <span class="hljs-comment">// if the directory named `this.appname` doesn't exist,</span>
+      <span class="hljs-comment">// it will create one for you</span>
+      <span class="hljs-keyword">this</span>.destinationPath(<span class="hljs-keyword">this</span>.appname + <span class="hljs-string">'/package.json'</span>),
+      {
+        <span class="hljs-comment">// ... context for templating</span>
+      }
+    );
+  },
+
+  <span class="hljs-comment">// target 2</span>
+  app: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.fs.copy(
+      <span class="hljs-keyword">this</span>.templatePath(<span class="hljs-string">'index.html'</span>),
+      <span class="hljs-keyword">this</span>.destinationPath(<span class="hljs-keyword">this</span>.appname + <span class="hljs-string">'/index.html'</span>)
+    );
+  }
+}
+</code></pre>
+<h3 id="testing">Testing</h3>
+<ol>
+<li><p>Need to have</p>
+<pre><code class="lang-javascript"><span class="hljs-string">"scripts"</span>: {
+ <span class="hljs-string">"test"</span>: <span class="hljs-string">"node ./node_modules/mocha/bin/mocha"</span>
+},
+<span class="hljs-string">"devDependencies"</span>: {
+ <span class="hljs-string">"mocha"</span>: <span class="hljs-string">"*"</span>
+}
+</code></pre>
+<p>in your package.json</p>
+</li>
+<li>Make sure you have a <code>test</code> folder, and put a test file(can be named anything) in it.</li>
+<li><p>In your test file</p>
+<pre><code class="lang-javascript"><span class="hljs-pi">'use strict'</span>;
+
+<span class="hljs-keyword">var</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">var</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'yeoman-generator'</span>).assert;
+<span class="hljs-keyword">var</span> helpers = <span class="hljs-built_in">require</span>(<span class="hljs-string">'yeoman-generator'</span>).test;
+<span class="hljs-keyword">var</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>);
+
+describe(<span class="hljs-string">'alienv2'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+   before(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+       helpers.run(path.join(__dirname, <span class="hljs-string">'../generators/index.js'</span>))
+           .withArguments([<span class="hljs-string">'appname'</span>])  <span class="hljs-comment">// mock arguments</span>
+           .withPrompts({  <span class="hljs-comment">// mock prompts</span>
+               option1: <span class="hljs-string">'foo'</span>,
+               option2: <span class="hljs-literal">true</span>
+           })
+           .on(<span class="hljs-string">'end'</span>, done);
+   });
+
+   it(<span class="hljs-string">'creates files'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+       assert.file([
+         <span class="hljs-string">'package.json'</span>
+         <span class="hljs-comment">// ... other files</span>
+       ]);
+   });
+});
+</code></pre>
+</li>
+</ol>
 </div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

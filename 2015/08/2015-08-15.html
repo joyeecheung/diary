@@ -1,0 +1,109 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 15, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 15, 2015</h1></header><div class="content"><div class="diary"><h2 id="-es6-in-depth-classes-https-hacks-mozilla-org-2015-07-es6-in-depth-classes-"><a href="https://hacks.mozilla.org/2015/07/es6-in-depth-classes/">ES6 In Depth: Classes</a></h2>
+<h3 id="the-new-object-shorthand">The new object shorthand</h3>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> obj = {
+  <span class="hljs-comment">// Node need for key: value pair, just declare values!</span>
+
+  <span class="hljs-comment">// No need for the `function` keyword</span>
+  method(args) { ... },
+
+  <span class="hljs-comment">// Generators only need an extra `*`</span>
+  *genMethod(args) { ... },
+
+  <span class="hljs-comment">// Accessors only need an extra `get`/`set`</span>
+  <span class="hljs-comment">// <span class="hljs-doctag">Note</span>: they can't be generators though, and the getter can't have arguments</span>
+  get propName() { ... },
+
+  <span class="hljs-comment">// <span class="hljs-doctag">Note</span>: the setter installed in this way can only have one argument</span>
+  set propName(arg) { ... },
+
+  <span class="hljs-comment">// Use a `[]` for dynamically computed names!!</span>
+  <span class="hljs-comment">// This can be a method, a generator or an accessor!</span>
+  [dynamicallyComputeName()] (args) { ... }
+};
+</code></pre>
+<h3 id="classes">Classes</h3>
+<ul>
+<li><code>class</code>, <code>constructor</code> and <code>static</code> syntax sugar.</li>
+<li>In the old way<ul>
+<li>Use <code>Object.defineProperty</code> to define accessors</li>
+<li>The constructor function is the class</li>
+<li>&quot;static&quot; methods are attached to the constructor function: <code>Class.staticMethod = ...</code></li>
+<li>&quot;static&quot; variables are defined with <code>Object.defineProperty(Class, &quot;staticMember&quot;, {...})</code></li>
+<li>&quot;instance&quot; methods are attached to the prototype: <code>Class.prototype.instanceMethod = ...</code></li>
+<li>&quot;instance&quot; variables are defined with <code>Object.defineProperty(Class.prototype, &quot;instanceMember&quot;, {...})</code>, and accessed via <code>this</code></li>
+</ul>
+</li>
+<li>In the <code>class</code> way, you<ul>
+<li>Define accessors in the class definition directly</li>
+<li>Use <code>constructor</code> keyword int he class definition to define constructors</li>
+<li>Declare &quot;static&quot; methods with <code>static</code> in the class definition: <code>static staticMethod(...) {...}</code></li>
+<li>Declare &quot;static&quot; variables with <code>static</code> accessors in the class definition: <code>static get staticMember() {...}</code> and <code>static set staticMmeber(arg) {...}</code></li>
+<li>Declare &quot;instance&quot; methods in the class definition without <code>static</code>: <code>instanceMethod(...) {...}</code></li>
+<li>Declare &quot;instance&quot; variables with accessors without <code>static</code> in the class definition: <code>get instanceMember() {...}</code> and <code>set instanceMmeber(arg) {...}</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> </span>{
+    constructor(radius) {
+        <span class="hljs-keyword">this</span>.radius = radius;  <span class="hljs-comment">// "instance" variable</span>
+        Circle.circlesMade++;  <span class="hljs-comment">// "static" variable</span>
+    };
+
+    <span class="hljs-comment">// static accessors for Circle.circlesMade</span>
+    <span class="hljs-comment">// which should have been attached to the class directly</span>
+    <span class="hljs-comment">// and need that `Object.defineProperty` syntax</span>
+    static get circlesMade() {
+        <span class="hljs-keyword">return</span> !<span class="hljs-keyword">this</span>._count ? <span class="hljs-number">0</span> : <span class="hljs-keyword">this</span>._count;
+    };
+    static set circlesMade(val) {
+        <span class="hljs-keyword">this</span>._count = val;
+    };
+
+    <span class="hljs-comment">// "instance methods", which should have been on prototypes</span>
+    draw(canvas) {
+        <span class="hljs-comment">// Canvas drawing code</span>
+    };
+    area() {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.pow(<span class="hljs-keyword">this</span>.radius, <span class="hljs-number">2</span>) * <span class="hljs-built_in">Math</span>.PI;
+    };
+
+    <span class="hljs-comment">// instance accessors, which should have been on prototypes</span>
+    <span class="hljs-comment">// and need that `Object.defineProperty`</span>
+    get radius() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._radius;
+    };
+    set radius(radius) {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Number</span>.isInteger(radius))
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"Circle radius must be an integer."</span>);
+        <span class="hljs-keyword">this</span>._radius = radius;
+    };
+}
+</code></pre>
+<h3 id="gotcha-tips">Gotcha &amp; Tips</h3>
+<ul>
+<li>Semicolons are optional(they are there just to make the class look more like what you see in C++...and in Java that&#39;s optional too)</li>
+<li>The constructor is optional. It&#39;s default is <code>constructor() {}</code> -- an empty function</li>
+<li>Constructors have to be normal functions. They can&#39;t be generators</li>
+<li>If a computed property name happens to be <code>constructor</code>, it won&#39;t be a real constructor(so there won&#39;t be any overriding). That would just be a normal property named <code>constructor</code>.</li>
+<li>The bindings in the classes work like named anonymous functions, so even if you set <code>Class = somethingElse</code> in the enclosing scope, it won&#39;t misbehave.</li>
+<li>There are class expressions. And yes, they are pretty much like the function expressions(so you can pass them around as arguments without creating variables in the scope).</li>
+<li>Methods installed in the class syntax are <strong>configurable, but not enumerable</strong>.</li>
+<li><code>const</code> and installable variables are coming. Currently you can only define variables with accessors or attach them in methods.</li>
+</ul>
+<h3 id="implementations">Implementations</h3>
+<ul>
+<li>Firefox Nightly, Chrome and Edge have implemented it, but only FFN enables it by default.</li>
+<li>Safari haven&#39;t implemented yet(well, we have been saying that Safari will be the new IE :().</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
