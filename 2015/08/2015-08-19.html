@@ -1,0 +1,124 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 19, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 19, 2015</h1></header><div class="content"><div class="diary"><h2 id="doctypes-quirks-mode">DOCTYPES/quirks mode</h2>
+<h3 id="what-is-a-doctype">What is a DOCTYPE</h3>
+<p>DOCTYPEs tell the browser &quot;what I am&quot;. It&#39;s like <em>shebang</em> for markups, so it comes at the beginning of the document. Different versions of XML, XHTML and HTML have different DOCTYPEs.</p>
+<h3 id="what-is-quirks-mode">What is quirks mode</h3>
+<p>In the early days of the Web, implementations came before W3C specifications. To avoid breaking the Web, browsers(mainly IE and Netscape Navigator/Firefox) keep <strong>old behaviors</strong> for legacy sites, and this is triggered by invalid/no/ancient DOCTYPEs. This mode of behaviors is called quirks mode.</p>
+<p>Note that different browsers have different quirks modes, since they have different histories. IE9- imitates IE5.5 in quirks mode, but starting from IE10, they try to be interoperable with quirks modes of other browsers instead.</p>
+<p>Quirks mode are <a href="https://quirks.spec.whatwg.org/">being standardized</a> by WHATWG.</p>
+<h3 id="are-there-any-other-modes-">Are there any other modes?</h3>
+<p>Generally speaking, there are three modes in the wild: quirks mode, full standards mode, and almost standards mode. You can guess what they are by there names.</p>
+<h3 id="which-doctype-should-i-use-">Which DOCTYPE should I use?</h3>
+<p>The safest and simplest DOCTYPE, which is also recommened by HTML5 specification, is <code>&lt;!DOCTYPE html&gt;</code>. Even IE6 recognizes it and uses the most standard-compliant implementation for it.</p>
+<p>There&#39;s usually no good reason to use any other DOCTYPE, and they might even trigger quirks mode if you are not being careful.</p>
+<h3 id="why-should-i-know-about-quirks-mode-">Why should I know about quirks mode?</h3>
+<p>Quirks mode can trigger old behaviors, specifically, old CSS behaviors, that are usually not what you want. Examples are:</p>
+<ul>
+<li>IE box models: IE6+ will comply to the W3C box model in standards mode, and fall back to IE box model in quirks mode.</li>
+<li>Vertical alignment: Gecko-based browsers will align images to the baseline of the texts in standards mode, while align to the bottom of the containing box in quirks mode</li>
+<li>Table font inheiritance: browsers typically don&#39;t inherit fonts into tables in quirks mode, but they do in standards mode.</li>
+</ul>
+<h3 id="what-is-almost-standards-mode">What is almost standards mode</h3>
+<p>The only difference between full standards mode and the almost standards mode is: in almost standards mode, inline boxs containing no non-whitespace text and don&#39;t have margins/paddings/borders will not have <code>height</code> and <code>line-height</code>. In particular, a single <code>img</code> in a table cell will not contribute to the line height of that cell. This violates what CSS2.1 specifies.</p>
+<p>Firefox, Safari, Chrome, Opera (since 7.5), IE8+ have this mode, while older browsers don&#39;t have it, since they just show the non-standard-compliant behavior in full standards mode.</p>
+<p>IE calls it &quot;strict mode&quot;, WHATWG calls it &quot;limited quirks mode&quot;.</p>
+<p>They are triggered by one of <a href="https://developer.mozilla.org/en-US/docs/Gecko&#39;s_Almost_Standards_Mode">these DOCTYPEs</a>.</p>
+<h3 id="how-do-i-know-what-mode-i-m-in-">How do I know what mode I&#39;m in?</h3>
+<p><code>document.compatMode</code>:</p>
+<ol>
+<li><code>&quot;BackCompat&quot;</code> means quirks mode</li>
+<li><code>&quot;CSS1Compat&quot;</code> means full/almost standards mode</li>
+</ol>
+<h2 id="block-elements-inline-elements">Block elements &amp; inline elements</h2>
+<h3 id="blocks-in-css">Blocks in CSS</h3>
+<ul>
+<li>Block-level elements<ul>
+<li>Formatted visually as blocks</li>
+<li><code>display</code> values are <code>block</code>, <code>list-item</code>, <code>table</code></li>
+</ul>
+</li>
+<li>Block-level boxes<ul>
+<li>Prticipate in a <em>block formatting context</em></li>
+<li>Generates a <em>principle block-level box</em>(containing descendent boxes and gernerated content) and possibly additional boxes</li>
+</ul>
+</li>
+<li>Block container box<ul>
+<li>Contains <strong>only</strong> block-level boxes or <strong>only</strong> inline-lvel boxes(establishes an <em>inline formatting context</em>)</li>
+</ul>
+</li>
+<li>Block boxes<ul>
+<li>Block-level boxes that are also block containers</li>
+</ul>
+</li>
+</ul>
+<p>Block-level boxes are not necessarily block containers(e.g. table boxes, replaced elements), and vice versa. Block-level is about the context in which the box <strong>participats</strong>, while block container is about the context the box <strong>establishes</strong>.</p>
+<p>These three terms are sometimes abbreviated as <em>block</em>.</p>
+<h3 id="inline-in-css">Inline in CSS</h3>
+<ul>
+<li>Inline-level elements<ul>
+<li>Do not form new blocks</li>
+<li>Content is distributed in lines</li>
+<li><code>display</code> values are <code>inline</code>, <code>inline-table</code>, <code>inline-block</code></li>
+</ul>
+</li>
+<li>Inline-level boxes<ul>
+<li>Participate in an <em>inline formatting context</em></li>
+</ul>
+</li>
+<li>Inline box<ul>
+<li>Inline-level boxes whose content also participates in its inline formatting context</li>
+<li>e.g. a non-replaced element with <code>display: inline</code></li>
+</ul>
+</li>
+<li>Atomic inline-level boxes<ul>
+<li>Inline-level boxes that are not inline boxes i.e. their content doesn&#39;t participate in IFC.</li>
+<li>e.g. replaced inline-level elements, inline-block elements, inline-table elements</li>
+<li>Like a opaque box</li>
+<li>Content will never be splitted like the inline boxes</li>
+</ul>
+</li>
+</ul>
+<h3 id="bfc">BFC</h3>
+<ul>
+<li>Who establish it(inside):<ul>
+<li>Floats</li>
+<li>Absolutely positioned elements</li>
+<li>Block containers, including inline-blocks, table-cells, table-captions, that are not block boxes</li>
+<li>Block boxes with <code>overflow</code> != <code>visible</code></li>
+</ul>
+</li>
+<li>Layout boxes vertically</li>
+<li>Margin collapsing</li>
+<li>Left outer edges of boxes touches the left edge of the containing block</li>
+</ul>
+<h3 id="ifc">IFC</h3>
+<ul>
+<li>Layout boxes horizontally</li>
+<li>Only horizontal margins/borders/paddings are respected</li>
+<li>Vertically alignment<ul>
+<li>Bottom/top</li>
+<li>Baseline</li>
+</ul>
+</li>
+<li>Line box<ul>
+<li>Rectangular area that contains the boxes that form a line</li>
+<li>Width: determined by the containing block and floats</li>
+<li>Height: determined by line height calculations</li>
+<li>Stacked with no vertical seperation(unless specified elsewhere) and never overlap</li>
+</ul>
+</li>
+</ul>
+<h2 id="concurrency">Concurrency</h2>
+<h3 id="-concurrency-is-not-parallelism-http-blog-golang-org-concurrency-is-not-parallelism-"><a href="http://blog.golang.org/concurrency-is-not-parallelism">Concurrency is not parallelism</a></h3>
+<h3 id="-gevent-for-the-working-python-developer-http-sdiehl-github-io-gevent-tutorial-"><a href="http://sdiehl.github.io/gevent-tutorial/">gevent For the Working Python Developer</a></h3>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 17, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 17, 2015</h1></header><div class="content"><div class="diary"><h2 id="greenlet-gevent">greenlet &amp;　gevent</h2>
+<h3 id="-understanding-greenlet-http-www-slideshare-net-saghul-understanding-greenlet-"><a href="http://www.slideshare.net/saghul/understanding-greenlet">Understanding greenlet</a></h3>
+<h4 id="what-is-greenlet">What is greenlet</h4>
+<ul>
+<li>Micro-threads with <strong>no implicit scheduling</strong></li>
+<li>Lightweight coroutines</li>
+<li>Cooperative(switching)</li>
+<li>Only one can run at a time(concurrency, not parallelism)</li>
+</ul>
+<h4 id="api">API</h4>
+<ul>
+<li><code>grentlet.greenlet(func, parent=None)</code></li>
+<li><code>greenlet.switch(*args, **kw)</code> switch to <code>func</code>. The first <code>switch</code> will call <code>func(*args, **kw)</code></li>
+<li><code>greenlet.throw([type, [value, [tb]]])</code> switch then raise</li>
+</ul>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> greenlet
+
+main = greenlet.getcurrent()  <span class="hljs-comment"># the main greenlet</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">foo</span><span class="hljs-params">(n)</span>:</span>  <span class="hljs-comment"># [1], forward back to main, so main will have return value 42</span>
+  main.switch(n)  <span class="hljs-comment"># switch control to main</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">bar</span><span class="hljs-params">(n)</span>:</span>  <span class="hljs-comment"># Note: here will be context for g1</span>
+  foo(n)  <span class="hljs-comment"># [1], forward to foo</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello'</span>  <span class="hljs-comment"># [2], g1 dies here, go back to main</span>
+
+g1.greenlet.greenlet(bar)  <span class="hljs-comment"># create a greenlet</span>
+<span class="hljs-keyword">print</span> g1.switch(<span class="hljs-number">42</span>)  <span class="hljs-comment"># 42 [1]</span>
+<span class="hljs-keyword">print</span> g1.switch()  <span class="hljs-comment"># 'Hello' [2]</span>
+<span class="hljs-keyword">print</span> g1.dead  <span class="hljs-comment"># True</span>
+</code></pre>
+<h4 id="structure">Structure</h4>
+<ul>
+<li>Each greenlet has a parent</li>
+<li>When a greenlet dies, control will be switched to its parent<ul>
+<li>Kinda like GOTO....</li>
+</ul>
+</li>
+<li>Stack slices are copied from the heap, use registers to save and restore context</li>
+</ul>
+<h4 id="continulet">continulet</h4>
+<ul>
+<li>PyPy has a native implementation of greenlet, built on top of continulet</li>
+<li>continulet = one shot continuation</li>
+<li>API<ul>
+<li><code>continulet(func, *args, *kw)</code>: create a continulet which will call <code>func(*args, **kw)</code>(unlike greenlet which will create that context with <code>switch</code> later on and call it when <code>switch</code> executes for the first time)</li>
+<li><code>continulet.switch(value=None, to=None)</code>: start or activate</li>
+<li><code>continulet.throw(type, value=None, tb=None, to=None)</code>: switch then raise, but raise after switching is done</li>
+</ul>
+</li>
+</ul>
+<h3 id="-greenlet-vs-threads-http-stackoverflow-com-questions-15556718-greenlet-vs-threads-"><a href="http://stackoverflow.com/questions/15556718/greenlet-vs-threads">Greenlet Vs. Threads</a></h3>
+<blockquote>
+<p>Greenlets provide concurrency but not parallelism.</p>
+<ul>
+<li>Concurrency is when code can run independently of other code.</li>
+<li>Parallelism is the execution of concurrent code simultaneously.</li>
+<li>Parallelism is particularly useful when there&#39;s a lot of work to be done in userspace, and that&#39;s typically CPU-heavy stuff.</li>
+<li>Concurrency is useful for breaking apart problems, enabling different parts to be scheduled and managed more easily in parallel.</li>
+</ul>
+</blockquote>
+<h3 id="-how-do-i-gevent-http-blog-hownowstephen-com-post-50743415449-gevent-tutorial-"><a href="http://blog.hownowstephen.com/post/50743415449/gevent-tutorial">How do I Gevent?</a></h3>
+<h4 id="what-are-gevent-good-for">What are gevent good for</h4>
+<ul>
+<li>Greenlets are not the silver bullet. It can&#39;t get you pass around GIL when you do CPU-intensive tasks.</li>
+<li>Gevent monkey patches <code>os</code>, <code>select</code>, <code>socket</code>, <code>ssl</code>, <code>thread</code> and <code>time</code>, so if you spend a lot of time waiting on them, gevent will be good for ya!<ul>
+<li>Use <code>python -m cProfile my_gevent_candidate_program.py</code> to determine if it is really what you need</li>
+<li>Warning: some libraries can be screwed up because of this monkey patching, so be careful!</li>
+</ul>
+</li>
+</ul>
+<h4 id="how-it-works">How it works</h4>
+<ul>
+<li>Gevent has a promise-like system, but it&#39;s nearly invisible most of the time, thanks to the monkey patching.</li>
+<li>The scheduler is very performant when switching contexts.</li>
+<li>When one of the greenlets needs to block on I/O, it sends the job to libevent, then yields control to the scheduler for it to switch contexts</li>
+</ul>
+<h4 id="getting-started">Getting started</h4>
+<ul>
+<li><p>How to monkey patch the standard library:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> gevent.monkey
+gevent.monkey.patch_all()
+</code></pre>
+</li>
+<li>Use <code>gevent.joinall(greenlets)</code> to wait for a list of greenlets.</li>
+</ul>
+<h4 id="pooling">Pooling</h4>
+<ul>
+<li><p>You can create one greenlet per I/O task since greenlets are cheap, but you still need to consider the limits of other resources(like the network). So it&#39;s better to create a pool(<code>gevent.pool.Pool()</code>) of greenlets.</p>
+<pre><code class="lang-python">pool = gevent.pool.Pool(num_of_workers)
+pool.full()  <span class="hljs-comment"># check if the pool is full</span>
+pool.spawn(crawler, link)  <span class="hljs-comment"># spawn with available workers</span>
+pool.join()  <span class="hljs-comment"># wait for everything to complete</span>
+</code></pre>
+</li>
+<li>Pool spawning is blocking. When you call <code>pool.spawn</code>, gevent will check if the pool is full, and <strong>wait for availability</strong> if it isn&#39;t -- this could cause <strong>dining philosipher</strong> problems when greentlets calls <code>pool.spawn</code> at the same time.</li>
+</ul>
+<h4 id="queuing">Queuing</h4>
+<ul>
+<li><p>Use <code>gevent.queue.Queue()</code>, replace <code>pool.spawn</code> calls with queuing operations(put the arguments into the queue, not the greenlets into the pool)</p>
+<pre><code class="lang-python">queue = gevent.queue.Queue()
+queue.put(link)
+<span class="hljs-keyword">try</span>:
+  url = queue.get(timeout=<span class="hljs-number">1</span>)
+<span class="hljs-keyword">except</span> gevent.queue.Empty
+  <span class="hljs-keyword">break</span>
+</code></pre>
+<p>Then you spawn <code>num_of_workers</code> workers in the pool, and let them consume arguments in the queue. Then use <code>pool.join()</code> to wait for them to complete(i.e. the queue is empty).</p>
+</li>
+<li><p>The final pattern</p>
+<pre><code class="lang-python">queue.put(link)
+pool.spawn(crawler)
+
+<span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> queue.empty() <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> pool.free_count() == <span class="hljs-number">5</span>:
+    gevent.sleep(<span class="hljs-number">0.1</span>)
+    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> xrange(<span class="hljs-number">0</span>, min(queue.qsize(), pool.free_count())):
+        pool.spawn(crawler)
+</code></pre>
+</li>
+</ul>
+<h2 id="tricks">Tricks</h2>
+<h3 id="avoid-the-cache">Avoid the cache</h3>
+<p>Always forget about this...just <code>ctrl+F5</code>.</p>
+<h3 id="optimize-callbacks">Optimize callbacks</h3>
+<p>Saw this interesting code in underscore.js</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> optimizeCb = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">func, context, argCount</span>) </span>{
+  <span class="hljs-keyword">if</span> (context === <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> func;
+  <span class="hljs-keyword">switch</span> (argCount == <span class="hljs-literal">null</span> ? <span class="hljs-number">3</span> : argCount) {
+    <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+      <span class="hljs-keyword">return</span> func.call(context, value);
+    };
+    <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value, other</span>) </span>{
+      <span class="hljs-keyword">return</span> func.call(context, value, other);
+    };
+    <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value, index, collection</span>) </span>{
+      <span class="hljs-keyword">return</span> func.call(context, value, index, collection);
+    };
+    <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">accumulator, value, index, collection</span>) </span>{
+      <span class="hljs-keyword">return</span> func.call(context, accumulator, value, index, collection);
+    };
+  }
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> func.apply(context, <span class="hljs-built_in">arguments</span>);
+  };
+};
+</code></pre>
+<p><code>arguments</code> tends to wreck optimizations in JS engines, so they try to avoid it when the number of arguments is small(although this requires manually passing the argument count). They also apply a convention for arguments with it.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
