@@ -1,0 +1,121 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 21, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 21, 2015</h1></header><div class="content"><div class="diary"><h2 id="building-blocks-of-html5">Building blocks of HTML5</h2>
+<h3 id="semantics">Semantics</h3>
+<h4 id="new-html-elements">New HTML elements</h4>
+<ul>
+<li>Sectioning &amp; outlining: <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;aside&gt;</code></li>
+<li>Media: <code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code></li>
+<li>Forms: <code>&lt;output&gt;</code>, <code>&lt;datalist&gt;</code></li>
+<li>MathML: <code>&lt;math&gt;</code></li>
+</ul>
+<h4 id="new-html-attributes">New HTML attributes</h4>
+<ul>
+<li><code>&lt;iframe&gt;</code>: <code>srcdoc</code>, <code>seamless</code>, <code>sandbox</code></li>
+<li><code>&lt;input&gt;</code>: <code>type</code>(new values), <code>list</code>, <code>placeholder</code>, <code>autofocus</code>, <code>autocomplete</code>, <code>autosave</code>, etc.</li>
+<li>The Constraint Validation API for forms adds attributes for controls like <code>min</code>, <code>max</code>, <code>required</code>, <code>pattern</code>, <code>step</code>, etc.</li>
+<li>Data attributes</li>
+<li>Aria attributes</li>
+</ul>
+<h3 id="connectivity">Connectivity</h3>
+<h4 id="websocket">WebSocket</h4>
+<ul>
+<li>For persistent, nearly real-time, bidirectional communication.</li>
+<li>Including a protocol (<code>ws://</code> and <code>wss://</code> on port 80, standardized in RFC 6455, facilitates HTTP upgrade) and a browser API(<code>new WebSocket(url)</code>)</li>
+</ul>
+<h4 id="server-sent-events">Server-Sent Events</h4>
+<ul>
+<li>Server-push</li>
+<li>Including extensions to HTTP(MIME type <code>text/event-stream</code>) and a browser API(<code>new EventSrouce(url)</code>)</li>
+</ul>
+<h4 id="webrtc">WebRTC</h4>
+<ul>
+<li>For real-time data streamming(typically multimedia content), with optional P2P</li>
+<li>Including a set of protocols(standardized by IETF) and a set of browser APIs</li>
+<li>Browser API<ul>
+<li>the <code>MediaStream</code> API(for video/audio streams): (aka <code>getUserMedia</code>)</li>
+<li>the <code>RTCPeerConnection</code> API(for P2P)</li>
+<li>the <code>RTCDataChannel</code> API(for other types of data)</li>
+</ul>
+</li>
+</ul>
+<h3 id="storage">Storage</h3>
+<h4 id="localstorage-sessionstorage">LocalStorage/SessionStorage</h4>
+<ul>
+<li>For persistent(not SessionStorage though), client-side, moderate size(&gt; 4KB cookie limit, best be &lt; 1MB ) storage without making the payload heavier(unlike cookie)</li>
+<li>The specification doesn&#39;t prohibits async storage, but currently all implementations are synchronous(blocking)</li>
+<li><code>localStorage.getItem()</code>, <code>localStorage.setItem()</code>, <code>localStorage.removeItem()</code></li>
+<li><code>localStorage.clear()</code>, <code>localStorage.key()</code>, <code>localStorage.length</code></li>
+<li><code>window.onstorage</code>/<code>&quot;storage&quot;</code> event</li>
+</ul>
+<h4 id="file-api">File API</h4>
+<ul>
+<li>Sources<ul>
+<li><code>FileList</code> from <code>&lt;input type=&quot;file&quot;&gt;</code><ul>
+<li><code>inputElement.files</code></li>
+<li><code>e.target.files</code> from <code>change</code> event listener</li>
+</ul>
+</li>
+<li><code>DataTransfer</code> from drag-and-drop<ul>
+<li><code>e.dataTransfer.files</code> from <code>drop</code> event handler</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Properties<ul>
+<li><code>type</code></li>
+<li><code>name</code></li>
+<li><code>size</code></li>
+<li><code>lastModifiedDate</code></li>
+</ul>
+</li>
+<li>Reading<ul>
+<li><code>var reader = new FileReader()</code></li>
+<li>Events<ul>
+<li><code>load</code></li>
+<li><code>error</code></li>
+<li><code>abort</code></li>
+<li><code>loadstart</code></li>
+<li><code>loadend</code></li>
+<li><code>progress</code></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><code>abort()</code></li>
+<li><code>readAsArrayBuffer(blob/file) -&gt; ArrayBuffer</code></li>
+<li><code>readAsBinaryString(blob/file) -&gt; String</code></li>
+<li><code>readAsDataURL(blob/file) -&gt; String</code></li>
+<li><code>readAsText(blob/file) -&gt; String</code></li>
+</ul>
+</li>
+<li>Using the result<ul>
+<li><code>reader.result</code> or <code>e.target.result</code> in <code>onload</code></li>
+<li>The result of <code>readAsDataURL()</code> can be assigned to <code>img.src</code> to display the image</li>
+<li>The result of <code>readAsBinaryString()</code> can be sent via <code>xhr2.send()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Using with object URLs<ul>
+<li><code>var objectURL = window.URL.createObjectURL(file)</code></li>
+<li>Remember <code>window.URL.revokeObjectURL(objectURL)</code> or you will have a leak</li>
+<li>To diplay images, <code>img.src = objectURL</code> and revoke the URL in <code>img.onload</code>. You can do the same thing with <code>&lt;iframe&gt;</code> for PDFs, <code>&lt;video&gt;</code> for videos, .etc.</li>
+</ul>
+</li>
+<li>Slicing<ul>
+<li><code>var blob = file.slice(startingByte, endindByte)</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="indexeddb">IndexedDB</h4>
+<p>... To Be Continued...</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

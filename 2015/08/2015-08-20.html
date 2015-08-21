@@ -1,0 +1,81 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 20, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 20, 2015</h1></header><div class="content"><div class="diary"><h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-modules-https-hacks-mozilla-org-2015-08-es6-in-depth-modules-"><a href="https://hacks.mozilla.org/2015/08/es6-in-depth-modules/">ES6 In Depth: Modules</a></h3>
+<h4 id="modules">Modules</h4>
+<ul>
+<li>ES6 modules are in <em>strict mode</em> automatically, even if you don&#39;t write <code>&quot;use strict&quot;</code></li>
+<li>You can <code>import</code> and <code>export</code> modules</li>
+<li>The dependency tree will be traversed with DFS, executed scripts will be skipped to avoid cycles</li>
+<li>They need to be static. They have to be at the top-level scope, and can&#39;t be conditional. Their names have to be determined in the source code.</li>
+<li>You can&#39;t monkey-patch a module. They are frozen.</li>
+</ul>
+<h4 id="export">Export</h4>
+<ul>
+<li>You need to export <strong>explicitly</strong>.</li>
+<li><p>The syntax is simple: put <code>export</code> before things you want to export.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span>(<span class="hljs-params"></span>) </span>{...}
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{...}
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">var</span> a = ...
+</code></pre>
+</li>
+<li><p>You can also export things all at once</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> {a, b};
+<span class="hljs-keyword">var</span> a = ..., b = ...
+</code></pre>
+</li>
+<li><p>You can rename your exports</p>
+<pre><code><span class="hljs-literal">export</span> {a <span class="hljs-literal">as</span> b, c <span class="hljs-literal">as</span> d};
+</code></pre></li>
+<li><p>You can wrap a bunch of things up as the default for your whole module</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> {anInterface <span class="hljs-keyword">as</span> <span class="hljs-keyword">default</span>};
+<span class="hljs-comment">// or</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  a: b,
+  c: d
+}
+</code></pre>
+</li>
+<li><p>Export from other modules</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> {a, b} from <span class="hljs-string">"script.js"</span>
+<span class="hljs-keyword">export</span> * from <span class="hljs-string">"script.js"</span>
+</code></pre>
+<p>Note that this won&#39;t add those forwarded things into your scope.</p>
+</li>
+</ul>
+<h4 id="import">Import</h4>
+<ul>
+<li><code>import {a, b, c} from &quot;script.js&quot;</code></li>
+<li><code>import {d as e, f as g} from &quot;script.js&quot;</code></li>
+<li><code>import defaultExport from &quot;script.js&quot;</code> (i.e. <code>var defaultExport = require(&quot;script.js&quot;)</code>)(this is what that module exports as default, not everything it exports)</li>
+<li><code>import * from &quot;script.js&quot;</code></li>
+</ul>
+<h4 id="what-does-the-engine-do">What does the engine do</h4>
+<ol>
+<li>Parse your code, find all <code>import</code>s(yes, they will try to load it as early as possible)</li>
+<li>Load all imported modules(not standardized)</li>
+<li>Link all bindings(where importing things that are not exported will throw errors)</li>
+<li>Run every loaded module(this time when it reaches an <code>import</code>, nothing will happen because it has preloaded everything)</li>
+</ol>
+<p>As you can see, modules are loaded eagerly, and there are no error recovery. It&#39;s better to bundle the code in the production environment though.</p>
+<h2 id="html-content-models">HTML Content Models</h2>
+<h3 id="types">Types</h3>
+<ul>
+<li><strong>Flow</strong>: Most contents are flow contents, exceptions include some metadata content like <code>&lt;style&gt;</code> without <code>scope</code>, but that&#39;s trivial. They can <strong>contain text or embedded content</strong>.</li>
+<li><strong>Heading</strong>: <code>&lt;h*&gt;</code>(and the deprecated <code>&lt;hgroup&gt;</code>). Note <code>&lt;header&gt;</code> is not heading content. None is phrasing content.</li>
+<li><strong>Sectioning</strong>: <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;section&gt;</code>. Create a section that defines the scope of  <code>&lt;header&gt;</code> elements, <code>&lt;footer&gt;</code> elements, and heading content. None is phrasing content.</li>
+<li><strong>Phrasing</strong>: content that you normally consider &quot;inlined&quot;. Runs of phrasing content make up paragraphs</li>
+<li><strong>Embedded</strong>: inserts content from another mark-up language or namespace e.g. <code>&lt;img&gt;</code>, <code>&lt;iframe&gt;</code>, <code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code>, <code>&lt;embed&gt;</code>, <code>&lt;object&gt;</code>, <code>&lt;svg&gt;</code>. All are phrasing contents too.</li>
+<li><strong>Interactive</strong>: e.g. <code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;button&gt;</code>. Some are phrasing content.</li>
+<li><strong>Metadata</strong> e.g. <code>&lt;link&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;noscript&gt;</code>, <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;title&gt;</code>. Some are phrasing content.</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
