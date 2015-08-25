@@ -1,0 +1,169 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 22, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 22, 2015</h1></header><div class="content"><div class="diary"><h2 id="html">HTML</h2>
+<h3 id="inline-elements">Inline elements</h3>
+<ul>
+<li>Usually are phrasing content</li>
+<li>Default <code>display</code> are <code>inline</code>/<code>inline-block</code></li>
+<li>Formatting elements<ul>
+<li><code>b</code>, <code>big</code>, <code>i</code>, <code>small</code>, <code>tt</code></li>
+</ul>
+</li>
+<li>Elements with strong semantics<ul>
+<li><code>abbr</code>, <code>acronym</code>, <code>cite</code>, <code>code</code>, <code>dfn</code>, <code>em</code>, <code>kbd</code>(user input), <code>strong</code>, <code>samp</code>(sample output), <code>var</code>(math/programming variables), <code>mark</code>, <code>q</code></li>
+</ul>
+</li>
+<li>Elements with weaker semantics<ul>
+<li><code>a</code>, <code>bdi</code>/<code>bdo</code>(directionality), <code>br</code>, <code>img</code>, <code>map</code>(image hotspot map), <code>object</code>(external resource),  <code>script</code>, <code>span</code>, <code>sub</code>, <code>sup</code>, <code>audio</code>, <code>ins</code>, <code>del</code></li>
+</ul>
+</li>
+<li>Form controls: <code>button</code>, <code>input</code>, <code>label</code>, <code>select</code>, <code>textarea</code></li>
+</ul>
+<h3 id="block">Block</h3>
+<ul>
+<li>Usually are Flow content - phrasing content</li>
+<li>Heading &amp; Sectioning &amp; Outlining<ul>
+<li><code>h*</code>, <code>header</code>, <code>footer</code>, <code>main</code>, <code>article</code>, <code>section</code>, <code>nav</code>, <code>aside</code></li>
+</ul>
+</li>
+<li>Elements with strong semantics<ul>
+<li><code>address</code>, <code>blockquote</code>, <code>p</code>, <code>table</code></li>
+</ul>
+</li>
+<li>Elements with weaker semantics<ul>
+<li><code>pre</code>, <code>hr</code>, <code>div</code></li>
+</ul>
+</li>
+<li>Lists<ul>
+<li><code>ol</code>, <code>ul</code>, <code>li</code>,  <code>dl</code>, <code>dd</code>, <code>dt</code></li>
+</ul>
+</li>
+<li>Multimedia<ul>
+<li><code>figure</code>, <code>video</code>, <code>figcaption</code></li>
+</ul>
+</li>
+<li>Forms<ul>
+<li><code>form</code>, <code>output</code>, <code>legend</code>, <code>fieldset</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="void-elements">Void elements</h3>
+<ul>
+<li>End tag can be omitted</li>
+<li><code>br</code>, <code>hr</code>, <code>img</code>, <code>input</code></li>
+</ul>
+<h2 id="css">CSS</h2>
+<h3 id="-box-model-https-css-tricks-com-the-css-box-model-"><a href="https://css-tricks.com/the-css-box-model/">Box Model</a></h3>
+<ul>
+<li><code>width: 100%</code> and <code>width: auto</code> is different. Think about the W3C model model, and you get the idea.</li>
+<li>Absolutely positioned/floating boxes will have auto-growing width(and height when its width reaches the width of the parent and it starts to wrap). This behavior is rather unreliable because texts are rendered quite differently in different browsers</li>
+</ul>
+<h3 id="-marquee-in-css3-http-stackoverflow-com-questions-21233033-css3-marquee-effect-"><a href="http://stackoverflow.com/questions/21233033/css3-marquee-effect">Marquee in CSS3</a></h3>
+<pre><code class="lang-css"><span class="hljs-class">.marquee</span> <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> ... <span class="hljs-comment">/* must be set*/</span>
+    white-space: nowrap</span></span>; <span class="hljs-comment">/* must be set*/</span>
+    <span class="hljs-rule"><span class="hljs-attribute">overflow</span>:<span class="hljs-value"> hidden</span></span>; <span class="hljs-comment">/* must be set*/</span>
+}</span>
+
+<span class="hljs-class">.marquee</span> <span class="hljs-tag">span</span> <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-block</span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">padding-left</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;  <span class="hljs-comment">/* so it start from the right edge */</span>
+    <span class="hljs-rule"><span class="hljs-attribute">animation</span>:<span class="hljs-value"> marquee <span class="hljs-number">15s</span> linear infinite</span></span>;
+}</span>
+
+<span class="hljs-class">.marquee</span> <span class="hljs-rule"><span class="hljs-attribute">span</span>:<span class="hljs-value">hover {
+    animation-play-state: paused
+}
+
+<span class="hljs-comment">/* Make it move */</span>
+@keyframes marquee {
+    <span class="hljs-number">0%</span>   { transform: <span class="hljs-function">translate</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>)</span></span>; }
+    100% <span class="hljs-rules">{ <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">translate</span>(-<span class="hljs-number">100%</span>, <span class="hljs-number">0</span>)</span></span>; }</span>
+}
+</code></pre>
+<h2 id="dom">DOM</h2>
+<h3 id="events-these-are-pretty-old-stuff-from-quirksmode-org-">Events(These are pretty old stuff from quirksmode.org)</h3>
+<ul>
+<li>Netscape 2 introduced events(mouseover, mouseout, click, etc.) and event handlers(the DOM 0 way: on*, and in HTML!)</li>
+<li>Later, more events are added, and APIs for registering event hanlders purely in JavaScript were created</li>
+<li>Netscape 4 introduced details in events</li>
+<li>Netscape promoted capturing, IE promoted bubbling. Then the W3C specification came along, which was loosely based on Netscape&#39;s model and combined the two models.</li>
+</ul>
+<h4 id="type-of-events">Type of Events</h4>
+<ul>
+<li>Interface events: caused not by user actions, but by results of user actions<ul>
+<li>e.g. <code>unload</code>, <code>resize</code>, <code>scroll</code>, <code>focus</code>, <code>blur</code></li>
+</ul>
+</li>
+<li>Mouse events<ul>
+<li><code>mouseover</code>, <code>mouseout</code>, <code>dbclick</code>, <code>click</code>, <code>mousedown</code>, <code>mouseup</code>, <code>mousemove</code></li>
+</ul>
+</li>
+<li>Form events<ul>
+<li><code>submit</code>, <code>reset</code></li>
+</ul>
+</li>
+<li>W3C Events<ul>
+<li>Mutation events were introduced in DOM 2</li>
+</ul>
+</li>
+<li>Microsoft Events<ul>
+<li><code>contextmenu</code></li>
+<li><code>readystatechange</code></li>
+<li><code>beforeunload</code></li>
+<li><code>mouseenter</code> and <code>mouseleave</code>(don&#39;t bubble)</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+<h4 id="stopping-an-event-propagation">Stopping an event/propagation</h4>
+<ul>
+<li>Stop propagation<ul>
+<li>Microsoft<ul>
+<li><code>window.event.cancelBubble = true</code></li>
+</ul>
+</li>
+<li>W3C<ul>
+<li><code>e.stopPropagation()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Stop default behavior<ul>
+<li>The default behaviors always happen after the event handlers return(and thus they can be canceled)</li>
+<li>Some events, like <code>unload</code>, can&#39;t be canceled</li>
+<li>The old-fashion way: return <code>false</code> in the event handler<ul>
+<li>Exception: need to return <code>true</code> if you want to change <code>window.status</code> to something other than the href when hovering a link</li>
+</ul>
+</li>
+<li>Microsoft<ul>
+<li><code>window.event.returnValue = false</code></li>
+</ul>
+</li>
+<li>W3C<ul>
+<li><code>e.preventDefault()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="referencing-data-in-event-handlers">Referencing data in event handlers</h4>
+<ul>
+<li>W3C and Netscape supported events as parameters in handlers, while Microsoft put it on the <code>window</code></li>
+<li>W3C/Netscape supported <code>target</code>, Microsoft supported <code>srcElement</code></li>
+<li>W3C added <code>currentTarget</code>, and <code>this</code> can be used, too</li>
+<li>Microsoft didn&#39;t support it. They <strong>copy</strong> the event handler rather than <strong>referencing</strong> it, so <code>this</code> always point to <code>window</code></li>
+<li>For mouse events, W3C added <code>relatedTarget</code>, while Microsoft used <code>fromElement</code> and <code>toElement</code></li>
+<li>For key press, reference <code>e.keyCode</code></li>
+<li>For buttons, Netscape supported <code>e.which</code>(left=1, middle=2, right=3), W3C spcified <code>e.button</code>(left=0, middle=1, right=2), Microsoft supported <code>e.button</code>(left=1, middle=4, right=2)</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
