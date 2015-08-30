@@ -1,0 +1,217 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 30, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 30, 2015</h1></header><div class="content"><div class="diary"><h2 id="os">OS</h2>
+<h3 id="-visually-what-happens-to-fork-in-a-for-loop-http-stackoverflow-com-questions-26793402-visually-what-happens-to-fork-in-a-for-loop-"><a href="http://stackoverflow.com/questions/26793402/visually-what-happens-to-fork-in-a-for-loop">Visually what happens to fork() in a For Loop</a></h3>
+<ul>
+<li>Notice that the child process(before writing) will share the memory of the parent process, so it won&#39;t start again from 0</li>
+<li>The parent process runs before the child process</li>
+</ul>
+<h2 id="-the-difference-between-fork-vfork-exec-and-clone-http-stackoverflow-com-questions-4856255-the-difference-between-fork-vfork-exec-and-clone-"><a href="http://stackoverflow.com/questions/4856255/the-difference-between-fork-vfork-exec-and-clone">The difference between fork(), vfork(), exec() and clone()</a></h2>
+<ul>
+<li><code>fork()</code>: Old implementations copy the entire memory space of the parent process, but it&#39;s now copy-on-write.<ul>
+<li>Child process has a new PID and a corresponding PPID.</li>
+<li>The child gets 0 as the return value of <code>fork()</code>, the parent gets the PID of the child. You can use this to tell who is who.</li>
+</ul>
+</li>
+<li><code>vfork()</code>: a legacy implementation for a more efficient <code>fork()</code>. It doesn&#39;t copy, -- at all.<ul>
+<li>It will suspend the parent process until the child exits or calls <code>execve()</code></li>
+<li>It&#39;s dangerous since<ul>
+<li>You might overwrite the shared memory space.</li>
+<li>If you return from the function containing the <code>vfork()</code>, it will wreck the stack</li>
+<li>Don&#39;t call <code>exit()</code> in the child, call <code>_exit()</code>(It&#39;s also true for <code>fork()</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>exec()</code>: replace the entire current process with a newly loaded program. It never returns to the original program.</li>
+<li><code>clone()</code>: Allows sharing of execution context with special data structures.</li>
+</ul>
+<h2 id="c">C</h2>
+<h3 id="-macros-https-gcc-gnu-org-onlinedocs-cpp-macros-html-macros-"><a href="https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros">Macros</a></h3>
+<h4 id="self-reference-rule">Self-reference rule</h4>
+<p>There are no recursions.</p>
+<pre><code class="lang-c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> foo (4 + foo)</span>
+</code></pre>
+<p>will not be expanded into</p>
+<pre><code class="lang-c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> foo (4 + (4 + foo))</span>
+</code></pre>
+<p>and more...It will stop after one step. So whenever you write <code>foo</code> in your program, it will expand to <code>4 + foo</code>, and that&#39;s it.</p>
+<h4 id="indirect-self-referenc">Indirect self-referenc</h4>
+<p>No recursions either.</p>
+<pre><code class="lang-c"><span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> x (4 + y)</span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">define</span> y (2 * x)</span>
+</code></pre>
+<p>Then</p>
+<pre><code class="lang-c">x <span class="hljs-comment">// =&gt; (4 + y)</span>
+  <span class="hljs-comment">// =&gt; (4 + (2 * x))</span>
+
+y <span class="hljs-comment">// =&gt; (2 * x)</span>
+  <span class="hljs-comment">// =&gt; (2 * (4 + y))</span>
+</code></pre>
+<h2 id="-bash-syntax-recap-http-linuxconfig-org-bash-scripting-tutorial-"><a href="http://linuxconfig.org/bash-scripting-tutorial">Bash Syntax Recap</a></h2>
+<p>Bash uses spaces, not commas.</p>
+<h3 id="variables">Variables</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># declare with `=`</span>
+STRING=<span class="hljs-string">"Hello World"</span>
+<span class="hljs-comment"># use with `$`</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$STRING</span>
+<span class="hljs-comment"># execute command, store into variables</span>
+OF=myhome_directory_$(date +%Y%m%d).tar.gz
+
+<span class="hljs-comment"># local with `local`</span>
+<span class="hljs-keyword">function</span> fn {
+<span class="hljs-built_in">local</span> VAR=<span class="hljs-string">"local variable"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$VAR</span>
+}
+</code></pre>
+<h3 id="cli-arguments">CLI arguments</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># access CLI arguments</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$1</span> <span class="hljs-variable">$2</span> <span class="hljs-variable">$3</span>
+<span class="hljs-comment"># as array</span>
+args=(<span class="hljs-string">"<span class="hljs-variable">$@</span>"</span>)
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${args[0]}</span> <span class="hljs-variable">${args[1]}</span> <span class="hljs-variable">${args[2]}</span>
+<span class="hljs-comment"># as whole</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$@</span>
+<span class="hljs-comment"># count</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$#</span>
+</code></pre>
+<h3 id="execute-commands">Execute commands</h3>
+<p>use backticks.</p>
+<h3 id="read-input">Read input</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># use named variables</span>
+<span class="hljs-built_in">read</span> word1 word2
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$word1</span> <span class="hljs-variable">$word2</span>
+<span class="hljs-comment"># or use built-in $REPLY</span>
+<span class="hljs-built_in">read</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$REPLY</span>
+<span class="hljs-comment"># read into array</span>
+<span class="hljs-built_in">read</span> <span class="hljs-operator">-a</span> arr
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${arr[0]}</span> <span class="hljs-variable">${arr[1]}</span>
+</code></pre>
+<h3 id="array">Array</h3>
+<p>Use <code>()</code> and spaces</p>
+<pre><code class="lang-bash">ARRAY=( <span class="hljs-string">'Debian Linux'</span> <span class="hljs-string">'Redhat Linux'</span> Ubuntu Linux )
+<span class="hljs-comment"># count</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${#ARRAY[@]}</span>
+<span class="hljs-comment"># as whole</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${ARRAY[@]}</span>
+
+<span class="hljs-comment"># loop elements</span>
+<span class="hljs-keyword">for</span> (( i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-variable">$ELEMENTS</span>;i++)); <span class="hljs-keyword">do</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">${ARRAY[${i}</span>]}
+<span class="hljs-keyword">done</span>
+</code></pre>
+<h3 id="conditions">Conditions</h3>
+<pre><code class="lang-bash">directory=<span class="hljs-string">"./foo"</span>
+
+<span class="hljs-comment"># spaces inside `[]` are needed!</span>
+<span class="hljs-comment"># `; then` is needed, and `fi`</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-operator">-d</span> <span class="hljs-variable">$directory</span> ]; <span class="hljs-keyword">then</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"Directory exists"</span>
+<span class="hljs-keyword">elif</span>
+  ...
+<span class="hljs-keyword">else</span> 
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"Directory does not exists"</span>
+<span class="hljs-keyword">fi</span>
+
+<span class="hljs-comment"># cases</span>
+<span class="hljs-keyword">case</span> <span class="hljs-variable">$case</span> <span class="hljs-keyword">in</span>
+  <span class="hljs-number">1</span>) <span class="hljs-built_in">echo</span> <span class="hljs-string">"You selected 1"</span>;;
+  <span class="hljs-number">2</span>) <span class="hljs-built_in">echo</span> <span class="hljs-string">"You selected 2"</span>;;
+  <span class="hljs-number">3</span>) <span class="hljs-built_in">echo</span> <span class="hljs-string">"You selected 3"</span>;;
+  <span class="hljs-number">4</span>) <span class="hljs-built_in">echo</span> <span class="hljs-string">"You selected 4"</span>;;
+  <span class="hljs-number">5</span>) <span class="hljs-built_in">exit</span>
+<span class="hljs-keyword">esac</span>
+</code></pre>
+<h3 id="comparisons-testing">Comparisons/testing</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># notice `[]`.</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-variable">$NUM1</span> <span class="hljs-operator">-eq</span> <span class="hljs-variable">$NUM2</span> ]; <span class="hljs-keyword">then</span>
+  ...
+<span class="hljs-keyword">fi</span>
+</code></pre>
+<p>Note: use <code>-lt</code>, <code>-gt</code>, <code>le</code>, <code>-ge</code>, <code>-eq</code> for numbers.</p>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$S1</span> = <span class="hljs-variable">$S2</span> ]; <span class="hljs-keyword">then</span>
+  ...
+<span class="hljs-keyword">fi</span>
+</code></pre>
+<p>Note: use <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code> for strings. <code>-n s1</code> for non-empty check, <code>-z s</code> for empty check</p>
+<p>Files: <code>-d</code> for directory existence, <code>-e</code> for file/directory existence, <code>-f</code> for regular file existence(not directory/device), <code>-S</code> for socket, <code>-s</code> for non-zero size</p>
+<h3 id="loops">Loops</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># for...in. needs `do` and `done`.</span>
+<span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> $( ls /var/ ); <span class="hljs-keyword">do</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-variable">$f</span>
+<span class="hljs-keyword">done</span> 
+
+<span class="hljs-comment"># use let to reassign</span>
+COUNT=<span class="hljs-number">6</span>
+<span class="hljs-keyword">while</span> [ <span class="hljs-variable">$COUNT</span> <span class="hljs-operator">-gt</span> <span class="hljs-number">0</span> ]; <span class="hljs-keyword">do</span>
+  <span class="hljs-built_in">echo</span> Value of count is: <span class="hljs-variable">$COUNT</span>
+  <span class="hljs-built_in">let</span> COUNT=COUNT-<span class="hljs-number">1</span>
+<span class="hljs-keyword">done</span>
+
+COUNT=<span class="hljs-number">0</span>
+until [ <span class="hljs-variable">$COUNT</span> <span class="hljs-operator">-gt</span> <span class="hljs-number">5</span> ]; <span class="hljs-keyword">do</span>
+        <span class="hljs-built_in">echo</span> Value of count is: <span class="hljs-variable">$COUNT</span>
+        <span class="hljs-built_in">let</span> COUNT=COUNT+<span class="hljs-number">1</span>
+<span class="hljs-keyword">done</span>
+</code></pre>
+<h3 id="escaping">Escaping</h3>
+<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> \<span class="hljs-variable">$BASH_VAR</span>  <span class="hljs-comment"># $BASH_VAR</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"\\"</span> <span class="hljs-comment"># \</span>
+</code></pre>
+<h3 id="quotes">Quotes</h3>
+<ul>
+<li>Meta characters like <code>$</code> is meaningless in single quotes.</li>
+<li>&quot;$&quot;, &quot;\&quot; and &quot;`&quot; will have effects in double quotes</li>
+</ul>
+<h3 id="brackes">Brackes</h3>
+<pre><code class="lang-bash"><span class="hljs-keyword">if</span> [ CONDITION ]  <span class="hljs-comment"># test in shell. you can `man [`. It's like `test`</span>
+<span class="hljs-keyword">if</span> [[ CONDITION1 || CONDITION2 &amp;&amp; CONDITION3]] <span class="hljs-comment"># extended test in bash</span>
+Array[<span class="hljs-number">1</span>]=element1 <span class="hljs-comment"># Array initialization  </span>
+[a-z]             <span class="hljs-comment"># range in regex</span>
+</code></pre>
+<h3 id="curly-brackets">Curly Brackets</h3>
+<pre><code class="lang-bash">var=<span class="hljs-string">"abcde"</span>;
+<span class="hljs-variable">${var%d*}</span>  <span class="hljs-comment"># abc</span>
+<span class="hljs-variable">${var/de/12}</span>  <span class="hljs-comment"># abc12</span>
+
+default=<span class="hljs-string">"hello"</span>; <span class="hljs-built_in">unset</span> var;
+<span class="hljs-variable">${var:-$default}</span> <span class="hljs-comment"># hello</span>
+
+f{oo,ee,a}d  <span class="hljs-comment"># food feed fad</span>
+
+mv error.log{,.OLD}  <span class="hljs-comment"># "mv error.log error.log.OLD"</span>
+
+{<span class="hljs-number">000</span>..<span class="hljs-number">2</span>} <span class="hljs-comment"># 000 001 002</span>
+
+{<span class="hljs-number">00</span>..<span class="hljs-number">8</span>..<span class="hljs-number">2</span>}  <span class="hljs-comment"># 00 02 04 06 08</span>
+
+{D..T..<span class="hljs-number">4</span>}  <span class="hljs-comment"># D H L P T</span>
+
+{ <span class="hljs-built_in">command</span>1; <span class="hljs-built_in">command</span>2; . . . <span class="hljs-built_in">command</span>N; } <span class="hljs-comment"># block of code</span>
+</code></pre>
+<h3 id="parentheses">Parentheses</h3>
+<pre><code class="lang-bash"><span class="hljs-comment"># note spaces!</span>
+( <span class="hljs-built_in">command</span>1; <span class="hljs-built_in">command</span>2 )   <span class="hljs-comment"># command group executed within a subshell  </span>
+Array=(element1 element2 element3) <span class="hljs-comment"># array initialization  </span>
+result=$(COMMAND)   <span class="hljs-comment"># command substitution, new style</span>
+</code></pre>
+<h3 id="double-parentheses-arithmetic-context-">Double Parentheses(arithmetic context)</h3>
+<pre><code class="lang-bash">(( var = <span class="hljs-number">78</span> ))  
+var=$(( <span class="hljs-number">20</span> + <span class="hljs-number">5</span> ))
+(( var++ ))
+(( var-- ))
+(( var0 = var1&lt;<span class="hljs-number">98</span>?<span class="hljs-number">9</span>:<span class="hljs-number">21</span> ))
+<span class="hljs-keyword">for</span> ((i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10</span>; i++))
+</code></pre>
+<p>You can also use <code>let</code> to do arithmetics. <code>$(( expression ))</code> and <code>$[ expression ]</code> works too.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

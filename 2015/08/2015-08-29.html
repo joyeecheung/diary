@@ -20,6 +20,8 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>V8 now has multiple threads for these. The main thread does compilation and execution, and there is another one just for compilation. Profiler is on another, and there are a few more for GC.</li>
 <li>The main thread will stop execution when doing Crankshaft optimizations</li>
 <li>Optimization is done on the Hydrogen(a static-single assignment representation of the control flow graph)</li>
+<li>Hydrogen will be translated into the low-level Lithium(platform-dependent), this is where the register allocation is done</li>
+<li>Lithium will then be translated into machine code</li>
 </ul>
 </li>
 </ul>
