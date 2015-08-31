@@ -1,0 +1,264 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>August 31, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>August 31, 2015</h1></header><div class="content"><div class="diary"><h2 id="c-">C++</h2>
+<h3 id="-c-11-stl-containers-and-thread-safety-http-stackoverflow-com-questions-12931787-c11-stl-containers-and-thread-safety-"><a href="http://stackoverflow.com/questions/12931787/c11-stl-containers-and-thread-safety">C++11 STL containers and thread safety</a></h3>
+<p>Spec 23.2.2:</p>
+<blockquote>
+<p>Implementations are required to avoid data races when the contents of the contained object in different elements in the same sequence, excepting vector<bool>, are modified concurrently.</p>
+</blockquote>
+<ul>
+<li>Simultaneous reads of the same object are OK</li>
+<li>Simultaneous read/writes of different objects are OK</li>
+<li>Ohter operations, e.g. simultaneous writes on the same object, needs custom synchronization(like critical sections)</li>
+</ul>
+<h3 id="-stack-queue-deque-containers"><code>stack</code>, <code>queue</code>, <code>deque</code>, Containers</h3>
+<p>Note the definition:</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">template</span>&lt;
+    <span class="hljs-keyword">class</span> T,
+    <span class="hljs-keyword">class</span> Container = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">deque</span>&lt;T&gt;
+&gt; <span class="hljs-keyword">class</span> <span class="hljs-built_in">stack</span>;
+
+<span class="hljs-keyword">template</span>&lt;
+    <span class="hljs-keyword">class</span> T,
+    <span class="hljs-keyword">class</span> Container = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">deque</span>&lt;T&gt;
+&gt; <span class="hljs-keyword">class</span> <span class="hljs-built_in">queue</span>;
+</code></pre>
+<p>So <code>stack</code> and <code>queue</code> are container adapters, they are wrappers to the underlying container. They both need the container to satisfy the concept <a href="http://en.cppreference.com/w/cpp/concept/SequenceContainer"><code>SequenceContainer</code></a>, the difference is that they additionally need different interfaces.</p>
+<p>Stack needs:</p>
+<ul>
+<li><code>back()</code></li>
+<li><code>push_back()</code></li>
+<li><code>pop_back()</code></li>
+</ul>
+<p>Candidates are <code>std::vector</code>, <code>std::deque</code> and <code>std::list</code>.</p>
+<p>Queue needs</p>
+<ul>
+<li><code>back()</code></li>
+<li><code>front()</code></li>
+<li><code>push_back()</code></li>
+<li><code>pop_front()</code></li>
+</ul>
+<p>Candidates are <code>std::deque</code> and <code>std::list</code></p>
+<p>Usually <code>deque</code>s are implmemented with a sequence of individually allocated fixed-size arrays(not contiguously as a whole, unlike <code>vector</code>s). Therefore its expansion is cheaper than <code>vector</code> because there&#39;s no need for copying.</p>
+<h3 id="c-11-v-s-boost">C++11 v.s. Boost</h3>
+<ul>
+<li>range-based for</li>
+<li>Lambda</li>
+<li><code>static_assert</code></li>
+<li>rvalues</li>
+<li>regex</li>
+<li>list-initialization</li>
+<li>threads</li>
+<li>smart pointers</li>
+<li>bind</li>
+<li><code>type_traits</code></li>
+<li><code>constexpr</code></li>
+<li><code>decltype</code></li>
+</ul>
+<h2 id="os">OS</h2>
+<h3 id="producer-consumer-problem">Producer–consumer problem</h3>
+<p>The solution for the producer is to either go to <strong>sleep or discard</strong> data if the buffer is full. The next time the consumer removes an item from the buffer, it <strong>notifies</strong> the producer, who starts to fill the buffer again. In the same way, the consumer can go to sleep if it finds the buffer to be empty. The next time the producer puts data into the buffer, it wakes up the sleeping consumer.</p>
+<p>Using semaphores (<code>emptyCount</code> and <code>fillCount</code>) and critical sections for <code>putItemIntoBuffer()</code>(mutex).</p>
+<h3 id="first-readers-writers-problem">First readers-writers problem</h3>
+<h4 id="constriant">Constriant</h4>
+<ul>
+<li>When one&#39;s writing, others can&#39;t read/write</li>
+<li>Readers don&#39;t have to wait when others are reading<ul>
+<li>(Writers might starve)</li>
+</ul>
+</li>
+</ul>
+<h4 id="solution">Solution</h4>
+<pre><code>Writer:
+    # entry section
+    <span class="hljs-operator"><span class="hljs-keyword">lock</span> resource
+    # critical <span class="hljs-keyword">section</span>
+    <span class="hljs-keyword">write</span>
+    # exit <span class="hljs-keyword">section</span>
+    <span class="hljs-keyword">release</span> resource
+
+Reader:
+    # entry <span class="hljs-keyword">section</span>
+    acquire <span class="hljs-keyword">mutex</span>  # protect ++ <span class="hljs-keyword">from</span> other readers
+    readCount++
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">lock</span> resource  # <span class="hljs-keyword">first</span> reader <span class="hljs-keyword">lock</span> out writers
+    <span class="hljs-keyword">release</span> <span class="hljs-keyword">mutex</span>
+
+    # critical <span class="hljs-keyword">section</span>
+    <span class="hljs-keyword">read</span>
+
+    # exit <span class="hljs-keyword">section</span>
+    acuqire <span class="hljs-keyword">mutex</span>  # protect <span class="hljs-comment">-- from other readerss</span>
+    readCount<span class="hljs-comment">--</span>
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">release</span> resource  # <span class="hljs-keyword">last</span> reader <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> writers
+    <span class="hljs-keyword">release</span> <span class="hljs-keyword">mutex</span></span>
+</code></pre><h3 id="second-readers-writers-problem">Second readers-writers problem</h3>
+<h4 id="constriant">Constriant</h4>
+<ul>
+<li>When one&#39;s writing, others can&#39;t read/write</li>
+<li>When a writer is waiting, don&#39;t add more readers<ul>
+<li>(Readers might starve)</li>
+</ul>
+</li>
+</ul>
+<h4 id="solution">Solution</h4>
+<pre><code>Writer:
+    # entry section
+    acquire wmutex  # protect ++ from other writers
+    writeCount++
+    if (writeCount == 1)
+        acquire readTry  # first writer locks out readers
+    <span class="hljs-operator"><span class="hljs-keyword">release</span> wmutex
+
+    # critical <span class="hljs-keyword">section</span>
+    # you can be sure there will be <span class="hljs-keyword">no</span> readers <span class="hljs-keyword">now</span>
+    require resource  # locks out other writers
+    <span class="hljs-keyword">write</span>
+    <span class="hljs-keyword">release</span> resource
+
+    # exit <span class="hljs-keyword">section</span>
+    acuqire wmutex  # protect <span class="hljs-comment">-- from other readerss</span>
+    writeCount<span class="hljs-comment">--</span>
+    <span class="hljs-keyword">if</span> (writeCount == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">release</span> readTry  # <span class="hljs-keyword">last</span> writer <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> readers
+    <span class="hljs-keyword">release</span> wmutex
+
+Reader:
+    # entry <span class="hljs-keyword">section</span>
+    acquire rentry # protect readTry aquisition
+    acquire readTry  # coordinating <span class="hljs-keyword">with</span> writers <span class="hljs-keyword">to</span> satisfy writer preference
+    acquire rmutex  # protect ++ <span class="hljs-keyword">from</span> other readers
+    readCount++
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">lock</span> resource  # <span class="hljs-keyword">first</span> reader <span class="hljs-keyword">lock</span> <span class="hljs-keyword">for</span> writers
+    <span class="hljs-keyword">release</span> rmutex  # <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> other readers
+    <span class="hljs-keyword">release</span> readTry
+    <span class="hljs-keyword">release</span> rentry
+
+    # critical <span class="hljs-keyword">section</span>
+    <span class="hljs-keyword">read</span>
+
+    # exit <span class="hljs-keyword">section</span>
+    acuqire rmutex  # protect <span class="hljs-comment">-- from other readerss</span>
+    readCount<span class="hljs-comment">--</span>
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">release</span> resource  # <span class="hljs-keyword">last</span> reader <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> writers
+    <span class="hljs-keyword">release</span> rmutex</span>
+</code></pre><h3 id="third-readers-writers-problem">Third readers-writers problem</h3>
+<ul>
+<li>When one&#39;s writing, others can&#39;t read/write</li>
+<li>No one should starve</li>
+</ul>
+<h4 id="solution">Solution</h4>
+<pre><code>Writer:
+    acquire rentry
+    acquire wmutex
+    write
+    <span class="hljs-operator"><span class="hljs-keyword">release</span> rentry
+    <span class="hljs-keyword">release</span> wmutex
+
+Reader:
+    # entry <span class="hljs-keyword">section</span>
+    acquire rentry # protect entry
+    acquire rmutex  # protect ++ <span class="hljs-keyword">from</span> other readers
+    readCount++
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">lock</span> resource  # <span class="hljs-keyword">first</span> reader <span class="hljs-keyword">lock</span> <span class="hljs-keyword">for</span> writers
+    <span class="hljs-keyword">release</span> rmutex  # <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> other readers
+    <span class="hljs-keyword">release</span> rentry
+
+    # critical <span class="hljs-keyword">section</span>
+    <span class="hljs-keyword">read</span>
+
+    # exit <span class="hljs-keyword">section</span>
+    acuqire rmutex  # protect <span class="hljs-comment">-- from other readerss</span>
+    readCount<span class="hljs-comment">--</span>
+    <span class="hljs-keyword">if</span> (readCount == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">release</span> resource  # <span class="hljs-keyword">last</span> reader <span class="hljs-keyword">release</span> <span class="hljs-keyword">for</span> writers
+    <span class="hljs-keyword">release</span> rmutex</span>
+</code></pre><h2 id="networking">Networking</h2>
+<h3 id="key-features-that-set-tcp-apart-from-udp">Key features that set TCP apart from UDP</h3>
+<ul>
+<li><strong>Ordered</strong> data transfer</li>
+<li><strong>Retransmission</strong> of lost packets</li>
+<li><strong>Error-free</strong> data transfer</li>
+<li><strong>Flow control</strong></li>
+<li><strong>Congestion control</strong></li>
+</ul>
+<h3 id="what-are-the-key-differences-to-http-1-x-">What are the key differences to HTTP/1.x?</h3>
+<p>At a high level, HTTP/2:</p>
+<ul>
+<li>is <strong>binary</strong>, instead of textual</li>
+<li>is fully <strong>multiplexed</strong>, instead of ordered and blocking(interleaved fragments!)</li>
+<li>can therefore use one connection for parallelism</li>
+<li>uses <strong>header compression</strong> to reduce overhead</li>
+<li>allows servers to <strong>push</strong> responses proactively into client caches</li>
+</ul>
+<h3 id="http-status-code">HTTP Status code</h3>
+<h3 id="informational-1xx">Informational 1xx</h3>
+<ul>
+<li>100 Continue</li>
+<li>101 Switching Protocols</li>
+</ul>
+<h3 id="success-2xx">Success 2xx</h3>
+<ul>
+<li><strong>200 OK</strong></li>
+<li>201 Created</li>
+<li>202 Accepted</li>
+<li>203 Non-Authoritative Information</li>
+<li>204 No Content</li>
+<li>205 Reset Content</li>
+<li>206 Partial Content</li>
+</ul>
+<h3 id="redirect-3xx">Redirect 3xx</h3>
+<ul>
+<li>300 Multiple Choices</li>
+<li><strong>301 Moved Permanently</strong></li>
+<li><strong>302 Found</strong></li>
+<li>303 See Other</li>
+<li><strong>304 Not Modified</strong></li>
+<li>305 Use Proxy</li>
+<li>307 Temporary Redirect</li>
+</ul>
+<h3 id="client-error-4xx">Client Error 4xx</h3>
+<ul>
+<li>400 Bad Request</li>
+<li>401 Unauthorized</li>
+<li>402 Payment Required</li>
+<li><strong>403 Forbidden</strong></li>
+<li><strong>404 Not Found</strong></li>
+<li>405 Method Not Allowed</li>
+<li>406 Not Acceptable</li>
+<li>407 Proxy Authentication Required</li>
+<li>408 Request Timeout</li>
+<li>409 Conflict</li>
+<li>410 Gone</li>
+<li>411 Length Required</li>
+<li>412 Precondition Failed</li>
+<li>413 Request Entity Too Large</li>
+<li>414 Request-URI Too Long</li>
+<li>415 Unsupported Media Type</li>
+<li>416 Requested Range Not Satisfiable</li>
+<li>417 Expectation Failed</li>
+</ul>
+<h3 id="server-error-5xx">Server Error 5xx</h3>
+<ul>
+<li><strong>500 Internal Server Error</strong></li>
+<li>501 Not Implemented</li>
+<li><strong>502 Bad Gateway</strong></li>
+<li>503 Service Unavailable</li>
+<li>504 Gateway Timeout</li>
+<li>505 HTTP Version Not Supported</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

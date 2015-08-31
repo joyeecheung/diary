@@ -15,7 +15,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>Notice that the child process(before writing) will share the memory of the parent process, so it won&#39;t start again from 0</li>
 <li>The parent process runs before the child process</li>
 </ul>
-<h2 id="-the-difference-between-fork-vfork-exec-and-clone-http-stackoverflow-com-questions-4856255-the-difference-between-fork-vfork-exec-and-clone-"><a href="http://stackoverflow.com/questions/4856255/the-difference-between-fork-vfork-exec-and-clone">The difference between fork(), vfork(), exec() and clone()</a></h2>
+<h3 id="-the-difference-between-fork-vfork-exec-and-clone-http-stackoverflow-com-questions-4856255-the-difference-between-fork-vfork-exec-and-clone-"><a href="http://stackoverflow.com/questions/4856255/the-difference-between-fork-vfork-exec-and-clone">The difference between fork(), vfork(), exec() and clone()</a></h3>
 <ul>
 <li><code>fork()</code>: Old implementations copy the entire memory space of the parent process, but it&#39;s now copy-on-write.<ul>
 <li>Child process has a new PID and a corresponding PPID.</li>
