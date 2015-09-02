@@ -1,0 +1,84 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 1, 2015</h1></header><div class="content"><div class="diary"><h2 id="es6">ES6</h2>
+<h3 id="-es6-in-depth-subclassing-https-hacks-mozilla-org-2015-08-es6-in-depth-subclassing-"><a href="https://hacks.mozilla.org/2015/08/es6-in-depth-subclassing/">ES6 In Depth: Subclassing</a></h3>
+<ul>
+<li><p>You can use <code>Object.setPrototypeOf()</code> after you declare a class, but it&#39;s less performant and less optimizable for engines</p>
+<pre><code class="lang-javascript">  <span class="hljs-comment">// Hook up the instance properties</span>
+  <span class="hljs-built_in">Object</span>.setPrototypeOf(Circle.prototype, Shape.prototype);
+
+  <span class="hljs-comment">// Hook up the static properties</span>
+  <span class="hljs-built_in">Object</span>.setPrototypeOf(Circle, Shape);
+</code></pre>
+</li>
+<li><p>In ES6, we now have <code>extends</code>.</p>
+<pre><code>   <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> <span class="hljs-keyword"><span class="hljs-keyword">extends</span></span> <span class="hljs-title">Shape</span> {</span>
+      <span class="hljs-comment">// ...</span>
+  }
+</code></pre></li>
+<li>You can <code>extends</code> any expression as long as it&#39;s <strong>a valid function with a <code>.protoytpe</code></strong>. e.g.<ul>
+<li>Another class</li>
+<li>Class-like functions</li>
+<li>A normal function</li>
+<li>A variable that contains a function or class</li>
+<li>A property access on an object</li>
+<li>A function call</li>
+<li><code>null</code>(if you don&#39;t want it to inherit from <code>Object.protoype</code>)</li>
+</ul>
+</li>
+<li>You can access the parent properties via <code>super.xx</code> or <code>super[xx]</code>, and call parent constructor with <code>super()</code>(Note: therefore you need to initialize the parent explicitly)</li>
+<li>You can still access parent methods via <code>this</code>, if you don&#39;t overwrite them. But all accesses to <code>this</code> in subclass constructors that occur before the call to the super constructor will result in a <code>ReferenceError</code>.</li>
+<li><p>A convenient pattern: </p>
+<pre><code>  <span class="hljs-constructor"><span class="hljs-keyword">constructor</span>(...args) </span>{
+      <span class="hljs-keyword">super</span>(...args);
+  }
+</code></pre></li>
+<li>Calling a function with <code>new</code> sets <code>new.target</code> to be the called function, and calling <code>super</code> within that function forwards the <code>new.target</code> value.</li>
+</ul>
+<h4 id="extends-v-s-prototype">extends v.s. prototype</h4>
+<ul>
+<li><code>class</code> is not mandatory. It&#39;s just another tool you can use</li>
+<li>Sometimes the prototypal inheritance are more suitable than <code>extends</code></li>
+</ul>
+<h4 id="multiple-inheritance">Multiple inheritance</h4>
+<ul>
+<li>JavaScript does not implement <strong>multiple inheritance</strong> for classes.</li>
+<li><p>Hybrid solution:</p>
+<pre><code class="lang-javascript">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mix</span>(<span class="hljs-params">...mixins</span>) </span>{
+      <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Mix</span> </span>{}
+
+      <span class="hljs-comment">// Programmatically add all the methods and accessors</span>
+      <span class="hljs-comment">// of the mixins to class Mix.</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> mixin <span class="hljs-keyword">of</span> mixins) {
+          copyProperties(Mix, mixin);
+          copyProperties(Mix.prototype, mixin.prototype);
+      }
+
+      <span class="hljs-keyword">return</span> Mix;
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">copyProperties</span>(<span class="hljs-params">target, source</span>) </span>{
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">of</span> <span class="hljs-built_in">Reflect</span>.ownKeys(source)) {
+          <span class="hljs-keyword">if</span> (key !== <span class="hljs-string">"constructor"</span> &amp;&amp; key !== <span class="hljs-string">"prototype"</span> &amp;&amp; key !== <span class="hljs-string">"name"</span>) {
+              <span class="hljs-keyword">let</span> desc = <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(source, key);
+              <span class="hljs-built_in">Object</span>.defineProperty(target, key, desc);
+          }
+      }
+  }
+
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DistributedEdit</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">mix</span>(<span class="hljs-title">Loggable</span>, <span class="hljs-title">Serializable</span>) </span>{
+      <span class="hljs-comment">// Event methods</span>
+  }
+</code></pre>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

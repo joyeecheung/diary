@@ -65,6 +65,12 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li><code>decltype</code></li>
 </ul>
 <h2 id="os">OS</h2>
+<h3 id="-malloc-"><code>malloc</code></h3>
+<p>Need to</p>
+<ol>
+<li>Get more virtual address space from the kernel, if needed</li>
+<li>Find enough contiguous space to return</li>
+</ol>
 <h3 id="producer-consumer-problem">Producer–consumer problem</h3>
 <p>The solution for the producer is to either go to <strong>sleep or discard</strong> data if the buffer is full. The next time the consumer removes an item from the buffer, it <strong>notifies</strong> the producer, who starts to fill the buffer again. In the same way, the consumer can go to sleep if it finds the buffer to be empty. The next time the producer puts data into the buffer, it wakes up the sleeping consumer.</p>
 <p>Using semaphores (<code>emptyCount</code> and <code>fillCount</code>) and critical sections for <code>putItemIntoBuffer()</code>(mutex).</p>
@@ -204,6 +210,11 @@ Reader:
 <li>can therefore use one connection for parallelism</li>
 <li>uses <strong>header compression</strong> to reduce overhead</li>
 <li>allows servers to <strong>push</strong> responses proactively into client caches</li>
+</ul>
+<h3 id="-time_wait-"><code>TIME_WAIT</code></h3>
+<ul>
+<li>After the TCP connection is closed, it will be kept around so that any delayed packets can be matched to the connection and handled appropriately.</li>
+<li>Huge amount of <code>TIME_WAIT</code> means you&#39;ve got a lot of short-lived connections</li>
 </ul>
 <h3 id="http-status-code">HTTP Status code</h3>
 <h3 id="informational-1xx">Informational 1xx</h3>
