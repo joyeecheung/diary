@@ -1,0 +1,70 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 3, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 3, 2015</h1></header><div class="content"><div class="diary"><h2 id="angular">Angular</h2>
+<h3 id="directives">Directives</h3>
+<ul>
+<li>In Angular, <strong>the only place where an application should access the DOM</strong> is within directives.<ul>
+<li>DOM access are hard to test.</li>
+<li>If you need to access the DOM directly, you should write a custom directive.</li>
+</ul>
+</li>
+<li>Directives are <strong>markers</strong> on a DOM element (e.g. attribute, element name, comment, CSS class) that tell <code>$compile</code> to <strong>attach a specified behavior</strong> to that DOM element (e.g. via event listeners), or even to <strong>transform</strong> the DOM element and its children.</li>
+<li>When Angular bootstraps your application, the HTML compiler <strong>traverses the DOM</strong> matching directives against the DOM elements.</li>
+</ul>
+<h3 id="controllers">Controllers</h3>
+<ul>
+<li>The purpose of controllers is to <strong>expose variables and functionality to expressions and directives</strong>.</li>
+<li>The view is just a projection of the model, so <strong>the controller is completely separated from the view and unaware of it</strong>. This makes it easier to test your controllers.</li>
+<li>Attaching controllers with <code>ng-controller</code> will create a new scope, which can be injected into the controller constructor function.</li>
+<li>Controller can be used to initialize <code>$scope</code>(e.g. <code>$scope.something = &#39;init&#39;</code>) and add behaviors(e.g. <code>$scope.something = function() {...}</code>) to <code>$scope</code>. It only contains <strong>business logic</strong>.</li>
+<li>Controllers should not<ul>
+<li>manipulate the DOM, or contain presentation logic(use data binding and directives for that)</li>
+<li>format input(use angular form controls in HTML)</li>
+<li>filter output(use filters)</li>
+<li>share code/state across controllers(use services)</li>
+<li>manage life-cycle of other components e.g. create service instance</li>
+</ul>
+</li>
+</ul>
+<h3 id="services">Services</h3>
+<ul>
+<li>Move <strong>view-independent logic</strong> from the controller into a service when your application gets too big</li>
+<li>They typically connect to the network to load/save data</li>
+<li><strong>Lazy instantiation</strong>: Angular only instantiates a service when an application component depends on it</li>
+<li><strong>Singletons</strong> the service factory only generates one instance, and it will be referenced by all components that depend on it.</li>
+<li><p>Created via <code>module.factory()</code>, or <code>$provide</code>:</p>
+<pre><code class="lang-javascript">angular.module(<span class="hljs-string">"moduleA"</span>, [])
+       .config(<span class="hljs-string">"$provide"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$provide</span>) </span>{
+          $provide.factory(<span class="hljs-string">"serviceA"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-comment">// return...</span>
+          });
+       });
+</code></pre>
+</li>
+</ul>
+<h3 id="dependency-injection">Dependency Injection</h3>
+<pre><code class="lang-js"><span class="hljs-comment">// controller</span>
+angular.module(<span class="hljs-string">"moduleA"</span>, [<span class="hljs-string">"moduleB"</span>])
+       .controller(<span class="hljs-string">"controllerA"</span>, [<span class="hljs-string">"serviceA"</span>, <span class="hljs-string">"serviceB"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">serviceA, serviceB</span>) </span>{
+          <span class="hljs-comment">// ...</span>
+        }])
+       .factory(<span class="hljs-string">"serviceA"</span>, [<span class="hljs-string">"someService"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">someService</span>) </span>{
+          <span class="hljs-comment">// return something...</span>
+        }]);
+
+<span class="hljs-comment">// service</span>
+angular.module(<span class="hljs-string">"moduleB"</span>, [])
+       .factory(<span class="hljs-string">"serviceB"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+          <span class="hljs-comment">// return something...</span>
+        });
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

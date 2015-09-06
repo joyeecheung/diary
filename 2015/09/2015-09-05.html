@@ -1,0 +1,94 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 5, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 5, 2015</h1></header><div class="content"><div class="diary"><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent">https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent</a>
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent">https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent</a>
+<a href="https://docs.angularjs.org/api/ng/service/$compile">https://docs.angularjs.org/api/ng/service/$compile</a>
+<a href="https://docs.angularjs.org/guide/directive">https://docs.angularjs.org/guide/directive</a>
+<a href="https://docs.angularjs.org/guide/animations">https://docs.angularjs.org/guide/animations</a>
+<a href="https://docs.angularjs.org/guide/filter">https://docs.angularjs.org/guide/filter</a></p>
+<h2 id="angular">Angular</h2>
+<h3 id="-build-your-own-simplified-angularjs-in-200-lines-of-javascript-http-blog-mgechev-com-2015-03-09-build-learn-your-own-light-lightweight-angularjs-"><a href="http://blog.mgechev.com/2015/03/09/build-learn-your-own-light-lightweight-angularjs/">Build Your own Simplified AngularJS in 200 Lines of JavaScript</a></h3>
+<h4 id="components">Components</h4>
+<ul>
+<li>Provider(singleton)<ul>
+<li>Register components (directives, services and controllers)</li>
+<li>Resolve components&#39; dependencies</li>
+<li>Initialize components</li>
+</ul>
+</li>
+<li>DOMCompiler(singleton)<ul>
+<li>Traverse the DOM tree</li>
+<li>Finds registered directives added as attributes</li>
+<li>Invoke the logic associated with them</li>
+<li>Manages the scope</li>
+</ul>
+</li>
+<li>Scope<ul>
+<li>Watches expressions</li>
+<li>Evaluates all watched expressions on each <code>$digest</code> loop, until stable</li>
+<li>Invokes all the observers, which are associated with the watched expression</li>
+</ul>
+</li>
+</ul>
+<h4 id="provider">Provider</h4>
+<ul>
+<li>Register: maintain a name-function map</li>
+<li>Service, controller, directives are registered with special suffixes</li>
+<li>Keep a smaller cache. Cache <code>$rootScope</code> by default.</li>
+<li>Use regex to find dependencies in <code>fn.toString()</code></li>
+<li>Invoke providers with resolved local dependencies</li>
+<li>The global dependencies are all the components we register using <code>factory</code>, <code>service</code>, <code>filter</code></li>
+<li><code>$scope</code> and <code>$delegate</code> are local dependencies, specific for given component</li>
+<li>Use <strong>topological sort</strong> to handle circular dependency and find the order to resolve dependencies</li>
+</ul>
+<h4 id="domcompiler">DOMCompiler</h4>
+<ul>
+<li>Find all directives associated with an element, check if they need a new scope(<code>{scope: true}</code>, if they do, <strong>create a new scope that inherits from the current scope</strong>). Then do it for all its children(thus DFS)</li>
+<li>Invokes the logic of all directives associated with <code>el</code>, then invokes more logic <strong>recursively</strong> on each children of <code>el</code></li>
+</ul>
+<h4 id="scope">Scope</h4>
+<ul>
+<li><code>$digest</code> loop runs over all watched expressions, check if their values have changed, and invoke the listeners</li>
+<li><code>$watch(expr, fn)</code> will invoke <code>fn</code> whenver <code>expr</code> change</li>
+<li><code>$eval(expr)</code> evaluates the express <strong>in the current scope</strong></li>
+<li><code>$digest()</code> runs the dirty-checking loop. It loop through all the <code>$$watchers</code>, and run the watcher listener when the express changes until it&#39;s no longer dirty<ul>
+<li>We need to <code>$digest()</code> until it&#39;s stable(for inner expressions)</li>
+<li>Everytime <code>last</code> is accessed, do the dirty checking</li>
+</ul>
+</li>
+<li>For each watcher, maintain the last-value by cloning <code>$eval(expr)</code></li>
+<li><code>exp.call(this)</code> or <code>eval(expr)</code></li>
+</ul>
+<h4 id="directives">Directives</h4>
+<ul>
+<li><code>ng-bind</code><ul>
+<li><code>scope: false</code></li>
+<li>no scope, use <code>innerHTML</code></li>
+</ul>
+</li>
+<li><code>ng-model</code><ul>
+<li>Listen for <code>keyup</code></li>
+</ul>
+</li>
+<li><code>ng-controller</code><ul>
+<li><code>scope: true</code></li>
+<li>Forward Provider</li>
+<li>Need to call <code>$digest</code> for updates</li>
+</ul>
+</li>
+<li><code>ng-click</code><ul>
+<li><code>$eval</code>(so there will be updates on the website) and <code>$digest()</code>
+<code>ng-model</code>, <code>ng-controller</code>, <code>ng-click</code></li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

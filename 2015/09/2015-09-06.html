@@ -1,0 +1,66 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 6, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 6, 2015</h1></header><div class="content"><div class="diary"><h2 id="dom">DOM</h2>
+<h3 id="-how-jquery-ready-works-http-stackoverflow-com-questions-799981-document-ready-equivalent-without-jquery-"><a href="http://stackoverflow.com/questions/799981/document-ready-equivalent-without-jquery">How <code>jQuery.ready</code> works</a></h3>
+<h4 id="if-ie9-only">If IE9+ only</h4>
+<pre><code class="lang-javascript"><span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">"DOMContentLoaded"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{ 
+  <span class="hljs-comment">//...</span>
+});
+</code></pre>
+<h4 id="handle-older-browsers">Handle older browsers</h4>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindReady</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">if</span> ( readyBound ) <span class="hljs-keyword">return</span>;
+    readyBound = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-comment">// Mozilla, Opera and webkit nightlies currently support this event</span>
+    <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">document</span>.addEventListener ) {
+        <span class="hljs-comment">// Use the handy event callback</span>
+        <span class="hljs-built_in">document</span>.addEventListener( <span class="hljs-string">"DOMContentLoaded"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">document</span>.removeEventListener( <span class="hljs-string">"DOMContentLoaded"</span>, <span class="hljs-built_in">arguments</span>.callee, <span class="hljs-literal">false</span> );
+            jQuery.ready();
+        }, <span class="hljs-literal">false</span> );
+
+    <span class="hljs-comment">// If IE event model is used</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">document</span>.attachEvent ) {
+        <span class="hljs-comment">// ensure firing before onload,</span>
+        <span class="hljs-comment">// maybe late but safe also for iframes</span>
+        <span class="hljs-built_in">document</span>.attachEvent(<span class="hljs-string">"onreadystatechange"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">document</span>.readyState === <span class="hljs-string">"complete"</span> ) {
+                <span class="hljs-built_in">document</span>.detachEvent( <span class="hljs-string">"onreadystatechange"</span>, <span class="hljs-built_in">arguments</span>.callee );
+                jQuery.ready();
+            }
+        });
+
+        <span class="hljs-comment">// If IE and not an iframe</span>
+        <span class="hljs-comment">// continually check to see if the document is ready</span>
+        <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">document</span>.documentElement.doScroll &amp;&amp; <span class="hljs-built_in">window</span> == <span class="hljs-built_in">window</span>.top ) (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">if</span> ( jQuery.isReady ) <span class="hljs-keyword">return</span>;
+
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-comment">// If IE is used, use the trick by Diego Perini</span>
+                <span class="hljs-comment">// http://javascript.nwbox.com/IEContentLoaded/</span>
+                <span class="hljs-built_in">document</span>.documentElement.doScroll(<span class="hljs-string">"left"</span>);
+            } <span class="hljs-keyword">catch</span>( error ) {
+                setTimeout( <span class="hljs-built_in">arguments</span>.callee, <span class="hljs-number">0</span> );
+                <span class="hljs-keyword">return</span>;
+            }
+
+            <span class="hljs-comment">// and execute any waiting functions</span>
+            jQuery.ready();
+        })();
+    }
+
+    <span class="hljs-comment">// A fallback to window.onload, that will always work</span>
+    jQuery.event.add( <span class="hljs-built_in">window</span>, <span class="hljs-string">"load"</span>, jQuery.ready );
+}
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

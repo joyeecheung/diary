@@ -1,0 +1,66 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 2, 2015</h1></header><div class="content"><div class="diary"><h2 id="frontend">Frontend</h2>
+<h3 id="-angularjs-internals-in-depth-http-www-smashingmagazine-com-2015-01-angularjs-internals-in-depth-"><a href="http://www.smashingmagazine.com/2015/01/angularjs-internals-in-depth/">AngularJS’ Internals In Depth</a></h3>
+<ul>
+<li>Directives should interact with the DOM. Otherwise you should consider about services.</li>
+</ul>
+<h4 id="scopes">Scopes</h4>
+<ul>
+<li>Abstraction of communication between directives and the OM</li>
+<li>Also exists in the controllers</li>
+<li>Plain old JavaScript objects(POJO)</li>
+<li>Internal properties prefixed with <code>$</code> or <code>$$</code>. <code>$$</code> are more about the details.</li>
+<li>Associated with an element and all its children, but an element is not necessarily directly associated with a scope</li>
+<li>Element are assigned a scope by:<ul>
+<li>Adding a controller/directive to an element</li>
+<li>Inheriting from its parent</li>
+<li>Note if the element isn&#39;t inside an <code>ng-app</code> then it <strong>doesn&#39;t belong to a scope</strong>!</li>
+</ul>
+</li>
+<li>To access an element&#39;s scope: <code>angular.element(domElement).scope()</code>(if you are using jQuery, <code>$(domElement).scope()</code> works too)</li>
+</ul>
+<h4 id="scope-internals">Scope Internals</h4>
+<ul>
+<li><code>$id</code>, <code>$root</code>, <code>$parent</code>(<code>null</code> if <code>scope == scope.$root</code>)</li>
+<li>Using <code>$parent</code> introduces coupling. You can use e.g. events for communication instead.</li>
+</ul>
+<h4 id="events">Events</h4>
+<ul>
+<li><code>$on(event, fn)</code>, <code>$emit(event, args)</code>(will trigger on the current scope, parent scopes, and the root scope), <code>$broadcast(event, args)</code>(will trigger on the current scope and children scopes)</li>
+<li>It&#39;s a good idea to <strong>namespace</strong> your scopes like <code>foo.bar</code></li>
+<li>Events are most useful when you actually need to <strong>bridge</strong> the gap between two (or more) scopes and other factors aren&#39;t as important</li>
+<li>Anti-patterns: Sometimes services are better(note that <strong>services should be independent from views</strong>). And if you need to help children to communicate with parents, events rarely are the way to go.</li>
+<li>Communication between siblings<ul>
+<li>Broadcast with <code>$rootScope.$broadcast</code>, listen with <code>$scope.$on</code></li>
+<li>If they only communicate through <code>$rootScope</code>, a better solution is <code>$rootScope.$emit</code> and <code>$rootScope.$on</code> so it won&#39;t waste time on looping children of <code>$rootScope</code> that won&#39;t listen for the event.</li>
+</ul>
+</li>
+</ul>
+<h4 id="digest">Digest</h4>
+<ul>
+<li><code>$digest()</code>(dirty checking), <code>$$phase</code>(one of <code>[null, &#39;$apply&#39;, &#39;$digest&#39;]</code>)</li>
+<li><code>scope.$digest</code> recursively digests changes in a scope and its children</li>
+<li>Processes all of the watchers of the current scope and its children. Because watchers&#39; listeners can change the model, which in turn trigger the watcher&#39;s listener, so there is a possibility for an <strong>infinite loop</strong>.</li>
+<li>Generally you don&#39;t call <code>$digest</code> yourself. You call <code>$apply()</code> which force a <code>$digest()</code></li>
+<li>Triggered by <code>$apply()</code>, <code>$timeout()</code>, directives, .etc.</li>
+<li>Digest fire your watchers, and watchers update your UI.</li>
+</ul>
+<h4 id="watchers">Watchers</h4>
+<ul>
+<li><code>$watch(watchExp, listener, objectEquality)</code>, <code>$watchCollection(obj, listener)</code>, <code>$$watchers</code>(all watchers associated with the scope)</li>
+<li>Angular needs help to trigger the watchers(and update the data) properly.</li>
+<li>Each <code>ng-bind</code> directive created a watcher on the property</li>
+<li>You can use <code>$digest()</code> to remind Angular of updating the values(e.g. in <code>setTimeout</code>, though actually you should&#39;ve used <code>$timeout()</code>)</li>
+<li><code>$apply(expr)</code> parses and evaluates an expression and then executes the <code>$digest</code> loop on <code>$rootScope</code>(so every child scope will be updated too). It&#39;s almost always better thant <code>$digest()</code> unless you need to tune the performance manually</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
