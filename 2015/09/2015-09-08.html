@@ -1,0 +1,99 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 8, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 8, 2015</h1></header><div class="content"><div class="diary"><h2 id="react-flux">React &amp; Flux</h2>
+<h3 id="-hacker-way-rethinking-web-app-development-at-facebook-https-www-youtube-com-watch-v-nykdraprdcw-"><a href="https://www.youtube.com/watch?v=nYkdrAPrdcw">Hacker Way: Rethinking Web App Development at Facebook</a></h3>
+<h4 id="introduction">Introduction</h4>
+<ul>
+<li>After the original author leaves, it&#39;s hard for anyone to make a change to the code base -- one small change could crash the whole thing.</li>
+<li>But we need to move fast</li>
+</ul>
+<h4 id="flux">Flux</h4>
+<ul>
+<li>Multiple model-view mapping makes it hard to debug(how do you discover an infinite loop between the model and the view?)</li>
+<li>Single direction data flow(store-&gt;view) to avoid too much mapping</li>
+<li>No more action will be applied until the last action is applied to the dispatcher-&gt;store-&gt;view</li>
+</ul>
+<h4 id="case-study-chat">Case Study: Chat</h4>
+<ul>
+<li>Keep multiple views in sync: chat tab, unseen count in the message bar, main message view<ul>
+<li>The code quickly gets unreadable: increment, check if focused, decrement</li>
+</ul>
+</li>
+<li>Bug: unseen count can&#39;t be synchronized properly. Fixed edge cases again and again but it kept coming back, and the code base was very fragile.</li>
+<li>Solution<ul>
+<li><strong>Move update logic inside each view component</strong>. Don&#39;t let the handler update them by itself.</li>
+<li>Maintain explicit data(unseen list) instead of derived data(unseen count)</li>
+<li>Separate data from the view state</li>
+<li>Avoid cascading effects by preventing nested updates<ul>
+<li>Don&#39;t allow any more update until you finish the action</li>
+</ul>
+</li>
+<li>Make everything go through one single flow</li>
+</ul>
+</li>
+</ul>
+<h4 id="improvements">Improvements</h4>
+<ul>
+<li>Data consistency</li>
+<li>Easier to pinpoint root of a bug<ul>
+<li>Modules instead of handlers</li>
+</ul>
+</li>
+<li>Easier to do unit test<ul>
+<li>State A -&gt; input -&gt; state B</li>
+</ul>
+</li>
+</ul>
+<h4 id="rendering">Rendering</h4>
+<ul>
+<li>Only rerender what&#39;s necessary</li>
+<li>Need a rendering library for this to make it maintainable: react</li>
+</ul>
+<h4 id="react">React</h4>
+<ul>
+<li>Data changing over time is the root of all evil</li>
+<li>It&#39;s very hard to keep track of updates imperatively</li>
+<li>Back in the 90s: render it like a static snapshot<ul>
+<li>Do it the RESTful way(referentially transparent functions)</li>
+<li>Describe UI at any point in time</li>
+<li>Trivial to predict for a given input</li>
+<li>Easy to test(making actions and making assertion on states)</li>
+</ul>
+</li>
+<li>It&#39;s the fault of <strong>stateful UI</strong>. They are not designed for frequent rerendering of the whole thing. It&#39;s the same for DOM, iOS, etc.</li>
+<li>React: computation(diff) done on the virtual DOM</li>
+<li>Declarative IR -&gt; Compute DOM operations(or native operations, etc.) like you compute OpenGL operations in game engines</li>
+</ul>
+<h4 id="use-case-facebook-instagram">Use case: Facebook -&gt; Instagram</h4>
+<ul>
+<li>Extract React from PHP and Facebook&#39;s architecture and move it into Instagram&#39;s Django stack running on EC2</li>
+</ul>
+<h4 id="q-a">Q&amp;A</h4>
+<ul>
+<li>Routing<ul>
+<li>Instagram uses backbone router.</li>
+<li>Routes are a kind of states.</li>
+</ul>
+</li>
+<li>Compared to Angular:<ul>
+<li>Angular makes you not to model your application in terms functions and objects but in terms of directives and controllers, etc.</li>
+<li>Data binding needs good abstraction.</li>
+<li>It&#39;s faster to iterate using react.</li>
+</ul>
+</li>
+<li>Compared to jQuery &amp; AJAX:<ul>
+<li>Stores manages the network operations, you can use jQuery for that</li>
+<li>With React you only need to think about one state - the current state. You just describe your view at a point in time declaratively.</li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

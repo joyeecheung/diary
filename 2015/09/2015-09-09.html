@@ -1,0 +1,105 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 9, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 9, 2015</h1></header><div class="content"><div class="diary"><h2 id="backend">Backend</h2>
+<h3 id="-an-introduction-to-haproxy-and-load-balancing-concepts-https-www-digitalocean-com-community-tutorials-an-introduction-to-haproxy-and-load-balancing-concepts-"><a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts">An Introduction to HAProxy and Load Balancing Concepts</a></h3>
+<h4 id="access-control-list-acl-">Access Control List(ACL)</h4>
+<p>For flexible network <strong>traffic forwarding</strong>. e.g. <code>acl url_blog path_beg /blog</code> matches urls begining with <code>/blog</code></p>
+<h4 id="backend">Backend</h4>
+<p>Servers that will <strong>handle forwarded requests</strong>. They are defined by</p>
+<ul>
+<li>Load balance algorithm</li>
+<li>A list of available servers and ports</li>
+</ul>
+<p>e.g.</p>
+<pre><code>backend web-backend
+    balance roundrobin
+    server web1 web1.yourdomain.com:80<span class="hljs-instruction"> check
+</span>    server web2 web2.yourdomain.com:80<span class="hljs-instruction"> check
+</span>
+backend blog-backend
+    balance roundrobin
+    mode http
+    server blog1 blog1.yourdomain.com:80<span class="hljs-instruction"> check
+</span>    server blog2 blog2.yourdomain.com:80 check
+</code></pre><p><code>check</code> tells it to check the heath of backend servers</p>
+<h4 id="frontend">Frontend</h4>
+<p>Defines <strong>how requests should be forwarded</strong>. They are defined by</p>
+<ul>
+<li>A set of IP and a port</li>
+<li>ACLs</li>
+<li><code>use_backend</code> rules(which backend to use)</li>
+</ul>
+<h4 id="layer-4-load-balancing">Layer 4 Load Balancing</h4>
+<ul>
+<li>Transport layer load balancing.</li>
+<li>Based on IP range/domain and port</li>
+<li>Backends should be kept in sync. They connect to the same DB server.</li>
+</ul>
+<h4 id="layer-7-load-balancing">Layer 7 Load Balancing</h4>
+<ul>
+<li>Application layer load balancing</li>
+<li>Based on the content of the user&#39;s request</li>
+<li>Can run multiple web server under <strong>the same domain and port</strong></li>
+</ul>
+<p>Example:</p>
+<pre><code><span class="hljs-label">frontend</span> http
+  <span class="hljs-keyword">bind </span>*:<span class="hljs-number">80</span>
+  mode http
+
+  acl url_blog path_beg /<span class="hljs-keyword">blog
+</span>  use_backend <span class="hljs-keyword">blog-backend </span><span class="hljs-preprocessor">if</span> url_blog
+
+  default_backend web-<span class="hljs-keyword">backend</span>
+</code></pre><h4 id="load-balancing-algorithms">Load Balancing Algorithms</h4>
+<ul>
+<li>Algorithms and weights</li>
+<li><code>roundrobin</code><ul>
+<li>In turns. Default.</li>
+</ul>
+</li>
+<li><code>Leastconn</code><ul>
+<li>Selects the server with the <strong>least number of connections</strong></li>
+<li>Good for long sessions</li>
+<li>Servers in the same backend are rotated in a round-robin fashion</li>
+</ul>
+</li>
+<li><code>source</code><ul>
+<li>Based on a <strong>hash of the source IP</strong></li>
+<li>Makes sure that a user will connect to the same server</li>
+</ul>
+</li>
+</ul>
+<h4 id="miscellaneous">Miscellaneous</h4>
+<ul>
+<li>Sticky Sessions: <code>appsession</code></li>
+<li>Health Check: <code>check</code><ul>
+<li>You don&#39;t have to manually remove an unavailable backend</li>
+<li>Try to establish TCP connection to check for availability</li>
+</ul>
+</li>
+</ul>
+<h4 id="other-options">Other options</h4>
+<ul>
+<li>LVS<ul>
+<li>Simple &amp; fast</li>
+<li>Layer 4</li>
+<li>Included in many Linux distributions</li>
+</ul>
+</li>
+<li>nginx<ul>
+<li>Fast &amp; reliable</li>
+<li>Provide proxy and load-balancing, though it&#39;s essentially a web server</li>
+<li>Can be used with HAProxy for <strong>caching and compression</strong></li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
