@@ -1,0 +1,108 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 14, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 14, 2015</h1></header><div class="content"><div class="diary"><h2 id="data-visualization">Data Visualization</h2>
+<h3 id="-react-js-conf-2015-scalable-data-visualization-https-www-youtube-com-watch-v-2ii1lekiv1s-"><a href="https://www.youtube.com/watch?v=2ii1lEkIv1s">React.js Conf 2015 - Scalable Data Visualization</a></h3>
+<h4 id="how-to-scale">How to scale</h4>
+<ul>
+<li>Condensing your data into <strong>a smaller set of visual elements</strong></li>
+<li>Syncing between high-level views, the client and the server</li>
+<li>Keep the computation close to the raw data(flux-like architecture)<ul>
+<li>Replace dispatcher with XHR/WebSocket</li>
+<li>Replace store with a stateful server</li>
+</ul>
+</li>
+<li>Scalable aggregation<ul>
+<li>Binning: 1d Histogram/2d heat map, count by groups</li>
+<li>Estimate quantiles when streaming</li>
+<li>Aggregate by chunks, sending results periodically(streaming)</li>
+</ul>
+</li>
+</ul>
+<h4 id="react">React</h4>
+<ul>
+<li><p>In <code>componentDidMount</code></p>
+<pre><code>websocket.onmessage = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(message)</span> </span>{
+  <span class="hljs-keyword">this</span>.setState({histogram: hist(message.data)});
+}).bind(<span class="hljs-keyword">this</span>);
+</code></pre></li>
+<li>Let React render your updates</li>
+</ul>
+<h4 id="d3">D3</h4>
+<ul>
+<li>Use D3 to calculate the data-dependent sizes and positions</li>
+<li>There are only three parts in D3 that will conflict with React(because it need to own the DOM): selections, transitions, and <code>d3.behavior</code>(drag, zoom)</li>
+<li>Use D3 to calculate the (SVG) attributes of your React component, and use D3 to generate your components(properties like path, labels, etc.)</li>
+</ul>
+<h4 id="choosing-the-render-target-canvas-v-s-svg-">Choosing the render target(Canvas v.s. SVG)</h4>
+<ul>
+<li>SVG maxes out way sooner than canvas because it&#39;s stateful and canvas is not</li>
+<li>Factors<ul>
+<li>Number of visual elements</li>
+<li>Animation</li>
+<li>Level of interactivity</li>
+<li>Browser support</li>
+</ul>
+</li>
+<li>SVG has CSS and DOM events. Can be easily combined with React. <ul>
+<li>Can handle &lt;1000 visual elements</li>
+</ul>
+</li>
+<li>Canvas<ul>
+<li>Handles 2d elements in continuous space well</li>
+<li><blockquote>
+<p>1000 visual elements</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="git">Git</h2>
+<h3 id="-tracking-branches-v-s-remote-tracking-branches-http-www-gitguys-com-topics-tracking-branches-and-remote-tracking-branches-"><a href="http://www.gitguys.com/topics/tracking-branches-and-remote-tracking-branches/">Tracking branches v.s. remote tracking branches</a></h3>
+<ul>
+<li><code>git merge</code> only updates tracking branches, <code>git fetch</code> only updates remote tracking branches</li>
+<li>Tracking branches<ul>
+<li>Get data via <code>git clone</code>, <code>git pull</code> and <code>git merge</code></li>
+<li><strong>Can be modified</strong> by the local user</li>
+</ul>
+</li>
+<li>Remote tracking branches<ul>
+<li>Get data via <code>git clone</code>, <code>git pull</code> and <code>git fetch</code></li>
+<li>Local users <strong>can&#39;t modify remote tracking branches</strong>!</li>
+</ul>
+</li>
+</ul>
+<h4 id="what-does-git-clone-url-do">What does <code>git clone url</code> do</h4>
+<ol>
+<li>Create a new remote tracking branch <code>origin/master</code>(read-only to the user)</li>
+<li>Copies the remote repository from the URL to the new remote tracking branch <code>origin/master</code></li>
+<li>Create a tracking branch called <code>master</code></li>
+<li>Set the <code>master</code> tracking branch pointer to point to the same commit as the remote tracking branch <code>origin/master</code>&#39;s pointer</li>
+</ol>
+<h4 id="what-does-git-push-do">What does <code>git push</code> do</h4>
+<ol>
+<li>Publish the commit from the local tracking branch <code>master</code> to the remote repository</li>
+<li>Update the remote tracking branch with the new commit, and point the pointer of the remote tracking branch <code>origin/master</code> to the updated new commit</li>
+</ol>
+<h4 id="what-does-git-fetch-origin-do">What does <code>git fetch origin</code> do</h4>
+<ol>
+<li>Download the latest commits from the remote repository <code>origin</code>(all branches), and copy commits from the <code>master</code> branch in the remote repository to the remote tracking branch <code>origin/master</code></li>
+<li>At this point, the tracking branch <code>master</code> still points to the old commit</li>
+</ol>
+<h4 id="what-does-git-merge-origin-master-do">What does <code>git merge origin/master</code> do</h4>
+<ul>
+<li>Merge commits from the remote tracking branch <code>origin/master</code> to the tracking branch <code>master</code></li>
+</ul>
+<h4 id="what-does-git-pull-do">What does <code>git pull</code> do</h4>
+<ul>
+<li>Fetch + merge, but it fetches and merge branches by the tracking relationship you set up before(not by hand)</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
