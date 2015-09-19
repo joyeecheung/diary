@@ -1,0 +1,114 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 17, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 17, 2015</h1></header><div class="content"><div class="diary"><h2 id="fp">FP</h2>
+<h3 id="-functors-applicatives-and-monads-in-pictures-http-adit-io-posts-2013-04-17-functors-_applicatives-_and_monads_in_pictures-html-"><a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Functors, Applicatives, And Monads In Pictures</a></h3>
+<h4 id="-fmap-"><code>fmap</code></h4>
+<ul>
+<li>Normal functions can&#39;t be applied to values within contexts</li>
+<li><code>fmap</code> apply functions to values inside the context, and wrap it back<ul>
+<li><code>fmap::(a -&gt; b) -&gt;f a -&gt; f b</code></li>
+<li>Takes a function <code>a -&gt; b</code> and a functor <code>f a</code> then returns a new functor <code>f b</code></li>
+</ul>
+</li>
+<li>A <code>Functor</code> is any data type that defines how <code>fmap</code> applies to it.</li>
+</ul>
+<pre><code class="lang-haskell"><span class="hljs-typedef"><span class="hljs-keyword">data</span> <span class="hljs-type">Maybe</span> a = <span class="hljs-type">Nothing</span> | <span class="hljs-type">Just</span> a</span>
+<span class="hljs-class"><span class="hljs-keyword">instance</span> <span class="hljs-type">Functor</span> <span class="hljs-type">Maybe</span> <span class="hljs-keyword">where</span></span>
+    fmap func (<span class="hljs-type">Just</span> val) = <span class="hljs-type">Just</span> (func val)
+    fmap func <span class="hljs-type">Nothing</span> = <span class="hljs-type">Nothing</span>
+
+<span class="hljs-title">fmap</span> (+<span class="hljs-number">3</span>) (<span class="hljs-type">Just</span> <span class="hljs-number">2</span>) <span class="hljs-comment">-- Just 5</span>
+</code></pre>
+<h4 id="examples">Examples</h4>
+<p>In Python you might do this:</p>
+<pre><code class="lang-python">post = Post.find_by_id(<span class="hljs-number">1</span>)
+<span class="hljs-keyword">if</span> post:
+  <span class="hljs-keyword">return</span> post.getTitle()
+<span class="hljs-keyword">else</span>:
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span>
+</code></pre>
+<p>In Haskell:</p>
+<pre><code class="lang-haskell"><span class="hljs-title">fmap</span> (getPostTitle) (findPost <span class="hljs-number">1</span>)
+<span class="hljs-comment">-- or, the infix version</span>
+<span class="hljs-title">getPostTitle</span> &lt;$&gt; (findPost <span class="hljs-number">1</span>)
+</code></pre>
+<p><strong>Lists are functors too</strong>:</p>
+<pre><code class="lang-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> <span class="hljs-type">Functor</span> [] <span class="hljs-keyword">where</span></span>
+    fmap = map
+</code></pre>
+<p><strong>Functions are functors too</strong>(<code>fmap</code> on function = function composition):</p>
+<pre><code class="lang-haskell"><span class="hljs-class"><span class="hljs-keyword">instance</span> <span class="hljs-type">Functor</span> <span class="hljs-container">((-&gt;)</span> r) <span class="hljs-keyword">where</span></span>
+    fmap f g = f . g
+</code></pre>
+<h4 id="applicatives">Applicatives</h4>
+<ul>
+<li>Functions are wrapped in a context too</li>
+<li><code>Control.Applicative</code> defines <code>&lt;*&gt;</code> to apply a function wrapped in a context to a value wrapped in another context</li>
+<li><code>&lt;*&gt;</code> takes a wrapped function and a wrapped value, and returns a wrapped value</li>
+<li><p>Example</p>
+<pre><code class="lang-haskell">  [(*<span class="hljs-number">2</span>), (+<span class="hljs-number">3</span>)] &lt;*&gt; [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] <span class="hljs-comment">-- [2, 4, 6, 4, 5, 6]</span>
+</code></pre>
+</li>
+<li>What applicatives can do that functors can&#39;t: can take functions that expect multiple arguments<ul>
+<li><code>(+) &lt;$&gt; (Just 5)</code> gives <code>Just (+5)</code>, but <code>Just (+5) &lt;$&gt; (Just 4)</code> will give an error, because <code>fmap</code> doesn&#39;t know how to apply a function <strong>in a context</strong> to a value in a context</li>
+<li>Yet still, <code>+</code> needs two arguments to work</li>
+<li><code>Just (+5) &lt;*&gt; (Just 3)</code> works(<code>Just 8</code>), because applicatives know how to do that</li>
+</ul>
+</li>
+<li>Lifting<ul>
+<li><code>(*) &lt;$&gt; Just 5 &lt;*&gt; Just 3</code> gives <code>Just 15</code></li>
+<li>And there&#39;s a shorthand for it: <code>liftA2 (*) (Just 5) (Just 3)</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="monads">Monads</h4>
+<ul>
+<li>Recap<ul>
+<li>Functors apply a function to a wrapped value(<code>fmap</code>, <code>&lt;$&gt;</code>), and return a wrapped value</li>
+<li>Applicatives apply a wrapped function to a wrapped value(<code>&lt;*&gt;</code>), and return a wrapped value</li>
+<li>Monads apply a function that returns a wrapped value to a wrapped value, and return a wrapped value</li>
+</ul>
+</li>
+<li>Operator <code>&gt;&gt;=</code>(bind) takes a monad and a function that returns a monad, then returns a monad</li>
+<li><p>Partial definition</p>
+<pre><code>  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monad</span> <span class="hljs-title">m</span> <span class="hljs-title">where</span></span>
+      <span class="hljs-function"><span class="hljs-params">(&gt;&gt;=)</span> :: <span class="hljs-title">m</span> <span class="hljs-title">a</span> -&gt;</span> <span class="hljs-function"><span class="hljs-params">(a -&gt; m b)</span> -&gt;</span> m b
+</code></pre></li>
+</ul>
+<h4 id="examples">Examples</h4>
+<pre><code class="lang-haskell"><span class="hljs-title">half</span> x = <span class="hljs-keyword">if</span> even x
+           <span class="hljs-keyword">then</span> <span class="hljs-type">Just</span> (x `div` <span class="hljs-number">2</span>)
+           <span class="hljs-keyword">else</span> <span class="hljs-type">Nothing</span>
+</code></pre>
+<p>Now, you can do <code>half 3</code>, but you can&#39;t do <code>half (Just 3)</code>, because <code>half</code> doesn&#39;t know how to handle a wrapped value</p>
+<p>Since <code>Maybe</code> is a monad:</p>
+<pre><code>instance Monad Maybe where
+    <span class="hljs-typename">Nothing</span> &gt;&gt;= func = <span class="hljs-typename">Nothing</span>
+    Just <span class="hljs-variable"><span class="hljs-keyword">val</span> &gt;&gt;</span>= func  = func <span class="hljs-variable"><span class="hljs-keyword">val</span></span>
+</code></pre><p><code>&gt;&gt;=</code> <strong>unwraps</strong> the value, feeds it into that function, then returns a wrapped value:</p>
+<pre><code class="lang-haskell"><span class="hljs-type">Just</span> <span class="hljs-number">3</span> &gt;&gt;= half  <span class="hljs-comment">-- Nothing</span>
+<span class="hljs-type">Just</span> <span class="hljs-number">4</span> &gt;&gt;= half  <span class="hljs-comment">-- Just 2</span>
+<span class="hljs-type">Nothing</span> &gt;&gt;= half <span class="hljs-comment">-- Nothing</span>
+</code></pre>
+<h4 id="io-monad">IO monad</h4>
+<pre><code class="lang-haskell"><span class="hljs-title">getLine</span> :: <span class="hljs-type">IO</span> <span class="hljs-type">String</span>  <span class="hljs-comment">-- takes no arguments, return IO</span>
+<span class="hljs-title">readFile</span> :: <span class="hljs-type">FilePath</span> -&gt; <span class="hljs-type">IO</span> <span class="hljs-type">String</span>
+<span class="hljs-title">putStrLn</span> :: <span class="hljs-type">String</span> -&gt; <span class="hljs-type">IO</span> ()
+<span class="hljs-title">getLine</span> &gt;&gt;= readFile &gt;&gt;= putStrLn
+
+<span class="hljs-title">readThenPrint</span> = <span class="hljs-keyword">do</span>
+            filename &lt;- getLine
+            contents &lt;- readFile filename
+            putStrLn contents
+</code></pre>
+<p>These three functions all take a/no regular value and return a wrapped value.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
