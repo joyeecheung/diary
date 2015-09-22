@@ -1,0 +1,78 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 20, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 20, 2015</h1></header><div class="content"><div class="diary"><h2 id="os">OS</h2>
+<h3 id="-select-poll-epoll-practical-difference-for-system-architects-http-www-ulduzsoft-com-2014-01-select-poll-epoll-practical-difference-for-system-architects-"><a href="http://www.ulduzsoft.com/2014/01/select-poll-epoll-practical-difference-for-system-architects/">select / poll / epoll: practical difference for system architects</a></h3>
+<h4 id="epoll">epoll</h4>
+<ul>
+<li>Why is it so great<ul>
+<li>It keeps the information inside the kernel</li>
+</ul>
+</li>
+<li><p>Usage: <code>epoll_create()</code> -&gt; <code>epoll_ctl()</code> -&gt; <code>epoll_wait()</code></p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">int</span> pollingfd = epoll_create( <span class="hljs-number">0xCAFE</span> ); <span class="hljs-comment">// the argument will be ignored(= =)</span>
+
+<span class="hljs-comment">// set up event</span>
+<span class="hljs-keyword">struct</span> poll_event ev = {<span class="hljs-number">0</span>};
+ev.data.ptr = ptrConnection;
+ev.events = EPOLLIN | EPOLLONESHOT;
+
+<span class="hljs-comment">// add the descriptor to the monitoring list</span>
+<span class="hljs-keyword">if</span> ( epoll_ctl( epollfd, EPOLL_CTL_ADD, ptrConnection-&gt;getSocket(), &amp;ev ) != <span class="hljs-number">0</span> )
+    <span class="hljs-comment">// report error</span>
+
+<span class="hljs-comment">// wait for 20 events for 10s</span>
+<span class="hljs-keyword">struct</span> epoll_event pevents[ <span class="hljs-number">20</span> ];
+<span class="hljs-keyword">int</span> ret = epoll_wait( pollingfd, pevents, <span class="hljs-number">20</span>, <span class="hljs-number">10000</span> );
+
+<span class="hljs-comment">// Check if epoll actually succeed</span>
+<span class="hljs-keyword">if</span> ( ret == -<span class="hljs-number">1</span> ) {
+  <span class="hljs-comment">// report error and abort</span>
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( ret == <span class="hljs-number">0</span> ) {
+  <span class="hljs-comment">// timeout; no event detected</span>
+} <span class="hljs-keyword">else</span> {
+  <span class="hljs-comment">// Check if any events detected</span>
+  <span class="hljs-comment">// Note: only triggered events will be filled into pevents</span>
+  <span class="hljs-comment">// and the count will be returned</span>
+  <span class="hljs-comment">// So you don't need that O(N) checking</span>
+  <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; ret; i++ ) {
+    <span class="hljs-keyword">if</span> ( pevents[i].events &amp; EPOLLIN ) {
+      <span class="hljs-comment">// Get back our connection pointer</span>
+      Connection * c = (Connection*) pevents[i].data.ptr;
+      c-&gt;handleReadEvent();
+     }
+  }
+}
+</code></pre>
+</li>
+<li>Advantages<ul>
+<li>Only return what&#39;s needed -- triggered events</li>
+<li>You can attach the pointer to a <strong>context</strong> to <code>pevent.data.ptr</code> and get it back later(although you have to break type safety here)</li>
+<li>You can add/remove sockets and modify descriptors in another thread</li>
+<li>You can implement edge triggering with it</li>
+<li>You can use multiple threads to wait on the same epoll queue with <code>epoll_wait</code>! And it&#39;s in fact recommended in edge triggering mode!</li>
+</ul>
+</li>
+<li>Disadvantages<ul>
+<li>Changing event flags will be done in the kernel space -&gt; context switch!</li>
+<li>For a new connection socket you need to <code>accept()</code> then <code>epoll_ctl()</code>, so you need to call two syscalls, which will take longer if you have many short-lived connections</li>
+<li>It&#39;s Linux only</li>
+<li>Harder to debug in edge triggering mode(prone to deadlocks)</li>
+</ul>
+</li>
+<li><strong>Only use <code>epoll</code> when</strong><ul>
+<li>You have a <strong>thread pool</strong> to handle many connections -- epoll usually can&#39;t outperform poll in a single threaded application</li>
+<li>You have a <strong>large number of sockets</strong>(say, &gt;1000) and <strong>long-lived connections</strong> to handle. If the number of sockets is small, there&#39;s no significant benefits. If the connections are short-lived, those extra system calls will slow you down.</li>
+<li>You <strong>only need to support Linux</strong> or you are building a wrapper around epoll</li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

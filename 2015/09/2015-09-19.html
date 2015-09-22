@@ -1,0 +1,153 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 19, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 19, 2015</h1></header><div class="content"><div class="diary"><h2 id="os">OS</h2>
+<h3 id="-select-poll-epoll-practical-difference-for-system-architects-http-www-ulduzsoft-com-2014-01-select-poll-epoll-practical-difference-for-system-architects-"><a href="http://www.ulduzsoft.com/2014/01/select-poll-epoll-practical-difference-for-system-architects/">select / poll / epoll: practical difference for system architects</a></h3>
+<h4 id="select">select</h4>
+<ul>
+<li>Been around for a long time(since 1983)</li>
+<li>Not in the first POSIX spec since by then there was no such thing as non-blocking I/O</li>
+<li><p><strong>Usage</strong>: fill up some <code>fd_set</code> with descriptors and events and call <code>select()</code> with them</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">struct</span> fd_set fds_in, fds_out;
+FD_ZERO(&amp;fds_in);  FD_ZERO(&amp;fds_out);
+
+<span class="hljs-keyword">int</span> largest_fd = socks[<span class="hljs-number">0</span>];
+<span class="hljs-comment">// setup event monitor, find the largest fd</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS_IN; ++i) {
+  <span class="hljs-keyword">if</span> (socks_in[i] &gt; <span class="hljs-number">0</span>)
+    FD_SET(socks_in[i], &amp;fds_in);  <span class="hljs-comment">// add it to the wait list</span>
+  <span class="hljs-keyword">if</span> (socks_in[i] &gt; largest_fd)
+    largest_fd = socks_in[i];
+}
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS_OUT; ++i) {
+  <span class="hljs-keyword">if</span> (socks_out[i] &gt; <span class="hljs-number">0</span>)
+    FD_SET(socks_out[i], &amp;fds_out);  <span class="hljs-comment">// add it to the wait list</span>
+  <span class="hljs-keyword">if</span> (socks_out[i] &gt; largest_fd)
+    largest_fd = socks_out[i];
+}
+
+<span class="hljs-comment">// timeout</span>
+<span class="hljs-keyword">struct</span> timeval tv;
+tv.tv_sec = <span class="hljs-number">10</span>;
+tv.tv_usec = <span class="hljs-number">0</span>;
+
+<span class="hljs-comment">// call the select</span>
+<span class="hljs-keyword">int</span> ret = select(largest_fd + <span class="hljs-number">1</span>, &amp;fds_in, &amp;fds_out, NULL, &amp;tv);
+
+<span class="hljs-comment">// Check if select actually succeed</span>
+<span class="hljs-keyword">if</span> ( ret == -<span class="hljs-number">1</span> ) {
+  <span class="hljs-comment">// report error and abort</span>
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( ret == <span class="hljs-number">0</span> ) {
+  <span class="hljs-comment">// timeout; no event detected</span>
+} <span class="hljs-keyword">else</span> {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS_IN; ++i) {
+    <span class="hljs-keyword">if</span> (FD_ISSET(socks_in[i], &amp;fds_in)) {
+      <span class="hljs-comment">// input event on socks_in[i]</span>
+      <span class="hljs-comment">// ...</span>
+      close (sockes_in[i]);
+      sockes_in[i] = <span class="hljs-number">0</span>;  <span class="hljs-comment">// reset later</span>
+    }
+  }
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS_OUT; ++i) {
+    <span class="hljs-keyword">if</span> (FD_ISSET(socks_out[i], &amp;fds_out)) {
+      <span class="hljs-comment">// output event on socks_out[i]</span>
+      <span class="hljs-comment">// ...</span>
+      close(sockes_out[i]);
+      sockes_out[i] = <span class="hljs-number">0</span>;  <span class="hljs-comment">// reset later</span>
+    }
+  }
+}
+
+<span class="hljs-comment">// then you need to setup all the events again...ugh!</span>
+</code></pre>
+</li>
+<li><strong>Flaws</strong><ul>
+<li>Can&#39;t <strong>reuse</strong> <code>fd_set</code> that you pass into it, <code>select</code> will overwrite it every single time, so you need to refill it every time you call <code>select</code>. Say the number of connections you need to watch for is N, <strong>this operation is O(N)!</strong> This means you need to do this O(N) thing after every event occurrence</li>
+<li>When it returns, it doesn&#39;t tell you which descriptor is the on that has its event invoked. you need to <strong>manually</strong> check every descriptor with <code>FD_ISSET</code>. Say the number of connections you need to watch for is N, <strong>this operation is O(N)!</strong></li>
+<li>Number of descriptors is limited</li>
+<li>Not suited for <strong>multi-threaded</strong> environments -- &quot;If a file descriptor being monitored by <code>select()</code> is closed in another thread, the result is <strong>unspecified</strong>&quot;(WTF?!)</li>
+<li>It periodically checks the descriptors(typically scanning a bit vector), which wastes CPU cycles</li>
+</ul>
+</li>
+<li><strong>Why it&#39;s still used</strong><ul>
+<li>Portability - it&#39;s been around everywhere</li>
+<li>Handle timeouts within one <strong>ns</strong> precision(<code>poll</code> and <code>epoll</code> can only handle one <strong>ms</strong>)</li>
+</ul>
+</li>
+<li><strong>Note</strong><ul>
+<li>Disk files are <strong>always ready to read</strong> (but the read might return 0 bytes if you&#39;re already at the end of the file), so you can&#39;t use <code>select()</code> on a disk file to find out when new data is added to the file</li>
+</ul>
+</li>
+</ul>
+<h4 id="poll">poll</h4>
+<ul>
+<li>Appeared in 1986, introduced in Linux since 1997(2.1.23)</li>
+<li>Why it&#39;s &quot;better&quot;<ul>
+<li><code>select()</code> can&#39;t handle many descriptors because its implementation (usually) uses fixed-size bitmasks, but <code>poll()</code> (usually) uses linked list(wait queue) so it can handle <strong>much more descriptors</strong></li>
+<li><code>poll()</code> can reuse the descriptors(but you need to set <code>fd.revents = 0</code>)</li>
+<li>Can monitor more events than <code>select()</code></li>
+</ul>
+</li>
+<li><p><strong>Usage</strong>: fill some <code>struct pollfd</code> and call <code>poll()</code> with them</p>
+<pre><code class="lang-cpp"><span class="hljs-comment">// fill some fds</span>
+<span class="hljs-keyword">struct</span> pollfd fds[NUM_FDS];
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS; ++i) {
+  fds[i].fd = socks[i];
+  fds[i].events = events[i];  <span class="hljs-comment">/* event interested in */</span>
+}
+
+<span class="hljs-comment">// Timeout in 10s</span>
+<span class="hljs-keyword">int</span> ret = poll(&amp;fds, NUM_FDS, <span class="hljs-number">10000</span>);
+
+<span class="hljs-comment">// Check if poll actually succeed</span>
+<span class="hljs-keyword">if</span> ( ret == -<span class="hljs-number">1</span> ) {
+  <span class="hljs-comment">// report error and abort</span>
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( ret == <span class="hljs-number">0</span> ) {
+  <span class="hljs-comment">// timeout; no event detected</span>
+} <span class="hljs-keyword">else</span> {
+  <span class="hljs-comment">// If we detect the event, zero it out so we can **reuse** the structure</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; NUM_FDS; ++i) {
+    <span class="hljs-keyword">if</span> (fds[i].revents &amp; events[i]) {  <span class="hljs-comment">/* event actually happened */</span>
+      fds[i].revents = <span class="hljs-number">0</span>;
+      <span class="hljs-comment">// event fired on socks[i]</span>
+    }
+  }
+}
+
+<span class="hljs-comment">// Ok, then the next time you setup things,</span>
+<span class="hljs-comment">// you only have to reset the used fd!</span>
+</code></pre>
+</li>
+<li><p><strong>Flaws</strong></p>
+<ul>
+<li><code>poll()</code> can only has ms-precision, while <code>select()</code> has ns</li>
+<li><p>Not in Windows older than Vista, but you can do this</p>
+<pre><code class="lang-cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">if</span> defined (WIN32)</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">poll</span><span class="hljs-params">( <span class="hljs-keyword">struct</span> pollfd *pfd, <span class="hljs-keyword">int</span> nfds, <span class="hljs-keyword">int</span> timeout)</span> </span>{ <span class="hljs-keyword">return</span> WSAPoll ( pfd, nfds, timeout ); }
+<span class="hljs-preprocessor">#<span class="hljs-keyword">endif</span></span>
+</code></pre>
+</li>
+<li>You still need to manually check each descriptor for events, which is still O(N)</li>
+<li>Still has unspecified behavior for multithreaded environment(e.g. close a monitored socket)</li>
+</ul>
+</li>
+<li>Note<ul>
+<li>If it&#39;s just a choice between <code>poll()</code> and <code>select()</code>, <strong>only</strong> use <code>select()</code> instead of <code>poll()</code> when<ul>
+<li>You need to support systems that don&#39;t have <code>poll()</code></li>
+<li>You need ns-precision(which is rare)</li>
+</ul>
+</li>
+<li>But, most of the times <code>epoll()</code> is a better choice</li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
