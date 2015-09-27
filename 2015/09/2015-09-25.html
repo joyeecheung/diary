@@ -1,0 +1,220 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 25, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 25, 2015</h1></header><div class="content"><div class="diary"><h2 id="os">OS</h2>
+<h3 id="-concurrency-is-not-parallelism-https-vimeo-com-49718712-"><a href="https://vimeo.com/49718712">Concurrency is not parallelism</a></h3>
+<p><a href="https://talks.golang.org/2012/waza.slide">Slides</a></p>
+<ul>
+<li>Concurrency is the composition of independently executed things -- typically, functions<ul>
+<li>Dealing with a lot of things at once</li>
+<li>It is about <strong>structure</strong></li>
+</ul>
+</li>
+<li>Parallelism is the simultaneous execution of multiple things<ul>
+<li>Doing a lot of things at once</li>
+<li>It is about <strong>execution</strong></li>
+</ul>
+</li>
+<li>Analogy<ul>
+<li>Concurrent: keyboard, mouse, etc. Not necessarily running in parallel</li>
+<li>Parallel: vector dot product</li>
+</ul>
+</li>
+<li>Communication<ul>
+<li>You need communication to coordinate between the independent executions</li>
+<li>Communicating sequential processes</li>
+</ul>
+</li>
+</ul>
+<h4 id="metaphor-gophers-and-books">Metaphor -- gophers and books</h4>
+<ul>
+<li>The point is to have managable pieces of execution, each may belongs to a certain stage, so you can get more throughput</li>
+<li>Maybe I can do an animated gopher for this, LOL</li>
+<li>You don&#39;t necessarily run all the pieces simultaneously, but the design is still correct even if only one piece can be executed at the time. The user don&#39;t have to worry about if they had done parallelism right.</li>
+<li>Once you have breakdown the pieces of execution, they can be arranged in different ways to improve the performance</li>
+</ul>
+<h4 id="go">Go</h4>
+<ul>
+<li>Goroutines<ul>
+<li>Functions running independently in the same address space as other goroutines</li>
+<li>Much cheaper than threads. You can create thousands of them</li>
+<li>Multiplexed onto OS threads</li>
+<li>When a goroutine blocks, that thread blocks but no other goroutine blocks</li>
+<li><code>go func()</code> like putting <code>&amp;</code> in shell commands</li>
+</ul>
+</li>
+<li><p>Channels</p>
+<ul>
+<li>Typed values for goroutines to synchronize and exchange information</li>
+<li><p>example</p>
+<pre><code class="lang-go">timerChan := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> time.Time)
+<span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>() {
+    time.Sleep(deltaT)
+    timerChan &lt;- time.Now() <span class="hljs-comment">// send time on timerChan</span>
+}()
+<span class="hljs-comment">// Do something else; when ready, receive.</span>
+<span class="hljs-comment">// Receive will block until timerChan delivers.</span>
+<span class="hljs-comment">// Value sent is other goroutine's completion time.</span>
+completedAt := &lt;-timerChan
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Select</p>
+<ul>
+<li>Like <code>switch</code> but the decision is based on <strong>the ability of channels to communicate</strong></li>
+<li>If there&#39;s no <code>default</code>, the system will wait until one of the channel is ready</li>
+<li>If more than one of the channels are ready, the system will select one of them randomly</li>
+<li><p>example</p>
+<pre><code class="lang-go"><span class="hljs-keyword">select</span> {
+<span class="hljs-keyword">case</span> v := &lt;-ch1:
+    fmt.Println(<span class="hljs-string">"channel 1 sends"</span>, v)
+<span class="hljs-keyword">case</span> v := &lt;-ch2:
+    fmt.Println(<span class="hljs-string">"channel 2 sends"</span>, v)
+<span class="hljs-keyword">default</span>: <span class="hljs-comment">// optional</span>
+    fmt.Println(<span class="hljs-string">"neither channel was ready"</span>)
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Closures</p>
+<pre><code class="lang-go"><span class="hljs-keyword">func</span> Compose(f, g <span class="hljs-keyword">func</span>(x float) float)
+                  <span class="hljs-keyword">func</span>(x float) float {
+     <span class="hljs-keyword">return</span> <span class="hljs-keyword">func</span>(x float) float {
+        <span class="hljs-keyword">return</span> f(g(x))
+    }
+}
+
+<span class="hljs-built_in">print</span>(Compose(sin, cos)(<span class="hljs-number">0.5</span>))
+</code></pre>
+</li>
+</ul>
+<h4 id="a-simple-load-balancer">A simple load balancer</h4>
+<pre><code class="lang-go"><span class="hljs-keyword">type</span> Work <span class="hljs-keyword">struct</span> {
+    x, y, z <span class="hljs-typename">int</span>
+}
+
+<span class="hljs-comment">// other workers can run when one blocks</span>
+<span class="hljs-keyword">func</span> worker(in &lt;-<span class="hljs-keyword">chan</span> *Work, out <span class="hljs-keyword">chan</span>&lt;- *Work) {
+   <span class="hljs-keyword">for</span> w := <span class="hljs-keyword">range</span> in {
+      w.z = w.x * w.y
+      Sleep(w.z)
+      out &lt;- w
+   }
+}
+
+<span class="hljs-keyword">func</span> Run() {
+   in, out := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> *Work), <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> *Work)
+   <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; NumWorkers; i++ {
+       <span class="hljs-keyword">go</span> worker(in, out)
+   }
+   <span class="hljs-keyword">go</span> sendLotsOfWork(in)
+   receiveLotsOfResults(out)
+}
+</code></pre>
+<h4 id="why-is-go-a-good-choice-for-this">Why is Go a good choice for this</h4>
+<ul>
+<li>The execution of the program is <strong>implicitly parallel and scalable</strong></li>
+<li>No explicit synchronization needed. The structure of the program is <strong>implicitly synchronized</strong></li>
+</ul>
+<h4 id="another-load-balancer">Another load balancer</h4>
+<pre><code class="lang-go"><span class="hljs-keyword">type</span> Request <span class="hljs-keyword">struct</span> {
+    fn <span class="hljs-keyword">func</span>() <span class="hljs-typename">int</span>  <span class="hljs-comment">// The operation to perform.</span>
+    c  <span class="hljs-keyword">chan</span> <span class="hljs-typename">int</span>    <span class="hljs-comment">// The channel to return the result.</span>
+}
+
+<span class="hljs-comment">// The requester sends Requests to the balancer</span>
+<span class="hljs-keyword">func</span> requester(work <span class="hljs-keyword">chan</span>&lt;- Request) {
+    c := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-typename">int</span>)
+    <span class="hljs-keyword">for</span> {
+        <span class="hljs-comment">// Kill some time (fake load).</span>
+        Sleep(rand.Int63n(nWorker * <span class="hljs-number">2</span> * Second))
+        work &lt;- Request{workFn, c} <span class="hljs-comment">// send request</span>
+        result := &lt;-c              <span class="hljs-comment">// wait for answer</span>
+        furtherProcess(result)  
+    }    
+}
+
+<span class="hljs-keyword">type</span> Worker <span class="hljs-keyword">struct</span> {
+    requests <span class="hljs-keyword">chan</span> Request <span class="hljs-comment">// work to do (buffered channel)</span>
+    pending  <span class="hljs-typename">int</span>          <span class="hljs-comment">// count of pending tasks</span>
+    index     <span class="hljs-typename">int</span>         <span class="hljs-comment">// index in the heap</span>
+}
+
+<span class="hljs-comment">// note each response goes directly to its requester</span>
+<span class="hljs-comment">// you could run the loop body as a goroutine for parallelism</span>
+<span class="hljs-keyword">func</span> (w *Worker) work(done <span class="hljs-keyword">chan</span> *Worker) {
+    <span class="hljs-keyword">for</span> {
+        req := &lt;-w.requests <span class="hljs-comment">// get Request from balancer</span>
+        req.c &lt;- req.fn()   <span class="hljs-comment">// call fn and send result</span>
+        done &lt;- w           <span class="hljs-comment">// we've finished this request</span>
+    }
+}
+
+<span class="hljs-keyword">type</span> Pool []*Worker
+
+<span class="hljs-keyword">type</span> Balancer <span class="hljs-keyword">struct</span> {
+    pool Pool
+    done <span class="hljs-keyword">chan</span> *Worker
+}
+
+<span class="hljs-keyword">func</span> (b *Balancer) balance(work <span class="hljs-keyword">chan</span> Request) {
+    <span class="hljs-keyword">for</span> {
+        <span class="hljs-keyword">select</span> {
+        <span class="hljs-keyword">case</span> req := &lt;-work: <span class="hljs-comment">// received a Request...</span>
+            b.dispatch(req) <span class="hljs-comment">// ...so send it to a Worker</span>
+        <span class="hljs-keyword">case</span> w := &lt;-b.done: <span class="hljs-comment">// a worker has finished ...</span>
+            b.completed(w)  <span class="hljs-comment">// ...so update its info</span>
+        }
+    }
+}
+
+<span class="hljs-comment">// Make Pool an implementation of the Heap interface</span>
+<span class="hljs-comment">// so we can balance by making the Pool a heap tracked by load</span>
+<span class="hljs-keyword">func</span> (p Pool) Less(i, j <span class="hljs-typename">int</span>) <span class="hljs-typename">bool</span> {
+    <span class="hljs-keyword">return</span> p[i].pending &lt; p[j].pending
+}
+
+<span class="hljs-comment">// Send Request to worker</span>
+<span class="hljs-keyword">func</span> (b *Balancer) dispatch(req Request) {
+    <span class="hljs-comment">// Grab the least loaded worker...</span>
+    w := heap.Pop(&amp;b.pool).(*Worker)
+    <span class="hljs-comment">// ...send it the task.</span>
+    w.requests &lt;- req
+    <span class="hljs-comment">// One more in its work queue.</span>
+    w.pending++
+    <span class="hljs-comment">// Put it into its place on the heap.</span>
+    heap.Push(&amp;b.pool, w)
+}
+
+<span class="hljs-comment">// Job is complete; update heap</span>
+<span class="hljs-keyword">func</span> (b *Balancer) completed(w *Worker) {
+    <span class="hljs-comment">// One fewer in the queue.</span>
+    w.pending--
+    <span class="hljs-comment">// Remove it from heap.                  </span>
+    heap.Remove(&amp;b.pool, w.index)
+    <span class="hljs-comment">// Put it into its place on the heap.</span>
+    heap.Push(&amp;b.pool, w)
+}
+</code></pre>
+<h4 id="another-example-query-a-replicated-database">Another example: Query a replicated database</h4>
+<pre><code class="lang-go"><span class="hljs-keyword">func</span> Query(conns []Conn, query <span class="hljs-typename">string</span>) Result {
+    ch := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> Result, <span class="hljs-built_in">len</span>(conns))  <span class="hljs-comment">// buffered</span>
+    <span class="hljs-keyword">for</span> _, conn := <span class="hljs-keyword">range</span> conns {
+        <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>(c Conn) {
+            ch &lt;- c.DoQuery(query):
+        }(conn)
+    }
+    <span class="hljs-keyword">return</span> &lt;-ch
+}
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
