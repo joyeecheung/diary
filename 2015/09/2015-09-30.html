@@ -1,0 +1,64 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>September 30, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>September 30, 2015</h1></header><div class="content"><div class="diary"><h2 id="js">JS</h2>
+<h3 id="-flow-type-annotations-http-flowtype-org-docs-type-annotations-html-"><a href="http://flowtype.org/docs/type-annotations.html">Flow Type Annotations</a></h3>
+<p>Annotate functions:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params">a: string, b: number</span>): <span class="hljs-title">void</span> </span>{ ... }
+</code></pre>
+<p>Annotate variables:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> x: boolean = someBool;
+</code></pre>
+<p>Annotate classes:</p>
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bar</span> </span>{
+  y: string;
+  someMethod(a: number): string { ... }
+}
+</code></pre>
+<p>There&#39;s also a special type <code>any</code>, and it is what you think it is :).</p>
+<p>Tell flow to do the type checking:</p>
+<pre><code>/<span class="hljs-keyword">*</span><span class="hljs-keyword">*</span>
+ <span class="hljs-keyword">*</span> Size.js
+ <span class="hljs-keyword">*</span> <span class="hljs-comment">@flow</span>
+ <span class="hljs-keyword">*</span>/
+</code></pre><p>The filename helps flow to speed up type checking across modules.</p>
+<h3 id="-flow-typecasts-http-flowtype-org-blog-2015-02-18-typecasts-html-"><a href="http://flowtype.org/blog/2015/02/18/Typecasts.html">Flow Typecasts</a></h3>
+<p>This is used to type-annotate <strong>expressions</strong>. Note this must be surrounded in parentheses:</p>
+<pre><code class="lang-javascript">(<span class="hljs-number">1</span> + <span class="hljs-number">1</span> : number);  <span class="hljs-comment">// result of this expression must be a number</span>
+<span class="hljs-keyword">var</span> a = { name: (<span class="hljs-literal">null</span>: ?string) };  <span class="hljs-comment">// null can be string, null, or undefined</span>
+([<span class="hljs-number">1</span>, <span class="hljs-string">'a'</span>, <span class="hljs-literal">true</span>]: <span class="hljs-built_in">Array</span>&lt;mixed&gt;).map(fn);  <span class="hljs-comment">// this array should be a mixed array</span>
+</code></pre>
+<p>It will force flow to check the type of the expressions as you specified.</p>
+<h3 id="-flow-maybe-types-http-flowtype-org-docs-nullable-types-html-"><a href="http://flowtype.org/docs/nullable-types.html">Flow Maybe Types</a></h3>
+<p>In JS, <code>null</code> can be converted to any type, but in Flow, it is a type on its own.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/* @flow */</span>
+<span class="hljs-keyword">var</span> o = <span class="hljs-literal">null</span>;
+print(o.x);  <span class="hljs-comment">// error</span>
+</code></pre>
+<p>To relax the type constraint to <code>null</code> + <code>undefined</code> + a specific type, write: <code>?type</code>, e.g.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/* @flow */</span>
+<span class="hljs-keyword">var</span> o: ?string = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// o can be a string, or null, or undefined</span>
+</code></pre>
+<h4 id="flow-is-path-sensitive">Flow is path-sensitive</h4>
+<p>This will throw an error</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/* @flow */</span>
+<span class="hljs-keyword">var</span> o: ?string = <span class="hljs-literal">null</span>;
+print(o.length);  <span class="hljs-comment">// o could be null or undefined</span>
+</code></pre>
+<p>But this won&#39;t</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">/* @flow */</span>
+<span class="hljs-keyword">var</span> o: ?string = <span class="hljs-literal">null</span>;
+<span class="hljs-keyword">if</span> (o == <span class="hljs-literal">null</span>) {  <span class="hljs-comment">// note == covers both null and undefined</span>
+  o = <span class="hljs-string">'hello'</span>;
+}
+print(o.length);
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
