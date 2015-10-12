@@ -1,0 +1,109 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 7, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 7, 2015</h1></header><div class="content"><div class="diary"><h2 id="css">CSS</h2>
+<h3 id="-css-protips-https-github-com-allthingssmitty-css-protips-"><a href="https://github.com/AllThingsSmitty/css-protips">CSS Protips</a></h3>
+<ol>
+<li>Use <code>:not()</code> to Apply/Unapply Borders on Navigation<ul>
+<li>I&#39;ll say this one is pretty awkward because you can simply use <code>.selector + .selector</code>...</li>
+</ul>
+</li>
+<li>Add Line-Height to body<ul>
+<li>Let the <code>&lt;p&gt;</code>, <code>&lt;h*&gt;</code>, etc. inherit it</li>
+</ul>
+</li>
+<li><p>Vertically-Center Anything(This one uses flexbox)</p>
+<pre><code class="lang-css"> <span class="hljs-tag">html</span>, <span class="hljs-tag">body</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">margin</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+}</span>
+
+<span class="hljs-tag">body</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">-webkit-align-items</span>:<span class="hljs-value"> center</span></span>;  
+ <span class="hljs-rule"><span class="hljs-attribute">-ms-flex-align</span>:<span class="hljs-value"> center</span></span>;  
+ <span class="hljs-rule"><span class="hljs-attribute">align-items</span>:<span class="hljs-value"> center</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> -webkit-flex</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+}</span>
+</code></pre>
+</li>
+<li>Comma-Separated Lists<ul>
+<li>Again I&#39;ll say this one is awkward like 1 because you can use <code>.selector + .selector::before</code>...</li>
+</ul>
+</li>
+<li>Select Items Using Negative <code>nth-child</code><ul>
+<li>To select items 1 through k, write <code>:nth-child(-n+k)</code></li>
+</ul>
+</li>
+<li>Use SVG for Icons</li>
+<li><p>Text Display Optimization</p>
+<pre><code class="lang-css"><span class="hljs-tag">html</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">-moz-osx-font-smoothing</span>:<span class="hljs-value"> grayscale</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">-webkit-font-smoothing</span>:<span class="hljs-value"> antialiased</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">text-rendering</span>:<span class="hljs-value"> optimizeLegibility</span></span>;
+}</span>
+</code></pre>
+<p>But be aware implementations for <code>optimizeLegibility</code> can be buggy/slow(Then why the heck you are introducing this...)</p>
+</li>
+<li><p>Use max-height for Pure CSS Sliders</p>
+<ul>
+<li>I think by <em>slider</em> he means...dropdown?</li>
+<li><p>Code</p>
+<pre><code class="lang-css"><span class="hljs-class">.slider</span> <span class="hljs-tag">ul</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">max-height</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">overlow</span>:<span class="hljs-value"> hidden</span></span>;
+}</span>
+
+<span class="hljs-rule"><span class="hljs-attribute">.slider</span>:<span class="hljs-value">hover ul {
+ max-height: <span class="hljs-number">1000px</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">transition</span>:<span class="hljs-value"> .<span class="hljs-number">3s</span> ease</span></span>;
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Inherit box-sizing</p>
+<ul>
+<li><p>Instead of putting <code>box-sizing</code> on <code>*</code>, let them inherit it</p>
+<pre><code class="lang-css"><span class="hljs-tag">html</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">box-sizing</span>:<span class="hljs-value"> border-box</span></span>;
+}</span>
+
+*, *<span class="hljs-pseudo">:before</span>, *<span class="hljs-pseudo">:after</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">box-sizing</span>:<span class="hljs-value"> inherit</span></span>;
+}</span>
+</code></pre>
+<p>This way there will be less clashes</p>
+</li>
+</ul>
+</li>
+<li>Equal Width Table Cells: <code>table-layout: fixed</code><ul>
+<li>Oh I&#39;ve used it before..</li>
+</ul>
+</li>
+<li><p>Get Rid of Margin Hacks With Flexbox</p>
+<ul>
+<li>Use</li>
+</ul>
+<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+<span class="hljs-rule"><span class="hljs-attribute">justify-content</span>:<span class="hljs-value"> space-between</span></span>;
+</code></pre>
+<p>for evenly-spaced gutters</p>
+</li>
+<li><p>Use Attribute Selectors with Empty Links</p>
+<pre><code class="lang-css"><span class="hljs-tag">a</span><span class="hljs-attr_selector">[href^="http"]</span><span class="hljs-pseudo">:empty</span><span class="hljs-pseudo">::before</span> <span class="hljs-rules">{
+<span class="hljs-rule"><span class="hljs-attribute">content</span>:<span class="hljs-value"> <span class="hljs-function">attr</span>(href)</span></span>;
+}</span>
+</code></pre>
+<p>Let the content of empty links be their <code>href</code> attributes...</p>
+</li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
