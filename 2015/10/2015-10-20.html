@@ -1,0 +1,147 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 20, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 20, 2015</h1></header><div class="content"><div class="diary"><h2 id="libuv">libuv</h2>
+<h3 id="-lxjs-2012-bert-belder-libuv-https-www-youtube-com-watch-v-ngn60vdsxq4-"><a href="https://www.youtube.com/watch?v=nGn60vDSxQ4">LXJS 2012 - Bert Belder - libuv</a></h3>
+<ul>
+<li>libev and libeio<ul>
+<li>They used to use <code>ifdef</code> to handle the difference of system call in different platform, but it soon turned into a mess. So they went for compatible containers instead</li>
+</ul>
+</li>
+<li>libuv<ul>
+<li>Abstract operations, not events</li>
+<li><code>select()</code> may not be the best: e.g. IOCP on windows</li>
+</ul>
+</li>
+</ul>
+<h3 id="node-libuv">Node -&gt; libuv</h3>
+<p>The JS code:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">require</span>(<span class="hljs-string">'net'</span>).connect(<span class="hljs-number">80</span>, <span class="hljs-string">'nyan.cat'</span>).pipe(process.stdout);
+</code></pre>
+<pre><code class="lang-c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span>* argv[])</span> </span>{
+  <span class="hljs-comment">/* allocate space for the DNS request */</span>
+  <span class="hljs-keyword">uv_getaddrinfo_t</span>* gai_req = <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uv_getaddrinifo_t</span>));
+
+  <span class="hljs-comment">/* issue the DNS request */</span>
+  uv_getaddrinfo(uv_default_loop(),
+                gai_req,
+                after_getaddrinfo, <span class="hljs-comment">/* callback */</span>
+                <span class="hljs-string">"nyan.cat"</span>,
+                <span class="hljs-string">"80"</span>,
+                <span class="hljs-literal">NULL</span>);
+
+  <span class="hljs-comment">/* run it*/</span>
+  uv_run(uv_default_loop());
+
+  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">after_getaddrinfo</span><span class="hljs-params">(uv_getaddrinfo_t* gai_req, <span class="hljs-keyword">int</span> status, <span class="hljs-keyword">struct</span> addrinfo* ai)</span> </span>{
+  <span class="hljs-keyword">uv_tcp_t</span>* tcp_handle;
+  <span class="hljs-keyword">uv_connect_t</span>* connect_req;
+
+  <span class="hljs-keyword">if</span> (status &lt; <span class="hljs-number">0</span>) {
+    <span class="hljs-built_in">abort</span>();   <span class="hljs-comment">/* error */</span>
+  }
+
+
+  <span class="hljs-comment">/* allocate space for the TCP handle*/</span>
+  tcp_handle = <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uv_tcp_t</span>));
+  uv_tcp_init(uv_default_loop(), tcp_handle);
+
+  <span class="hljs-comment">/* allocate space for connection*/</span>
+  connect_req = <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uv_connect_t</span>));
+  uv_tcp_connect(connect_req,
+                 tcp_handle,
+                 <span class="hljs-comment">/* use the result in that struct addrinfo* */</span>
+                 *(<span class="hljs-keyword">struct</span> sockaddr_in *) ai-&gt;ai_addr,
+                 after_connect);
+
+  <span class="hljs-comment">/* well this smells real bad.. */</span>
+  <span class="hljs-built_in">free</span>(gai_req);
+  uv_freeaddrinfo(ai);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">after_connect</span><span class="hljs-params">(uv_connect_t *connect_req, <span class="hljs-keyword">int</span> status)</span> </span>{
+  <span class="hljs-keyword">uv_write_t</span> *write_q;
+  <span class="hljs-keyword">uv_buf_t</span> buf;
+
+  <span class="hljs-keyword">if</span> (status &lt; <span class="hljs-number">0</span>) {
+    <span class="hljs-built_in">abort</span>();  <span class="hljs-comment">/* handle error */</span>
+  }
+
+  <span class="hljs-comment">/* allocate space for the write request */</span>
+  write_req = <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uv_write_t</span>));
+
+  <span class="hljs-comment">/* create the buffer */</span>
+  buf.base = <span class="hljs-string">"GET / HTTP/1.0\r\n"</span>
+             <span class="hljs-string">"Host: nyan.cat\r\n"</span>
+             <span class="hljs-string">"\r\n"</span>;   <span class="hljs-comment">/* The HTTP request text */</span>
+  buf.len = <span class="hljs-built_in">strlen</span>(buf.base);
+
+  uv.write(write_req, connect_req-&gt;handle, &amp;buf, <span class="hljs-number">1</span>, after_write);
+
+  <span class="hljs-comment">/* on_alloc allocate memory for it to fill */</span>
+  uv_read_start(connect_req-&gt;handle, on_alloc, on_read);
+
+  <span class="hljs-built_in">free</span>(connect_req);
+}
+
+<span class="hljs-keyword">uv_buf_t</span> on_alloc(<span class="hljs-keyword">uv_handle_t</span> *handle, <span class="hljs-keyword">size_t</span> suggest_size) {
+  <span class="hljs-keyword">uv_buf_t</span> buf;
+
+  buf.base = <span class="hljs-built_in">malloc</span>(suggest_size);
+  buf.len = suggest_size;
+
+  <span class="hljs-keyword">return</span> buf;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">on_read</span><span class="hljs-params">(uv_stream_t* tcp_handle, ssize_t nread, uv_buf_t buf)</span> </span>{
+  <span class="hljs-keyword">if</span> (nread &lt; <span class="hljs-number">0</span>) {
+    <span class="hljs-comment">/* Error or end of file */</span>
+    <span class="hljs-keyword">if</span> (uv_last_error(uv_default_loop()).code === UV_EOF) {
+      <span class="hljs-comment">/* No more data, close it */</span>
+      uv_close((<span class="hljs-keyword">uv_handle_t</span> *) tcp_handle, on_close);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-comment">/* Error */</span>
+      <span class="hljs-built_in">abort</span>();
+    }
+  }
+
+  <span class="hljs-keyword">if</span> (nread &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-comment">/* Print it! */</span>
+    fwrite(buf.base, <span class="hljs-number">1</span>, nread, <span class="hljs-built_in">stdout</span>);
+  }
+
+  <span class="hljs-built_in">free</span>(buf.base);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uv_close</span><span class="hljs-params">(uv_handle_t *handle)</span> </span>{
+  <span class="hljs-built_in">free</span>(handle);
+}
+</code></pre>
+<p>Compile with</p>
+<pre><code>gcc -o demo demo<span class="hljs-class">.c</span> uv<span class="hljs-class">.a</span> -Iinclude -lpthread -lm -lrt
+</code></pre><p>under the libuv folder</p>
+<h4 id="data-structures">Data structures</h4>
+<ul>
+<li><code>uv_getaddrinfo_t</code>, <code>uv_write_t</code>, <code>uv_connect_t</code>... all are <code>uv_req_t</code> and like promises. They must stay valid while the request is in flight</li>
+<li><code>uv_tcp_t</code>, <code>uv_udp_t</code>... are all <code>uv_handle_t</code> and can emit events</li>
+<li>It is designed to left the responsibility of memory management to the user</li>
+</ul>
+<h4 id="improvements">Improvements</h4>
+<ul>
+<li>Improve the flow of calls</li>
+<li>Use streams to abstract handles(e.g. <code>uv_tcp_t</code> -&gt; <code>uv_stream_t</code>, <code>uv_tcp_int</code> -&gt; <code>uv_stream_init</code>)</li>
+<li>Edge triggered epoll</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
