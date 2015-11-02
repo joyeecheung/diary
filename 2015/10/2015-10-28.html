@@ -1,0 +1,74 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 28, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 28, 2015</h1></header><div class="content"><div class="diary"><h2 id="flux">Flux</h2>
+<h3 id="-flux-chat-https-github-com-facebook-flux-tree-master-examples-flux-chat-"><a href="https://github.com/facebook/flux/tree/master/examples/flux-chat">flux-chat</a></h3>
+<h4 id="store">Store</h4>
+<p>A typical store looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> SomeDispatcher = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> ActionConstants = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+
+<span class="hljs-keyword">var</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> assign = <span class="hljs-built_in">require</span>(<span class="hljs-string">'object-assign'</span>);
+
+<span class="hljs-comment">// this is StoreA, and it might need other stores</span>
+<span class="hljs-keyword">var</span> StoreB = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+
+<span class="hljs-keyword">var</span> ActionTypes = ActionConstants.ActionTypes;
+
+<span class="hljs-keyword">var</span> somePrivateData = {};
+<span class="hljs-keyword">var</span> currentID = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// those current thingy can go here</span>
+
+<span class="hljs-comment">// Stores are usually event emitters</span>
+<span class="hljs-keyword">var</span> StoreA = assign({}, EventEmitter.prototype, {
+  <span class="hljs-comment">// just wrappers for its own emitter</span>
+  emitChange: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.emit(CHANGE_EVENT);
+  },
+  addChangeListener: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">cb</span>) </span>{
+    <span class="hljs-keyword">this</span>.on(CHANGE_EVENT, cb);
+  },
+  removeChangeListener: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">cb</span>) </span>{
+    <span class="hljs-keyword">this</span>.removeListener(CHANGE_EVENT, cb);
+  }
+
+  init: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-comment">// update its private data accordingly</span>
+  }
+
+  <span class="hljs-comment">// a bunch of getters</span>
+  getAllA: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// might depend on other stores too,</span>
+    <span class="hljs-comment">// call their getters then.</span>
+
+    <span class="hljs-comment">// can do things like sorting, reversing, etc.</span>
+  }
+});
+
+StoreA.dispatchToken = SomeDispather.register(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action</span>) </span>{
+  <span class="hljs-keyword">switch</span>(action.type) {
+    <span class="hljs-keyword">case</span> ActionTypes.SOME_VIEW_ACTION:
+      <span class="hljs-comment">// might depend on other stores,</span>
+      <span class="hljs-comment">// so call waitfor</span>
+      SomeDispatcher.waitFor([StoreB.dispatchToken]);
+      <span class="hljs-comment">// do something with its private data</span>
+      StoreA.emitChange();  <span class="hljs-comment">// view will be notified, and update itself</span>
+      <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> ActionTypes.SOME_SERVER_ACTION: <span class="hljs-comment">// e.g. completed AJAX</span>
+      StoreA.init(action.data);  <span class="hljs-comment">// or set, whatever</span>
+      StoreA.emitChange();  <span class="hljs-comment">// then the view will update itself</span>
+      <span class="hljs-keyword">break</span>;
+  }
+});
+
+<span class="hljs-built_in">module</span>.exports = StoreA;
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

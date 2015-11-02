@@ -1,0 +1,157 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>October 27, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>October 27, 2015</h1></header><div class="content"><div class="diary"><h2 id="flux">flux</h2>
+<p><a href="https://github.com/facebook/flux/blob/master/examples/flux-chat">Flux Chat</a></p>
+<h4 id="views">Views</h4>
+<p>React components are views. A typical component <code>.js</code> file looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// require, import, whatever</span>
+<span class="hljs-keyword">var</span> ActionCreators = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> StoreA = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> StoreB = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> React = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react'</span>);
+
+<span class="hljs-comment">// helper function, just to keep it DRY</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getStateFromStores</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> {
+    a: StoreA.getAllA(),
+    b: StoreB.getAllB()
+  };
+}
+
+<span class="hljs-keyword">var</span> Component = React.createClass({
+  propTypes: {
+    <span class="hljs-comment">// like type annotations, for maintainablity</span>
+  }
+  <span class="hljs-comment">// react component definition...</span>
+  getInitialState: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// Store -&gt; states</span>
+    <span class="hljs-keyword">return</span> getStateFromStores();
+  },
+  componentDidMount: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// register listeners, so every time</span>
+    <span class="hljs-comment">// the store changes, this view will</span>
+    <span class="hljs-comment">// receive notifications and reload states from stores</span>
+    <span class="hljs-comment">// essentially bind stores to view</span>
+    StoreA.addChangeListener(<span class="hljs-keyword">this</span>._onChange);
+    StoreB.addChangeListener(<span class="hljs-keyword">this</span>._onChange);
+  },
+  componentWillUnmount: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// detach listeners to avoid memory leak</span>
+    StoreA.removeChangeListener(<span class="hljs-keyword">this</span>._onChange);
+    StoreB.removeChangeListener(<span class="hljs-keyword">this</span>._onChange);
+  }
+  render: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// referencing `this.props` and `this.state` heavily</span>
+    <span class="hljs-comment">// note `this.props` are passed by parents,</span>
+    <span class="hljs-comment">// `this.states` can change and is what the</span>
+    <span class="hljs-comment">// flux pattern will manage</span>
+    <span class="hljs-comment">// for event handlers, use things like `this._onClick`</span>
+  },
+  _onClick: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// take actions</span>
+    ActionCreator.someAction(
+      <span class="hljs-comment">/* usually the arguments are obtained with `this.props`*/</span>
+    );
+  },
+  _onChange: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// Event handler for 'change' events coming from the stores</span>
+    <span class="hljs-keyword">this</span>.setState(getStateFromStores());
+  }
+});
+
+<span class="hljs-built_in">module</span>.exports = Component;  <span class="hljs-comment">// or export, whatever</span>
+</code></pre>
+<h4 id="actions">Actions</h4>
+<p><a href="https://facebook.github.io/flux/docs/actions-and-the-dispatcher.html">Action and the Dispatcher</a></p>
+<p>The actions are abstracted as objects here. Each actions includes:</p>
+<ul>
+<li>Action data</li>
+<li>Action type(think of them as event names)</li>
+</ul>
+<p><em>Action creators</em> are created to:</p>
+<ul>
+<li>Create the action objects</li>
+<li>Pass(dispatch) the action to the dispatcer</li>
+</ul>
+<blockquote>
+<p>In a Flux application, both stores and views control themselves; they are not acted upon by external objects. Actions flow into the stores through the callbacks they define and register, not through setter methods</p>
+</blockquote>
+<p>There are two type of actions: from views, or from other source e.g. servers.</p>
+<p>A typical view action creator looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> SomeDispatcher = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> ActionCreatorForServerEvents = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+<span class="hljs-keyword">var</span> ActionConstants = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>); <span class="hljs-comment">// defined constants, mostly action types</span>
+
+<span class="hljs-keyword">var</span> ActionTypes = ActionConstants.ActionTypes;
+
+<span class="hljs-keyword">var</span> ActionCreatorForViewEvents = {
+  <span class="hljs-comment">// usually comes form view</span>
+  actionFromView: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-comment">// notify store about creation, usually store will</span>
+    <span class="hljs-comment">// notify views again for simple updates</span>
+    SomeDispatcher.dispatch({
+      type: ActionTypes.SOME_VIEW_ACTION,
+      data: data
+    });
+    <span class="hljs-comment">// convert the data to something to be persisted</span>
+    <span class="hljs-comment">// send the data to server/local storage, etc.</span>
+    <span class="hljs-comment">// e.g. initiate AJAX</span>
+    sendActionToServer().then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+      <span class="hljs-comment">// this call will dispatch another action</span>
+      <span class="hljs-comment">// again so that the store</span>
+      <span class="hljs-comment">// can be updated properly when the request is successful</span>
+      ActionCreatorForServerEvents.actionFromServer(response);
+    });
+  }
+};
+
+<span class="hljs-built_in">module</span>.exports = ActionCreatorForViewEvents;
+</code></pre>
+<p>Action creator for things like server events looks like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> SomeDispatcher = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>);
+
+<span class="hljs-keyword">var</span> ActionConstants = <span class="hljs-built_in">require</span>(<span class="hljs-string">'...'</span>); <span class="hljs-comment">// defined constants, mostly action types</span>
+
+<span class="hljs-keyword">var</span> ActionTypes = ActionConstants.ActionTypes;
+
+<span class="hljs-keyword">var</span> ActionCreatorForServerEvents = {
+  actionFromServer: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    SomeDispatcher.dispatch({
+      type: SOME_SERVER_ACTION,
+      data: response.data
+    });
+  }
+};
+
+<span class="hljs-built_in">module</span>.exports = ActionCreatorForServerEvents;
+</code></pre>
+<p>Most of the time it just dispatch some action for each of its methods</p>
+<h4 id="dispatcher">Dispatcher</h4>
+<p>Interface:</p>
+<ul>
+<li><code>waitFor</code></li>
+<li><code>dispath</code> (like event emitters)</li>
+<li><code>register</code> (like event listeners)</li>
+</ul>
+<p>The difference between a dispatcher and a event utility/pubsub utility is that:</p>
+<ul>
+<li>It has <code>waitFor</code></li>
+<li><code>dispatch</code> provides synchronous iteration</li>
+</ul>
+<p><code>waitFor</code> is used to solve dependency problems between stores. Each time <code>waitFor</code> is encountered in an iteration, the callback triggering it will be paused, and a new iteration over the dependency will begin. When this iteration ends, that callback will be resumed.</p>
+<h4 id="-redux-and-vue-js-https-github-com-vuejs-discussion-issues-362-"><a href="https://github.com/vuejs/Discussion/issues/362">Redux and Vue.js</a></h4>
+<p>Hmm...not a good couple after all.</p>
+<h4 id="-flux-js-https-github-com-vuejs-discussion-issues-362-"><a href="https://github.com/vuejs/Discussion/issues/362">Flux.js</a></h4>
+<blockquote>
+<p>Flux is more of a pattern than a framework, and does not have any hard dependencies. However, we often use EventEmitter as a basis for Stores and React for our Views. The one piece of Flux not readily available elsewhere is the Dispatcher. This module, along with some other utilities, is available here to complete your Flux toolbox.</p>
+</blockquote>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
