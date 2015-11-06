@@ -1,0 +1,94 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>November 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>November 2, 2015</h1></header><div class="content"><div class="diary"><h2 id="vue">Vue</h2>
+<p>Been playing with JSFiddle for a while, and wow...this works!</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"https://cdn.jsdelivr.net/vue/latest/vue.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"action-temp"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"x/template"</span>&gt;</span><span class="handlebars"><span class="xml">
+    <span class="hljs-tag">&lt;<span class="hljs-title">ul</span> <span class="hljs-attribute">v-for</span>=<span class="hljs-value">"action in actions"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">li</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">v-on:click</span>=<span class="hljs-value">"take(action, item)"</span> <span class="hljs-attribute">v-bind:href</span>=<span class="hljs-value">"'javascript:;'"</span>&gt;</span></span><span class="hljs-expression">{{<span class="hljs-variable"><span class="hljs-keyword">action</span>.name</span>}}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span>
+</span></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"temp"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"x/template"</span>&gt;</span><span class="handlebars"><span class="xml">
+    <span class="hljs-tag">&lt;<span class="hljs-title">ul</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">v-for</span>=<span class="hljs-value">"item in list"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">v-bind:href</span>=<span class="hljs-value">"item.a"</span>&gt;</span></span><span class="hljs-expression">{{<span class="hljs-variable">item.b</span>}}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">menu</span> <span class="hljs-attribute">v-bind:actions</span>=<span class="hljs-value">"generate(item)"</span> <span class="hljs-attribute">v-bind:item</span>=<span class="hljs-value">"item"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">menu</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span>
+</span></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"app"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">list</span> <span class="hljs-attribute">v-bind:list-id</span>=<span class="hljs-value">"'heap'"</span> <span class="hljs-attribute">v-bind:generate</span>=<span class="hljs-value">"generator"</span> <span class="hljs-attribute">v-on:event</span>=<span class="hljs-value">"handle"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">list</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> Store = {
+  states: {}
+}
+
+Vue.config.debug = <span class="hljs-literal">true</span>;
+
+Vue.component(<span class="hljs-string">'list'</span>, {
+    template: <span class="hljs-string">'#temp'</span>,
+    data: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+       <span class="hljs-keyword">return</span> Store.states;
+    },
+    computed: {
+      list: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.$data, <span class="hljs-keyword">this</span>.listId, <span class="hljs-keyword">this</span>.generate)
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.$data[<span class="hljs-keyword">this</span>.listId].list
+        }
+    },
+    props: {
+        listId: <span class="hljs-built_in">String</span>,
+        generate: <span class="hljs-built_in">Function</span>
+    }
+});
+
+Vue.component(<span class="hljs-string">'menu'</span>, {
+    template: <span class="hljs-string">'#action-temp'</span>,
+    props: {
+        actions: <span class="hljs-built_in">Array</span>,
+        item: <span class="hljs-built_in">Object</span>,
+        generate: <span class="hljs-built_in">Function</span>
+    },
+    methods: {
+      take: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action, item</span>) </span>{
+          <span class="hljs-keyword">this</span>.$dispatch(<span class="hljs-string">'event'</span>, action, item)
+        }
+    }
+});
+
+<span class="hljs-keyword">new</span> Vue({
+  el: <span class="hljs-string">'#app'</span>,
+    methods: {
+        generator: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">item</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(item)
+          <span class="hljs-keyword">return</span> [{name: item.a}, {name: item.b}];
+        },
+        handle: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">action, item</span>) </span>{
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'on event'</span>, action, item)
+        }
+    }
+});
+
+setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  Vue.set(Store.states, <span class="hljs-string">'heap'</span>, {
+        current: <span class="hljs-number">1</span>,
+        count: <span class="hljs-number">2</span>,
+        list: [{a: <span class="hljs-number">1</span>, b: <span class="hljs-number">2</span>}, {a: <span class="hljs-number">3</span>, b: <span class="hljs-number">4</span>}]
+    });
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'set!'</span>);
+}, <span class="hljs-number">1000</span>);
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
