@@ -1,0 +1,117 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>November 5, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>November 5, 2015</h1></header><div class="content"><div class="diary"><h2 id="vue">Vue</h2>
+<p>Replace the bootstrap modal with a component implemented with Vue today. I started with the example from the website, but added a little twist so I can bind data to the slots and make it fit into the Flux architecture.</p>
+<p>The component template and CSS is not much far from the example(although I did add a lot of styles to the modal so it can fit into our design, the animation and layout is pretty much the same as it was). The component registration code looks like this</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// register modal component</span>
+Vue.component(<span class="hljs-string">'modal'</span>, {
+  template: <span class="hljs-string">'#modal-template'</span>,
+  props: {
+    show: <span class="hljs-built_in">Boolean</span>,
+    states: <span class="hljs-built_in">Object</span>
+  },
+  methods: {
+    close: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">this</span>.$dispatch(<span class="hljs-string">'modal:close'</span>);
+    }
+  }
+});
+</code></pre>
+<p>The instantiation looks like this:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"app"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">modal</span> <span class="hljs-attribute">:show</span>=<span class="hljs-value">"showModal"</span> <span class="hljs-attribute">:states</span>=<span class="hljs-value">"modalStates"</span> <span class="hljs-attribute">v-on:close</span>=<span class="hljs-value">"closeModal"</span> <span class="hljs-attribute">v-cloak</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">slot</span>=<span class="hljs-value">"modal-body"</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">v-if</span>=<span class="hljs-value">"states.status === 'loading'"</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- a spinner component --&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">v-if</span>=<span class="hljs-value">"states.status === 'failed'"</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"failed"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">p</span> <span class="hljs-attribute">v-for</span>=<span class="hljs-value">"line in texts"</span>&gt;</span>
+          {{line}}
+        <span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+
+      <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">v-if</span>=<span class="hljs-value">"states.status === 'succeed'"</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"succeed"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">p</span> <span class="hljs-attribute">v-for</span>=<span class="hljs-value">"line in texts"</span>&gt;</span>
+          {{line}}
+        <span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">modal</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> ModalStore = {
+  states: {
+    status: <span class="hljs-string">'initial'</span>,
+    showModal: <span class="hljs-literal">false</span>,
+    texts: []
+  }
+  <span class="hljs-comment">// ... event emitter code, etc.</span>
+};
+
+<span class="hljs-comment">// register a callback so when CLOSE_MODAL is dispatched, it will set `showModal = false`</span>
+<span class="hljs-comment">// register a callback so when SHOW_MODAL is dispatched, it will set `showModal = true`</span>
+<span class="hljs-comment">// register a callback so when UPDATE_MODAL is dispatched, it will set `status` and `texts` to what is provided in the action</span>
+
+<span class="hljs-comment">// start app</span>
+<span class="hljs-keyword">var</span> ModalVM = <span class="hljs-keyword">new</span> Vue({
+  el: <span class="hljs-string">'#app'</span>,
+  data: {
+    states: {
+      ModalStore.states
+    }
+  },
+  computed: {
+    showModal: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.states.showModal;
+    },
+    modalStates: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> {
+        status: <span class="hljs-keyword">this</span>.states.status,
+        texts: <span class="hljs-keyword">this</span>.states.texts
+      }
+    }
+  },
+  methods: {
+    closeModal: {
+      ModalActionCreator.close();
+    }
+  }
+})
+</code></pre>
+<p>Then an external action creator may looks like this: </p>
+<pre><code class="lang-javascript">ModalActionCreator = {
+  loadModal: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">promise</span>) </span>{
+    Dispatcher.dispatch(UPDATE_MODAL, {
+      status: <span class="hljs-string">'loading'</span>
+    });
+    Dispatcher.dispatch(SHOW_MODAL);
+
+    promise.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+      Dispatcher.dispatch(UPDATE_MODAL, {
+        status: <span class="hljs-string">'succeed'</span>,
+        texts: response.data.split(<span class="hljs-string">'\n'</span>)
+      });
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+      Dispatcher.dispatch(UPDATE_MODAL, {
+        status: <span class="hljs-string">'failed'</span>,
+        texts: err.split(<span class="hljs-string">'\n'</span>)
+      });
+    });
+  },
+  closeModal: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    Dispatcher.dispatch(CLOSE_MODAL);
+  }
+}
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
