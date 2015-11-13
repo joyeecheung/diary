@@ -1,0 +1,85 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>November 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>November 13, 2015</h1></header><div class="content"><div class="diary"><h2 id="angular">Angular</h2>
+<h3 id="-angularjs-internals-in-depth-part-2-http-www-smashingmagazine-com-2015-11-angularjs-internals-in-depth-part-2-"><a href="http://www.smashingmagazine.com/2015/11/angularjs-internals-in-depth-part-2/">AngularJS’ Internals In Depth, Part 2</a></h3>
+<h4 id="directivess">Directivess</h4>
+<ul>
+<li><code>Restrict</code>: don&#39;t ever use &#39;C&#39; or &#39;M&#39;</li>
+<li><strong>Singleton socpe</strong>: leaving the scope chain untouched with <code>scope: false</code> is not very common. Some use cases are:<ul>
+<li>The directive doesn&#39;t interact with the scope -- but that&#39;s rare since directives are meant to interact with the DOM, so most of the time it also need the data in the scope</li>
+<li>The directive is a singleton in the current scope and only interact with the property associated with its own name(<code>scope.directiveName</code>)</li>
+</ul>
+</li>
+<li>Use <code>scope: true</code> to create a <strong>child scope</strong><ul>
+<li>If multiple directives on the same element request a new scope, then only one new scope is created</li>
+</ul>
+</li>
+<li><strong>Isolated scope</strong>: <code>scope: {}</code><ul>
+<li>Kinda like a child scope but doesn&#39;t inherit from its parent(<code>scope.$parent</code> is still available though)</li>
+</ul>
+</li>
+</ul>
+<h4 id="wired-shorthands-for-directive-scope-definitions">Wired shorthands for directive scope definitions</h4>
+<ul>
+<li><p><code>@</code>(<strong>observing attributes</strong>):</p>
+<pre><code class="lang-javascript">{
+  scope: {
+    note: <span class="hljs-string">'@'</span>
+  }
+}
+</code></pre>
+<p>is the same as</p>
+<pre><code class="lang-javascript">{
+  scope: {},
+  link: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">scope, element, attrs</span>) </span>{
+    attrs.$observe(<span class="hljs-string">'note'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">value</span>) </span>{
+      scope.note = value;
+    });
+  }
+}
+</code></pre>
+<p>But you can only bind to that property as-is. To make some changes(like <code>scope.note = value + 1</code>) you will have to choose the second one.</p>
+</li>
+<li><p><code>&amp;</code>(<strong>parsing attributes</strong>):</p>
+<pre><code class="lang-javascript">{
+  scope: {
+    note: <span class="hljs-string">'&amp;'</span>
+  }
+}
+</code></pre>
+<p>is the same as</p>
+<pre><code class="lang-javascript">{
+  scope: {},
+  link: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">scope, element, attrs</span>) </span>{
+    <span class="hljs-keyword">var</span> parentGet = $parse(attrs.note);
+
+    scope.note = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">locals</span>) </span>{
+      <span class="hljs-keyword">return</span> parentGet(scope.$parent, locals);
+    };
+  }
+}
+</code></pre>
+<p>it will parse the expression first, then query the parent scope(read-only). You can watch <code>note()</code> so when the parent scope changes, you will get the new output.</p>
+</li>
+<li><p><code>=</code>(two-way binding):</p>
+<p>Changing <code>scope.props</code> then call <code>scope.$apply()</code> will overwrite the variable passed down from the parent scope(can be achieved with  some logic to determine if the propery is changed in <code>$watch</code> and things like <code>$parse(attrs.countable).assign</code> to propagate the changes upward).</p>
+</li>
+</ul>
+<h4 id="templates">Templates</h4>
+<ul>
+<li>Linking functions doesn&#39;t need dependency injection. It has a static, documented parameter list that you can&#39;t change.</li>
+<li>Compiling functions and linking functions don&#39;t necessarily have the same DOM node, so <strong>put your listener regisration code in the post-link functions</strong></li>
+<li>Avoid altering the DOM in compiling functions as possible. Prefer linking functions, specifically, post-linking functions. If inevitable, add contents/nodes in pre-linking functions, then add listeners/bindings in the post-linking functions.</li>
+<li>You can use <code>controller</code> to talk to other directives in the same scope</li>
+<li><code>transclude</code>: kinda like <code>slot</code>s in Web Components. Using <code>ng-transclude</code> in the directive template you can access HTML code that&#39;s passed down by the consumer. Data bindings in that HTML code will respond against the parent&#39;s scope, which is pretty neat :)</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

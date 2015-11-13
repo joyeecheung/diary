@@ -1,0 +1,111 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>November 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>November 11, 2015</h1></header><div class="content"><div class="diary"><h2 id="css">CSS</h2>
+<h3 id="pure-css-popover">Pure CSS popover</h3>
+<ol>
+<li><p>Make a wrapper, an anchor, a popover</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"wrapper"</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"anchor"</span>&gt;</span>Anchor<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"popover"</span>&gt;</span>This is a popover<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+</code></pre>
+</li>
+<li><p>The wrapper should be <code>position: relative</code> so the popover can be <code>position: absolute</code> and be taken out from the normal flow</p>
+<pre><code class="lang-css"><span class="hljs-class">.wrapper</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> relative</span></span>;
+}</span>
+
+<span class="hljs-class">.popover</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">z-index</span>:<span class="hljs-value"> <span class="hljs-number">1000</span></span></span>;  <span class="hljs-comment">/* should be on top of the content */</span>
+}</span>
+</code></pre>
+</li>
+<li><p>Add some style to the popover, notably the <code>box-shadow</code></p>
+<pre><code class="lang-css"><span class="hljs-class">.popover</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">14px</span> <span class="hljs-number">20px</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-number">3px</span></span></span>;
+
+ <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value"> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">6px</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>)</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> white</span></span>;
+}</span>
+</code></pre>
+</li>
+<li><p>Make a little triangle for the popover:</p>
+<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.popover</span>:<span class="hljs-value">after {
+ <span class="hljs-comment">/* give it a size */</span>
+ content: <span class="hljs-string">" "</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
+
+ <span class="hljs-comment">/* We don't use border to make a triangle here,
+    because thay we won't be able to make a triangular shadow */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">rotate</span>(<span class="hljs-number">45deg</span>)</span></span>;
+ <span class="hljs-comment">/* The x- and y-offset
+    1. must be the same
+    2. must be negative
+    3. must be no smaller than the blur radius
+    so the shadow can point upwards without giving a tell.
+
+   Note the color of the shadow should be lighter
+   because it will be a little dense
+   since we don't have much room for it */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value"> -<span class="hljs-number">3px</span> -<span class="hljs-number">3px</span> <span class="hljs-number">2px</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>)</span></span>;
+
+ <span class="hljs-comment">/* Place it before the whole popover */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+ <span class="hljs-comment">/* This should be half of the width/height
+    so only the triangular half will show up */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> -<span class="hljs-number">7px</span></span></span>;
+
+ <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> white</span></span>;
+}
+</code></pre>
+</li>
+<li><p>For some animation:</p>
+<pre><code class="lang-css"><span class="hljs-class">.popover</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">translateY</span>(<span class="hljs-number">0px</span>)</span></span>;  <span class="hljs-comment">/* so it can slide down later */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">transition</span>:<span class="hljs-value"> all <span class="hljs-number">0.2s</span> ease</span></span>;
+}</span>
+</code></pre>
+</li>
+<li><p>By default the popover should be invisible:</p>
+<pre><code class="lang-css"><span class="hljs-class">.popover</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">pointer-events</span>:<span class="hljs-value"> none</span></span>;  <span class="hljs-comment">/* so it won't react to the pointer */</span>
+}</span>
+</code></pre>
+</li>
+<li><p>Now, use the <code>:hover</code> pseudo-class to make the popover show when the anchor is hovered. Note the dimension of the <code>.wrapper</code> doesn&#39;t include this popover because it&#39;s <code>position: absolute</code></p>
+<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.wrapper</span>:<span class="hljs-value">hover .popover {
+ transform: <span class="hljs-function">translateY</span>(<span class="hljs-number">10px</span>)</span></span>;  <span class="hljs-comment">/* slide down a bit */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">pointer-events</span>:<span class="hljs-value"> auto</span></span>;
+}
+</code></pre>
+</li>
+<li><p>Finally, to avoid the flicker(appearing when the use move the mouse to the space between the anchor and the popover content), make a transparent area to catch the mouse:</p>
+<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.popover</span>:<span class="hljs-value">before {
+ content: <span class="hljs-string">" "</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;   <span class="hljs-comment">/* same width as the popover */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;  <span class="hljs-comment">/* same height as the triangle */</span>
+ <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
+
+ <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> -<span class="hljs-number">14px</span></span></span>;  <span class="hljs-comment">/* same as its height, to fill the whole gap */</span>
+}
+</code></pre>
+</li>
+</ol>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
