@@ -1,0 +1,72 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 2, 2015</h1></header><div class="content"><div class="diary"><h2 id="compiler">Compiler</h2>
+<h3 id="-building-a-simple-jit-in-rust-http-www-jonathanturner-org-2015-12-building-a-simple-jit-in-rust-html-"><a href="http://www.jonathanturner.org/2015/12/building-a-simple-jit-in-rust.html">Building a simple JIT in Rust</a></h3>
+<ul>
+<li>Allocate aligned memory</li>
+<li>Enable execution</li>
+<li>Just to be safe, fill it with RET(0xc3)</li>
+<li>Rust-specific<ul>
+<li><code>transmute</code> the memory from <code>void *</code> to <code>mut *u8</code></li>
+<li>Add indexing functions</li>
+</ul>
+</li>
+<li>Use an assembler to convert your instructions into raw hex, then write it into the executable memory</li>
+<li>Rust-specific<ul>
+<li><code>transmute</code> the executable memory to a function</li>
+<li>Call this function</li>
+</ul>
+</li>
+</ul>
+<h4 id="debugging">Debugging</h4>
+<ul>
+<li>Use LLDB</li>
+<li>Set a breakpoint on the line calling the JIT code</li>
+<li>Run the program, read the memory behind the function</li>
+<li>Look if the raw hex is correctly written. You can use the disassembler.</li>
+</ul>
+<p>So...this is like...shell code?</p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="-why-is-one-loop-so-much-slower-than-two-loops-http-stackoverflow-com-questions-8547778-why-is-one-loop-so-much-slower-than-two-loops-"><a href="http://stackoverflow.com/questions/8547778/why-is-one-loop-so-much-slower-than-two-loops">Why is one loop so much slower than two loops?</a></h3>
+<ul>
+<li>Alignment &amp; false aliasing</li>
+<li>Cache bank conflicts</li>
+<li>L1 &lt;-&gt; L2 cache bandwidth(when the data doesn&#39;t fit in L1 cache)</li>
+<li>Separating the operation in two loops makes the stride in memory smaller, so it would be much easier for the processor cache to keep up with the memory demand, and make correct predictions</li>
+<li><a href="http://stackoverflow.com/questions/16699247/what-is-cache-friendly-code">What is “cache-friendly” code?</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Loop_tiling">Loop tiling</a></li>
+</ul>
+<h3 id="-performance-of-breaking-apart-one-loop-into-two-loops-http-stackoverflow-com-questions-9634754-performance-of-breaking-apart-one-loop-into-two-loops-"><a href="http://stackoverflow.com/questions/9634754/performance-of-breaking-apart-one-loop-into-two-loops">Performance of breaking apart one loop into two loops</a></h3>
+<ul>
+<li>Cons: If your data doesn&#39;t fint into the L1 cache, you will have to reload it in the second loop</li>
+<li>Cons: more generated code</li>
+<li>2x branch prediction</li>
+<li>Pro: reduce register/stack pressure</li>
+<li>Pro: smaller memory stride</li>
+<li>Pro: if the code in the loop will trash the L1 cache anyway...</li>
+</ul>
+<h3 id="-c-c-tip-how-to-loop-through-multi-dimensional-arrays-quickly-http-nadeausoftware-com-articles-2012-06-c_c_tip_how_loop_through_multi_dimensional_arrays_quickly-"><a href="http://nadeausoftware.com/articles/2012/06/c_c_tip_how_loop_through_multi_dimensional_arrays_quickly">C/C++ tip: How to loop through multi-dimensional arrays quickly</a></h3>
+<blockquote>
+<p>High-performance code instead implements a multi-dimensional array as a single linear array with hand-authored array indexing math to keep track of what values are where</p>
+</blockquote>
+<pre><code>value = data[ i <span class="hljs-keyword">*</span> height <span class="hljs-keyword">*</span> depth + j <span class="hljs-keyword">*</span> depth + k ];
+</code></pre><blockquote>
+<p>Since the array is a single large chunk of memory, sweeping through it from start-to-finish creates a regular access pattern that processor prefetchers easily recognize, which enables them to load caches in the background. The result is fewer cache misses and much better performance.</p>
+</blockquote>
+<h4 id="classic-case-matrix-multiplication">Classic case: matrix multiplication</h4>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=IFWgwGMMrh0">Visualization: matrix multiply with cache blocking</a></li>
+<li><a href="https://software.intel.com/en-us/articles/how-to-use-loop-blocking-to-optimize-memory-use-on-32-bit-intel-architecture">How to Use Loop Blocking to Optimize Memory Use on 32-Bit Intel® Architecture</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Loop_nest_optimization">Loop nest optimization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Loop_interchange">Loop interchange</a></li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 3, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 3, 2015</h1></header><div class="content"><div class="diary"><h2 id="vue">Vue</h2>
+<h3 id="treegrid-prototype-">Treegrid(prototype)</h3>
+<p>Based on the example on the offical site. Used flexbox for grid layout, added some sliding effect.</p>
+<pre><code class="lang-css"><span class="hljs-tag">body</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">font-family</span>:<span class="hljs-value"> Menlo, Consolas, monospace</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#444</span></span></span>;
+}</span>
+<span class="hljs-class">.item</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">cursor</span>:<span class="hljs-value"> pointer</span></span>;
+}</span>
+<span class="hljs-class">.bold</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> bold</span></span>;
+}</span>
+<span class="hljs-tag">ul</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">line-height</span>:<span class="hljs-value"> <span class="hljs-number">1.5em</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">list-style-type</span>:<span class="hljs-value"> none</span></span>;
+  <span class="hljs-comment">/*padding-left: 10px;*/</span>
+  <span class="hljs-rule"><span class="hljs-attribute">padding-left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+}</span>
+
+<span class="hljs-id">#demo</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-left</span>:<span class="hljs-value"> <span class="hljs-number">1px</span> solid <span class="hljs-hexcolor">#ddd</span></span></span>;
+}</span>
+
+<span class="hljs-class">.tree-node</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">transition</span>:<span class="hljs-value"> all .<span class="hljs-number">2s</span> ease-in-out</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">scaleY</span>(<span class="hljs-number">1</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transform-origin</span>:<span class="hljs-value"> top</span></span>;
+}</span>
+<span class="hljs-class">.tree-node-enter</span>, <span class="hljs-class">.tree-node-leave</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">scaleY</span>(<span class="hljs-number">0</span>)</span></span>;
+}</span>
+
+<span class="hljs-class">.row</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-sizing</span>:<span class="hljs-value"> border-box</span></span>;
+}</span>
+
+<span class="hljs-rule"><span class="hljs-attribute">.row</span>:<span class="hljs-value">hover {
+  background-color: <span class="hljs-hexcolor">#ddd</span></span></span>;
+}
+
+<span class="hljs-class">.row</span> <span class="hljs-tag">span</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-right</span>:<span class="hljs-value"> <span class="hljs-number">1px</span> solid <span class="hljs-hexcolor">#ddd</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">5px</span></span></span>;
+}</span>
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text/x-template"</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"item-template"</span>&gt;</span><span class="handlebars"><span class="xml">
+  <span class="hljs-tag">&lt;<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span>
+      <span class="hljs-attribute">:class</span>=<span class="hljs-value">"{bold: isFolder, row: true, open: open}"</span>
+      @<span class="hljs-attribute">click</span>=<span class="hljs-value">"toggle"</span>
+      @<span class="hljs-attribute">dblclick</span>=<span class="hljs-value">"changeType"</span>
+      <span class="hljs-attribute">:style</span>=<span class="hljs-value">" {paddingLeft: depth * 10 + 'px'}"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"name"</span>&gt;</span> </span><span class="hljs-expression">{{<span class="hljs-variable">model.name</span>}}</span><span class="xml"> <span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"length"</span>&gt;</span> </span><span class="hljs-expression">{{<span class="hljs-variable">model.children</span> ? <span class="hljs-variable">model.children.length</span> : 0}}</span><span class="xml"> <span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"fold"</span>&gt;</span>[</span><span class="hljs-expression">{{<span class="hljs-variable">open</span> ? '<span class="hljs-variable">-</span>' : '+'}}</span><span class="xml">]<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">ul</span> <span class="hljs-attribute">v-show</span>=<span class="hljs-value">"open"</span> <span class="hljs-attribute">v-if</span>=<span class="hljs-value">"isFolder"</span> <span class="hljs-attribute">transition</span>=<span class="hljs-value">"tree-node"</span> <span class="hljs-attribute">:class</span>=<span class="hljs-value">"{'tree-node': true}"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">item</span>
+        <span class="hljs-attribute">class</span>=<span class="hljs-value">"item"</span>
+        <span class="hljs-attribute">v-for</span>=<span class="hljs-value">"model in model.children"</span>
+        <span class="hljs-attribute">:model</span>=<span class="hljs-value">"model"</span>
+        <span class="hljs-attribute">:depth</span>=<span class="hljs-value">"depth+1"</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-title">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+</span></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>(You can double click on an item to turn it into a folder.)<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- the demo root element --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">ul</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"demo"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">item</span>
+    <span class="hljs-attribute">class</span>=<span class="hljs-value">"item"</span>
+    <span class="hljs-attribute">:model</span>=<span class="hljs-value">"treeData"</span>
+    <span class="hljs-attribute">:depth</span>=<span class="hljs-value">"0"</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">item</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-comment">// define the item component</span>
+Vue.component(<span class="hljs-string">'item'</span>, {
+  template: <span class="hljs-string">'#item-template'</span>,
+  props: {
+    model: <span class="hljs-built_in">Object</span>,
+    depth: <span class="hljs-built_in">Number</span>
+  },
+  data: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> {
+      open: <span class="hljs-literal">false</span>
+    }
+  },
+  computed: {
+    isFolder: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.model.children &amp;&amp;
+        <span class="hljs-keyword">this</span>.model.children.length
+    }
+  },
+  methods: {
+    toggle: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isFolder) {
+        <span class="hljs-keyword">this</span>.open = !<span class="hljs-keyword">this</span>.open
+      }
+    },
+    changeType: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isFolder) {
+        Vue.set(<span class="hljs-keyword">this</span>.model, <span class="hljs-string">'children'</span>, [])
+        <span class="hljs-keyword">this</span>.addChild()
+        <span class="hljs-keyword">this</span>.open = <span class="hljs-literal">true</span>
+      }
+    }
+  }
+})
+
+<span class="hljs-comment">// boot up the demo</span>
+<span class="hljs-keyword">var</span> demo = <span class="hljs-keyword">new</span> Vue({
+  el: <span class="hljs-string">'#demo'</span>,
+  data: {
+    treeData: data
+  }
+})
+</code></pre>
+<h2 id="node-js">Node.js</h2>
+<p>Seems Node inspector doesn&#39;t work very well with streams..? Can&#39;t trace the bug yet.</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
