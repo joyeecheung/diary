@@ -1,0 +1,172 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 13, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 13, 2015</h1></header><div class="content"><div class="diary"><h2 id="database">Database</h2>
+<h3 id="-the-architecture-of-sqlite-http-www-sqlite-org-arch-html-"><a href="http://www.sqlite.org/arch.html">The Architecture Of SQLite</a></h3>
+<h4 id="core">Core</h4>
+<ul>
+<li>There is a code generator and a VM</li>
+<li>The code generator has C files corresponding to different operators</li>
+<li>The VM has a stack for intermediate storage</li>
+<li>Each instruction has an opcode and up to 3 operands</li>
+</ul>
+<h4 id="backend">Backend</h4>
+<ul>
+<li>Disk files are maintained with B-trees</li>
+<li>Each table and index corresponds to a B-tree</li>
+<li>One gigantic file to store all B-trees</li>
+<li>Has a page cache, each page is default to 1024B</li>
+<li>The B-tree driver calls the pager</li>
+<li>The pager handles all the details(rollback, atomic commit, locking)</li>
+<li>Has an abstraction layer for portability across OS</li>
+</ul>
+<h3 id="-http-blogs-msdn-com-b-wesdyer-archive-2008-01-11-the-marvels-of-monads-aspx-"><a href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx"></a></h3>
+<p>Monads are a triple consisting of a type, a <code>Unit</code> function, and a <code>Bind</code> function that satisfy left identity, right identity, and associativity.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// takes an amplified value, Promise&lt;U&gt;(wrapping U), and a function that takes U and return a Promise&lt;V&gt;</span>
+<span class="hljs-built_in">Promise</span>&lt;V&gt; then&lt;U, V&gt;(<span class="hljs-keyword">this</span> <span class="hljs-built_in">Promise</span>&lt;U&gt; promise, <span class="hljs-built_in">Function</span>&lt;U, <span class="hljs-built_in">Promise</span>&lt;V&gt;&gt; onFullfilled)
+
+<span class="hljs-comment">// the body</span>
+U value = <span class="hljs-keyword">this</span>.getValue();  <span class="hljs-comment">// how to unamplify the value?</span>
+<span class="hljs-built_in">Promise</span>&lt;V&gt; promise = onFullFilled(value);
+<span class="hljs-keyword">return</span> promise
+
+<span class="hljs-comment">// takes a T, returns a Promise&lt;T&gt;</span>
+<span class="hljs-built_in">Promise</span>&lt;T&gt; resolve&lt;T&gt;(T value);
+
+<span class="hljs-comment">// Left identity</span>
+resolve(e).then(onFullfilled) = onFullfilled(e)
+<span class="hljs-comment">// Right identity</span>
+promise.then(resolve) = promise
+<span class="hljs-comment">// Associativity</span>
+<span class="hljs-comment">// both onFullfilled and onFullfilled2 return promises</span>
+promise.then(x =&gt; onFullfilled(x).then(y =&gt; onFullfilled2(y)))
+= promise.then(x =&gt; onFullfilled(x)).then(y =&gt; onFullfilled2(y))
+
+then(promise, x =&gt; then(onFullfilled(x), y =&gt; onFullfilled2(y)))
+then(then(promise, x =&gt; onFullfilled(x)), y =&gt; onFullfilled2(y))
+</code></pre>
+<p>C# 3.0 introduced query comprehensions which are actually monad comprehensions in disguise.</p>
+<h4 id="identity-monad">Identity Monad</h4>
+<pre><code class="lang-javascript"><span class="hljs-comment">// js</span>
+resolve(<span class="hljs-number">5</span>).then(
+            x =&gt; resolve(<span class="hljs-number">6</span>).then(
+                y =&gt; resolve(x + y));
+<span class="hljs-comment">// LINQ</span>
+<span class="hljs-number">5.</span>ToIdentity().SelectMany(
+            x =&gt; <span class="hljs-number">6.</span>ToIdentity().SelectMany(
+                y =&gt; (x + y).ToIdentity()));
+</code></pre>
+<p>Though LINQ has a version of <code>SelectMany</code> with a delegate that combines <code>Bind</code> and <code>Unit</code>(better performance, less nested lambdas).</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Identity&lt;V&gt; SelectMany&lt;T, U, V&gt;(<span class="hljs-keyword">this</span> Identity&lt;T&gt; id, Func&lt;T, Identity&lt;U&gt;&gt; k, Func&lt;T,U,V&gt; s)
+{
+    <span class="hljs-keyword">return</span> id.SelectMany(x =&gt; k(x).SelectMany(y =&gt; s(x, y).ToIdentity()));
+}
+<span class="hljs-comment">// or, for Identity monad</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Identity&lt;V&gt; SelectMany&lt;T, U, V&gt;(<span class="hljs-keyword">this</span> Identity&lt;T&gt; id, Func&lt;T, Identity&lt;U&gt;&gt; k, Func&lt;T,U,V&gt; s)
+{
+    <span class="hljs-keyword">return</span> s(id.Value, k(id.Value).Value).ToIdentity();
+}
+<span class="hljs-comment">// call site</span>
+<span class="hljs-keyword">var</span> r = <span class="hljs-number">5.</span>ToIdentity()
+         .SelectMany(x =&gt; <span class="hljs-number">6.</span>ToIdentity(), (x, y) =&gt; x + y);
+<span class="hljs-comment">// use C#'s query comprehension syntax</span>
+<span class="hljs-keyword">var</span> r = <span class="hljs-keyword">from</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">5.</span>ToIdentity()
+        <span class="hljs-keyword">from</span> y <span class="hljs-keyword">in</span> <span class="hljs-number">6.</span>ToIdentity()
+        <span class="hljs-keyword">select</span> x + y;
+</code></pre>
+<h4 id="maybe-monad">Maybe monad</h4>
+<pre><code class="lang-csharp"><span class="hljs-keyword">class</span> <span class="hljs-title">Maybe</span>&lt;<span class="hljs-title">T</span>&gt;
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> <span class="hljs-keyword">static</span> Maybe&lt;T&gt; Nothing = <span class="hljs-keyword">new</span> Maybe&lt;T&gt;();
+    <span class="hljs-keyword">public</span> T Value { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">private</span> <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">bool</span> HasValue { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">private</span> <span class="hljs-keyword">set</span>; }
+    Maybe()
+    {
+        HasValue = <span class="hljs-keyword">false</span>;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Maybe</span>(<span class="hljs-params">T <span class="hljs-keyword">value</span></span>)
+    </span>{
+        Value = <span class="hljs-keyword">value</span>;
+        HasValue = <span class="hljs-keyword">true</span>;
+    }
+}
+
+<span class="hljs-comment">// unit</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Maybe&lt;T&gt; ToMaybe&lt;T&gt;(<span class="hljs-keyword">this</span> T <span class="hljs-keyword">value</span>)
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Maybe&lt;T&gt;(<span class="hljs-keyword">value</span>);
+}
+
+<span class="hljs-comment">// bind</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Maybe&lt;U&gt; SelectMany&lt;T, U&gt;(<span class="hljs-keyword">this</span> Maybe&lt;T&gt; m, Func&lt;T, Maybe&lt;U&gt;&gt; k)
+{
+    <span class="hljs-keyword">if</span> (!m.HasValue)
+        <span class="hljs-keyword">return</span> Maybe&lt;U&gt;.Nothing;
+    <span class="hljs-keyword">return</span> k(m.Value);
+}
+
+<span class="hljs-comment">// we effective implemented the null propagation of nullable</span>
+<span class="hljs-keyword">var</span> r = <span class="hljs-keyword">from</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">5.</span>ToMaybe()
+        <span class="hljs-keyword">from</span> y <span class="hljs-keyword">in</span> Maybe&lt;<span class="hljs-keyword">int</span>&gt;.Nothing
+        <span class="hljs-keyword">select</span> x + y;
+
+r.HasValue == <span class="hljs-keyword">false</span>;
+</code></pre>
+<h4 id="list-monad">List monad</h4>
+<pre><code class="lang-csharp"><span class="hljs-comment">// IEnumerable&lt;T&gt; denotes a lazily computed list.</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IEnumerable&lt;T&gt; ToList&lt;T&gt;(<span class="hljs-keyword">this</span> T <span class="hljs-keyword">value</span>)
+{
+    <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">value</span>;
+}
+
+<span class="hljs-comment">// combination</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IEnumerable&lt;U&gt; SelectMany&lt;T, U&gt;(<span class="hljs-keyword">this</span> IEnumerable&lt;T&gt; m, Func&lt;T, IEnumerable&lt;U&gt;&gt; k)
+{
+    <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> x <span class="hljs-keyword">in</span> m)
+        <span class="hljs-keyword">foreach</span> (<span class="hljs-function"><span class="hljs-keyword">var</span> y <span class="hljs-keyword">in</span> <span class="hljs-title">k</span>(<span class="hljs-params">x</span>))
+            <span class="hljs-keyword">yield</span> return y</span>;
+}
+
+<span class="hljs-comment">// call site</span>
+<span class="hljs-keyword">var</span> r = <span class="hljs-keyword">from</span> x <span class="hljs-keyword">in</span> <span class="hljs-keyword">new</span>[] { <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> }
+        <span class="hljs-keyword">from</span> y <span class="hljs-keyword">in</span> <span class="hljs-keyword">new</span>[] { <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> }
+        <span class="hljs-keyword">select</span> x + y;
+<span class="hljs-comment">// equivalent to</span>
+(<span class="hljs-keyword">new</span>[] { <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> }).toList().selectMany(
+  x =&gt; <span class="hljs-keyword">new</span>[] { <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> }.toList().selectMany(
+    y =&gt; x + y));
+</code></pre>
+<h4 id="continuation-monad">Continuation monad</h4>
+<pre><code class="lang-csharp"><span class="hljs-comment">// doesn't contain any thing, just composes contiunations together</span>
+<span class="hljs-comment">// when given a continuation, which takes an argument and returns an answer, will return an answer</span>
+<span class="hljs-keyword">delegate</span> Answer K&lt;T,Answer&gt;(Func&lt;T,Answer&gt; k);
+
+<span class="hljs-comment">// Unit</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> K&lt;T, Answer&gt; ToContinuation&lt;T, Answer&gt;(<span class="hljs-keyword">this</span> T <span class="hljs-keyword">value</span>) {
+  <span class="hljs-keyword">return</span> (Func&lt;T, Answer&gt; c) =&gt; c(<span class="hljs-keyword">value</span>);  <span class="hljs-comment">// continuation</span>
+}
+
+<span class="hljs-comment">// Bind</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> K&lt;U, Answer&gt; SelectMany&lt;T, U, Answer&gt;(<span class="hljs-keyword">this</span> K&lt;T, Answer&gt; m, Func&lt;T, K&lt;U, Answer&gt;&gt; k) {
+  <span class="hljs-keyword">return</span> (Func&lt;U,Answer&gt; c) =&gt; m((T x) =&gt; k(x)(c));
+}
+
+<span class="hljs-comment">// call site</span>
+<span class="hljs-keyword">var</span> r = <span class="hljs-keyword">from</span> x <span class="hljs-keyword">in</span> <span class="hljs-number">7.</span>ToContinuation&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">string</span>&gt;()
+        <span class="hljs-keyword">from</span> y <span class="hljs-keyword">in</span> <span class="hljs-number">6.</span>ToContinuation&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">string</span>&gt;()
+        <span class="hljs-keyword">select</span> x + y;
+<span class="hljs-comment">// equivalent to</span>
+(<span class="hljs-number">7.</span>ToContinuation&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">string</span>&gt;().selectMany(
+  x =&gt; <span class="hljs-number">6.</span>ToContinuation&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">string</span>&gt;().selectMany(
+    y =&gt; x + y));
+r(z =&gt; z.ToString().Replace(<span class="hljs-string">'1'</span>, <span class="hljs-string">'a'</span>)); <span class="hljs-comment">// a3</span>
+</code></pre>
+</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
