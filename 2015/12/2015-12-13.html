@@ -28,7 +28,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>The pager handles all the details(rollback, atomic commit, locking)</li>
 <li>Has an abstraction layer for portability across OS</li>
 </ul>
-<h3 id="-http-blogs-msdn-com-b-wesdyer-archive-2008-01-11-the-marvels-of-monads-aspx-"><a href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx"></a></h3>
+<h3 id="-the-marvels-of-monads-http-blogs-msdn-com-b-wesdyer-archive-2008-01-11-the-marvels-of-monads-aspx-"><a href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx">The Marvels of Monads</a></h3>
 <p>Monads are a triple consisting of a type, a <code>Unit</code> function, and a <code>Bind</code> function that satisfy left identity, right identity, and associativity.</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// takes an amplified value, Promise&lt;U&gt;(wrapping U), and a function that takes U and return a Promise&lt;V&gt;</span>
 <span class="hljs-built_in">Promise</span>&lt;V&gt; then&lt;U, V&gt;(<span class="hljs-keyword">this</span> <span class="hljs-built_in">Promise</span>&lt;U&gt; promise, <span class="hljs-built_in">Function</span>&lt;U, <span class="hljs-built_in">Promise</span>&lt;V&gt;&gt; onFullfilled)
