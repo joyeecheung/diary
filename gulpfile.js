@@ -16,6 +16,14 @@ var moment = require('moment');
 var config = require('./config')
 var submodule = config.repo.as_submodule;
 
+var filePromise = ls(submodule).then(function(files) {
+  var firstAndLast = getFirstAndLastFile(files);
+  return {
+    first: firstAndLast[0],
+    last: firstAndLast[1]
+  };
+});
+
 // --------------------------------
 // JavaScript packing
 // --------------------------------
@@ -26,10 +34,11 @@ function packjs(entry, dest, debug) {
   var config = require(webpackConfigPath);
   var p = require(webpackPluginsPath);
 
-  if (debug)
+  if (debug) {
     config.plugins = [p.sourcemap, p.common, p.ignoreLocale];
-  else
+  } else {
     config.plugins = [p.uglify, p.common, p.ignoreLocale]
+  }
 
   return gulp.src(entry)
     .pipe(webpack(config))
@@ -81,23 +90,18 @@ function getFirstAndLastFile(files) {
     return path.basename(file).split('.')[0];  // strip out dir names
   }).filter(function(file) {  // filter out articles
     return /\d{4}-\d{2}-\d{2}/.test(file);
-  }).sort(); // lexical order = chronological order for ISO Date 
+  }).sort(); // lexical order = chronological order for ISO Date
 
   return [sorted[0], sorted[sorted.length - 1]];
 }
 
 gulp.task('index', function() {
   return gulp.src('./src/jade/index.jade')
-    .pipe(plugins.data(function(file) {
-      // get the last file
-      return ls(submodule).then(function(files) {
-        var firstAndLast = getFirstAndLastFile(files);
-        return _.assign({}, config, {
-          first: firstAndLast[0],
-          last: firstAndLast[1]
-        });
-      });
-    })).pipe(plugins.jade()).pipe(gulp.dest('./dist/'))
+    .pipe(plugins.data(filePromise.then(function(data) {
+        return _.assign({}, config, data);
+      })))
+    .pipe(plugins.jade())
+    .pipe(gulp.dest('./dist/'))
     .pipe(plugins.livereload());
 });
 
@@ -165,7 +169,7 @@ gulp.task('build-debug', ['js-debug','markup', 'css-debug']);
 gulp.task('build', ['js','markup', 'css']);
 
 // ------------------------
-//  Launch server 
+//  Launch server
 // ------------------------
 function serve(done) {
   http.createServer(
