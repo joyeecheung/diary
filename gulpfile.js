@@ -33,15 +33,28 @@ function getFirstAndLastFile(files) {
 
 let filePromise = ls(submodule).then(getFirstAndLastFile);
 
+const srcPath = {
+  webpackConfig: './webpack.config.js',
+  webpackPlugins: './webpack.plugins.config.js',
+  script: './src/scripts/',
+  style: './src/styles/',
+  template: './src/templates/'
+};
+
+const destPath = {
+  style: './dist/styles/',
+  script: './dist/scripts/',
+  base: './dist/'
+};
+
 // --------------------------------
 // JavaScript packing
 // --------------------------------
-const webpackConfigPath = './webpack.config.js';
-const webpackPluginsPath = './webpack.plugins.config.js';
+
 
 function packjs(entry, dest, debug) {
-  let webpackConfig = require(webpackConfigPath);
-  let p = require(webpackPluginsPath);
+  let webpackConfig = require(srcPath.webpackConfig);
+  let p = require(srcPath.webpackPlugins);
 
   if (debug) {
     webpackConfig.plugins = [p.sourcemap, p.common, p.ignoreLocale];
@@ -55,24 +68,24 @@ function packjs(entry, dest, debug) {
     .pipe(plugins.livereload());
 }
 
-gulp.task('js', () => packjs("./src/js/index.js", './dist/js/'));
-gulp.task('js-debug', () => packjs("./src/js/index.js", './dist/js/', true));
+gulp.task('js', () => packjs(srcPath.script + 'index.js', destPath.script));
+gulp.task('js-debug', () => packjs(srcPath.script + 'index.js', destPath.script, true));
 
 // --------------------------------
 // PostCSS
 // --------------------------------
 function compileCSS(debug) {
   let theme = gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
-    .pipe(gulp.dest('./dist/css/'))
+    .pipe(gulp.dest(destPath.style))
 
   let processors = [require('cssnext')(), require('cssnano')()];
 
-  let css = gulp.src('./src/css/**/*.css')
+  let css = gulp.src(srcPath.style + '**/*.css')
     .pipe(plugins.debug())
     .pipe(plugins.if(debug, plugins.sourcemaps.init()))
     .pipe(plugins.postcss(processors))
     .pipe(plugins.if(debug, plugins.sourcemaps.write()))
-    .pipe(gulp.dest('./dist/css/'))
+    .pipe(gulp.dest(destPath.style))
     .pipe(plugins.livereload());
 
   return merge(theme, css);
@@ -86,10 +99,10 @@ gulp.task('css-debug', () => compileCSS(true));
 // --------------------------------
 
 gulp.task('index', function() {
-  return gulp.src('./src/jade/index.jade')
+  return gulp.src(srcPath.template + 'index.jade')
     .pipe(plugins.data(filePromise.then(data => _.assign({}, config, data))))
     .pipe(plugins.jade())
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest(destPath.base))
     .pipe(plugins.livereload());
 });
 
@@ -108,17 +121,17 @@ function layoutDiary(file) {
 
   if (!date.isValid()) {
     return _.assign({}, config, {
-      layout: './src/jade/layout/plain-layout.jade',
+      layout: srcPath.template + 'layout/plain-layout.jade',
       title: name
     });
   } else if (name.length > 7) {   // full date
     return _.assign({}, config, {
-      layout: './src/jade/layout/diary-layout.jade',
+      layout: srcPath.template + 'layout/diary-layout.jade',
       title: date.format('MMMM D, YYYY')
     });
   } else {  // month summary
     return _.assign({}, config, {
-      layout: './src/jade/layout/month-layout.jade',
+      layout: srcPath.template + 'layout/month-layout.jade',
       title: date.format('MMMM, YYYY')
     });
   }
@@ -127,11 +140,11 @@ function layoutDiary(file) {
 function generateDiary(layout) {
   return gulp.src(submodule + '/**/*.md')
     .pipe(plugins.if(!layout,
-      plugins.changed('./dist/', {extension: '.html'})))
+      plugins.changed(destPath.base, {extension: '.html'})))
     .pipe(plugins.debug())
     .pipe(plugins.markdown({ highlight: highlightCode }))
     .pipe(plugins.layout(layoutDiary))
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest(destPath.base))
     .pipe(plugins.livereload());
 }
 
@@ -142,12 +155,13 @@ gulp.task('relayout', ['index'], () => generateDiary(true));
 //  Watch
 // ------------------------
 gulp.task('watch', ['server'], function() {
-  plugins.livereload.listen({ basePath: 'dist' });
+  plugins.livereload.listen({ basePath: destPath.base });
   gulp.watch(['./' + submodule + '/**/*.md'], ['markup']);
-  gulp.watch(['./src/jade/index.jade'], ['index']);
-  gulp.watch(['./src/jade/layout/*.jade'], ['relayout']);
-  gulp.watch('./src/css/**/*.css', ['css']);
-  gulp.watch([ 'webpack.config.js', './src/js/**/*.js'], ['js-debug']);
+  gulp.watch([srcPath.template + 'index.jade'], ['index']);
+  gulp.watch([srcPath.template + 'layout/*.jade'], ['relayout']);
+  gulp.watch(srcPath.style + '**/*.css', ['css']);
+  gulp.watch([srcPath.webpackConfig, srcPath.webpackPlugins,
+              srcPath.script + '**/*.js'], ['js-debug']);
 });
 
 gulp.task('build-debug', ['js-debug','markup', 'css-debug']);
@@ -159,11 +173,11 @@ gulp.task('build', ['js','markup', 'css']);
 function serve(done) {
   http.createServer(
     st({
-      path: __dirname + '/dist',
+      path: destPath.base,
       url: '/diary',
       index: 'index.html',
-      cache: false }
-    )
+      cache: false
+    })
   ).listen(8000, done);
   console.log('Server listening on http://localhost:8000/diary/');
 }
@@ -175,7 +189,7 @@ gulp.task('preview', ['build'], serve);
 //  Deploy
 // ------------------------
 gulp.task('deploy', ['build'], function() {
-  return gulp.src('./dist/**/*')
+  return gulp.src(destPath.base + '**/*')
     .pipe(plugins.ghPages());
 });
 
