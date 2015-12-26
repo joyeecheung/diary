@@ -1,5 +1,10 @@
 @import "variables.css";
 
+.header {
+  background: #26292b; /* Old browsers */
+  color: white;
+}
+
 .index {
   position: fixed;
   right: 10%;
@@ -31,6 +36,9 @@
 .diary {
   max-width: 40rem;
   margin: 3rem auto;
+  word-spacing: 0.04rem;
+  letter-spacing: -0.01rem;
+  line-height: 1.5;
 }
 
 .diary a {
@@ -60,19 +68,18 @@
 .diary h4,
 .diary h5 {
   font-family: var(--headFont);
-  /*text-align: center;*/
   font-weight: normal;
 }
 
 .diary h2 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   margin-top: 2rem;
   margin-bottom: 1.5rem;
   border-bottom: var(--lightBorder);
 }
 
 .diary h3 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin-top: 3rem;
   margin-bottom: 1.5rem;
 }
@@ -80,11 +87,8 @@
 .diary h4 {
   font-size: 1.2rem;
   margin-top: 2.5rem;
+  color: var(--headingColor);
   margin-bottom: 0.7rem;
-}
-
-.diary p {
-  line-height: 1.8;
 }
 
 .diary li p {
@@ -98,7 +102,7 @@
 
 .diary li {
   margin: 0.5rem 0;
-  line-height: 1.8;
+  line-height: 1.5;
 }
 
 .diary blockquote, .diary pre {
