@@ -2,6 +2,8 @@
 
 Reads diaries written in markdown from a git submodule, and generates a static site for it. ([Demo](http://joyeecheung.github.io/diary/))
 
+Requires Node 4.x and above.
+
 ## About the repos
 
 The markdown files for the diaries can be kept under another repo named `YYYY/MM/DDDD.md`([Example](https://github.com/joyeecheung/my-tech-diary)).

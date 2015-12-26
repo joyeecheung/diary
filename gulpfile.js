@@ -1,69 +1,73 @@
-var path = require('path');
-var http = require('http');
-var st = require('st');
-var fs = require('fs');
+'use strict';
 
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var merge = require('merge-stream');
+const path = require('path');
+const http = require('http');
+const st = require('st');
+const fs = require('fs');
 
-var webpack = require('webpack-stream');
-var Promise = require('bluebird');
-var ls = Promise.promisify(require('node-dir').files);
-var _ = require('lodash');
-var moment = require('moment');
+const gulp = require('gulp');
+const plugins = require('gulp-load-plugins')();
+const merge = require('merge-stream');
 
-var config = require('./config')
-var submodule = config.repo.as_submodule;
+const webpack = require('webpack-stream');
+const Promise = require('bluebird');
+const ls = Promise.promisify(require('node-dir').files);
+const _ = require('lodash');
+const moment = require('moment');
 
-var filePromise = ls(submodule).then(function(files) {
-  var firstAndLast = getFirstAndLastFile(files);
+const config = require('./config')
+const submodule = config.repo.as_submodule;
+const highlight = require('highlight.js');
+
+function getFirstAndLastFile(files) {
+  let sorted = files
+    .map(file => path.basename(file).split('.')[0]) // strip out dir names
+    .filter(file => /\d{4}-\d{2}-\d{2}/.test(file))  // filter out articles
+    .sort(); // lexical order = chronological order for ISO Date
+
   return {
-    first: firstAndLast[0],
-    last: firstAndLast[1]
+    first: sorted[0],
+    last: sorted[sorted.length - 1]
   };
-});
+}
+
+let filePromise = ls(submodule).then(getFirstAndLastFile);
 
 // --------------------------------
 // JavaScript packing
 // --------------------------------
-var webpackConfigPath = './webpack.config.js';
-var webpackPluginsPath = './webpack.plugins.config.js';
+const webpackConfigPath = './webpack.config.js';
+const webpackPluginsPath = './webpack.plugins.config.js';
 
 function packjs(entry, dest, debug) {
-  var config = require(webpackConfigPath);
-  var p = require(webpackPluginsPath);
+  let webpackConfig = require(webpackConfigPath);
+  let p = require(webpackPluginsPath);
 
   if (debug) {
-    config.plugins = [p.sourcemap, p.common, p.ignoreLocale];
+    webpackConfig.plugins = [p.sourcemap, p.common, p.ignoreLocale];
   } else {
-    config.plugins = [p.uglify, p.common, p.ignoreLocale]
+    webpackConfig.plugins = [p.uglify, p.common, p.ignoreLocale]
   }
 
   return gulp.src(entry)
-    .pipe(webpack(config))
+    .pipe(webpack(webpackConfig))
     .pipe(gulp.dest(dest))
     .pipe(plugins.livereload());
 }
 
-gulp.task('js', function () {
-  return packjs("./src/js/index.js", './dist/js/');
-});
-
-gulp.task('js-debug', function () {
-  return packjs("./src/js/index.js", './dist/js/', true);
-});
+gulp.task('js', () => packjs("./src/js/index.js", './dist/js/'));
+gulp.task('js-debug', () => packjs("./src/js/index.js", './dist/js/', true));
 
 // --------------------------------
 // PostCSS
 // --------------------------------
 function compileCSS(debug) {
-  var theme = gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
+  let theme = gulp.src('./node_modules/highlight.js/styles/tomorrow.css')
     .pipe(gulp.dest('./dist/css/'))
 
-  var processors = [require('cssnext')(), require('cssnano')()];
+  let processors = [require('cssnext')(), require('cssnano')()];
 
-  var css = gulp.src('./src/css/**/*.css')
+  let css = gulp.src('./src/css/**/*.css')
     .pipe(plugins.debug())
     .pipe(plugins.if(debug, plugins.sourcemaps.init()))
     .pipe(plugins.postcss(processors))
@@ -74,32 +78,16 @@ function compileCSS(debug) {
   return merge(theme, css);
 }
 
-gulp.task('css-debug', function () {
-  return compileCSS(true);
-});
-
-gulp.task('css', function () {
-  return compileCSS();
-});
+gulp.task('css', () => compileCSS());
+gulp.task('css-debug', () => compileCSS(true));
 
 // --------------------------------
 // Generate markup
 // --------------------------------
-function getFirstAndLastFile(files) {
-  var sorted = files.map(function(file) {
-    return path.basename(file).split('.')[0];  // strip out dir names
-  }).filter(function(file) {  // filter out articles
-    return /\d{4}-\d{2}-\d{2}/.test(file);
-  }).sort(); // lexical order = chronological order for ISO Date
-
-  return [sorted[0], sorted[sorted.length - 1]];
-}
 
 gulp.task('index', function() {
   return gulp.src('./src/jade/index.jade')
-    .pipe(plugins.data(filePromise.then(function(data) {
-        return _.assign({}, config, data);
-      })))
+    .pipe(plugins.data(filePromise.then(data => _.assign({}, config, data))))
     .pipe(plugins.jade())
     .pipe(gulp.dest('./dist/'))
     .pipe(plugins.livereload());
@@ -107,31 +95,33 @@ gulp.task('index', function() {
 
 function highlightCode(code, lang) {
   if (lang) {
-    return require('highlight.js').highlight(lang, code, true).value;
+    return highlight.highlight(lang, code, true).value;
   } else {
-    return require('highlight.js').highlightAuto(code).value;
+    return highlight.highlightAuto(code).value;
   }
 }
 
 function layoutDiary(file) {
-  var name = path.basename(file.path)
+  let name = path.basename(file.path)
                  .replace(path.extname(file.path), '');
-  var date = moment(new Date(name));
-
-  var locals = _.assign({}, config);
-  locals.data_lang = 'en';
+  let date = moment(new Date(name));
 
   if (!date.isValid()) {
-    locals.layout = './src/jade/layout/plain-layout.jade';
-    locals.title = name;
+    return _.assign({}, config, {
+      layout: './src/jade/layout/plain-layout.jade',
+      title: name
+    });
   } else if (name.length > 7) {   // full date
-    locals.layout = './src/jade/layout/diary-layout.jade';
-    locals.title = date.format('MMMM D, YYYY');
+    return _.assign({}, config, {
+      layout: './src/jade/layout/diary-layout.jade',
+      title: date.format('MMMM D, YYYY')
+    });
   } else {  // month summary
-    locals.layout = './src/jade/layout/month-layout.jade';
-    locals.title = date.format('MMMM, YYYY');
+    return _.assign({}, config, {
+      layout: './src/jade/layout/month-layout.jade',
+      title: date.format('MMMM, YYYY')
+    });
   }
-  return locals;
 }
 
 function generateDiary(layout) {
@@ -145,13 +135,8 @@ function generateDiary(layout) {
     .pipe(plugins.livereload());
 }
 
-gulp.task('markup', ['index'], function() {
-  return generateDiary();
-});
-
-gulp.task('relayout', ['index'], function() {
-  return generateDiary(true);
-});
+gulp.task('markup', ['index'], () => generateDiary());
+gulp.task('relayout', ['index'], () => generateDiary(true));
 
 // ------------------------
 //  Watch
