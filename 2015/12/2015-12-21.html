@@ -1,0 +1,137 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 21, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 21, 2015</h1></header><div class="content"><div class="diary"><h3 id="-the-inner-workings-of-the-chakra-javascript-engine-steve-lucco-https-www-youtube-com-watch-v-ousoywj_lsi-"><a href="https://www.youtube.com/watch?v=ouSoyWj_lSI">The Inner Workings of the Chakra Javascript Engine • Steve Lucco</a></h3>
+<h4 id="design-principles">Design principles</h4>
+<ul>
+<li>Security</li>
+<li>ECMAScript Compliance</li>
+<li>Balanced Performance<ul>
+<li>Throughput, load time, battery consumption</li>
+</ul>
+</li>
+<li>Transparency - predictable performance for common patterns</li>
+</ul>
+<h4 id="jit-security">JIT Security</h4>
+<ul>
+<li>JIT spray</li>
+<li>Data Execution Protection<ul>
+<li>Do cryptographic check, turn write permission off, then turn execution permission on - to make sure the code that gets executed is exactly what the JIT compiler emmited.</li>
+<li>Then you can&#39;t just write types like V8 in polymorphic inline caches, because you don&#39;t have that write permission</li>
+</ul>
+</li>
+<li>Codebase alignment randomization<ul>
+<li>Make it harder to guess offsets</li>
+</ul>
+</li>
+<li>Random NOP insertion</li>
+<li>Constant Blinding</li>
+<li>JIT code allocation cap</li>
+<li>JIT Page randomization</li>
+</ul>
+<h4 id="compliance">Compliance</h4>
+<ul>
+<li>Jan 6th, 2010, turned Chakra as the default engine in IE9</li>
+<li>4000 tests from compatibility tests for corporate apps to Acid3</li>
+<li>ES6 let and const requires synchronous error report<ul>
+<li>Hard to work with deferred parsing</li>
+<li>Specification go against performance</li>
+</ul>
+</li>
+</ul>
+<h4 id="page-load-app-startup">Page load &amp; App startup</h4>
+<ul>
+<li>Use interpreter to start ASAP</li>
+<li>Defrred parsing for unused code</li>
+<li>Start-up profile caching - remember which functions were called<ul>
+<li>No additional info, just say where the hotspot is</li>
+</ul>
+</li>
+<li>Background code generation and garbage collection</li>
+<li><strong>Page load do not fall into generational hypothesis(most objects die young)</strong> because you are setting up things that won&#39;t be destroyed any time soon</li>
+<li>Concurrent GC so the page load won&#39;t be blocked</li>
+</ul>
+<h4 id="gc">GC</h4>
+<ul>
+<li>Conservative - works better with native code<ul>
+<li>Can handle object pointers on the native stack, so no additional scope checking, .etc, just look at the stack</li>
+<li>Tagged intergers lead to very low rate (0.02 per GC) of spurious object references</li>
+<li>Guest heap/Guest arena</li>
+</ul>
+</li>
+<li>Generational<ul>
+<li>Partial collections, no seperate nursery space</li>
+</ul>
+</li>
+<li>Mark and Sweep<ul>
+<li>No compaction/evacuation at that time, not worth the effort, need to run across more pages and cache lines</li>
+<li>Small objecs sorted by size into buckets for low fragmentation</li>
+<li>Free-list and bump allocation</li>
+</ul>
+</li>
+<li>They don&#39;t do a lot of things because they don&#39;t necesarily need it -- you need an app which is important enough to prove that you need this feature to make it run faster</li>
+<li>Apps over benchmarks</li>
+</ul>
+<h4 id="faster-property-access-in-ie10">Faster property access in IE10</h4>
+<ul>
+<li>Object type specialization</li>
+<li>Polymorphic property caches</li>
+<li>Field hoisting<ul>
+<li>If you frequently access a property in a loop, they will put it outside of the loop</li>
+<li>Hoist type checking</li>
+</ul>
+</li>
+<li>Copy propagation</li>
+<li>Streamlined object layout</li>
+<li>Function inlining</li>
+</ul>
+<h4 id="windows-store-applications">Windows Store Applications</h4>
+<ul>
+<li>Bytecode Caching(ha..)<ul>
+<li>Improve load time</li>
+</ul>
+</li>
+<li>GC on Idle/Suspend</li>
+<li>Fast marshaling to native code<ul>
+<li>Native calling conventions, native exception handling</li>
+<li>Easier to implement debuggint tools</li>
+<li>Generation and caching method entry point based on meta-data</li>
+</ul>
+</li>
+</ul>
+<h4 id="roadmap">Roadmap</h4>
+<ul>
+<li>Throughput<ul>
+<li>Array operations, typed arrays</li>
+<li>Polymorphism and function inlining</li>
+</ul>
+</li>
+<li>Standards<ul>
+<li>ES6 features, ES5 accessor performance</li>
+</ul>
+</li>
+<li>Improve GC for games and long-running applications<ul>
+<li>Precise pointers</li>
+<li>Iterate between sequential and concurrent phases</li>
+</ul>
+</li>
+</ul>
+<h4 id="faq">FAQ</h4>
+<ul>
+<li>About Node<ul>
+<li>Chakra is not cross-platform</li>
+<li>There are customers using it on the server side</li>
+<li>Can run 12,000 script contexts with isolation in a process</li>
+<li>The desicion to make the implementation close to the native code benefit server-side applications</li>
+</ul>
+</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

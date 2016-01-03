@@ -3,7 +3,7 @@
 <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en">
-<!--<![endif]--><head><meta charset="utf-8"><title>July 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!--<![endif]--><head><meta charset="utf-8"><title>July 1, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
@@ -276,26 +276,26 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </ul>
 </li>
 </ul>
-<pre><code>int dx = xb - xa,
+<pre><code><span class="hljs-keyword">int</span> dx = xb - xa,
     dy = yb - ya,
     steps;
 
-float incx, incy;  <span class="hljs-comment">// increment</span>
-float x = xa, y = ya;  <span class="hljs-comment">// current</span>
+<span class="hljs-keyword">float</span> incx, incy;  <span class="hljs-comment">// increment</span>
+<span class="hljs-keyword">float</span> x = xa, y = ya;  <span class="hljs-comment">// current</span>
 
 <span class="hljs-comment">// m &gt; 1?</span>
-<span class="hljs-keyword">if</span> <span class="hljs-params">(abs<span class="hljs-params">(dx)</span> &gt; abs<span class="hljs-params">(dy)</span>)</span>
-  steps = <span class="hljs-built_in">abs</span><span class="hljs-params">(dx)</span>;
+<span class="hljs-keyword">if</span> (<span class="hljs-built_in">abs</span>(dx) &gt; <span class="hljs-built_in">abs</span>(dy))
+  steps = <span class="hljs-built_in">abs</span>(dx);
 <span class="hljs-keyword">else</span>
-  steps = <span class="hljs-built_in">abs</span><span class="hljs-params">(dy)</span>;
+  steps = <span class="hljs-built_in">abs</span>(dy);
 
-incx = dx / <span class="hljs-params">(float)</span>steps;  <span class="hljs-comment">// 1 or 1/m</span>
-incy = dy / <span class="hljs-params">(float)</span> steps;  / m or <span class="hljs-number">1</span>
+incx = dx / (<span class="hljs-keyword">float</span>)steps;  <span class="hljs-comment">// 1 or 1/m</span>
+incy = dy / (<span class="hljs-keyword">float</span>) steps;  / m or <span class="hljs-number">1</span>
 
-setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, round<span class="hljs-params">(y)</span>)</span>; <span class="hljs-comment">// start</span>
-<span class="hljs-keyword">for</span> <span class="hljs-params">(int i = <span class="hljs-number">0</span>; i &lt; steps; ++i)</span> {
+setPixel(<span class="hljs-built_in">round</span>(x), <span class="hljs-built_in">round</span>(y)); <span class="hljs-comment">// start</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; steps; ++i) {
   x += incx; y += incy;
-  setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, round<span class="hljs-params">(y)</span>)</span>;
+  setPixel(<span class="hljs-built_in">round</span>(x), <span class="hljs-built_in">round</span>(y));
 }
 </code></pre><h3 id="bresenham">Bresenham</h3>
 <h4 id="consider-distance-and-choose-between-two-points">Consider distance and choose between two points</h4>
@@ -315,25 +315,25 @@ setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, ro
 </ul>
 </li>
 </ul>
-<pre><code>line<span class="hljs-params">(x1, y1, x2, y2)</span> {
-  int x = x1, y = y1,
+<pre><code>line(x1, y1, x2, y2) {
+  <span class="hljs-keyword">int</span> x = x1, y = y1,
       dx = x2 - x1,
       dy = y2 - y1,
-      p = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> dy - dx,
-      de = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> dy  <span class="hljs-comment">// step for right</span>
-      dne = <span class="hljs-number">2</span> <span class="hljs-built_in">*</span> <span class="hljs-params">(dy - dx)</span>;  <span class="hljs-comment">// step for top-right</span>
+      p = <span class="hljs-number">2</span> * dy - dx,
+      de = <span class="hljs-number">2</span> * dy  <span class="hljs-comment">// step for right</span>
+      dne = <span class="hljs-number">2</span> * (dy - dx);  <span class="hljs-comment">// step for top-right</span>
 
-  setPixel<span class="hljs-params">(x, y)</span>;  <span class="hljs-comment">// start</span>
+  setPixel(x, y);  <span class="hljs-comment">// start</span>
 
-  while<span class="hljs-params">(x &lt; x2)</span> {
-    <span class="hljs-keyword">if</span> <span class="hljs-params">(p &lt; <span class="hljs-number">0</span>)</span> {
+  <span class="hljs-keyword">while</span>(x &lt; x2) {
+    <span class="hljs-keyword">if</span> (p &lt; <span class="hljs-number">0</span>) {
       x += <span class="hljs-number">1</span>;  <span class="hljs-comment">// right</span>
       p += de;  <span class="hljs-comment">// update</span>
     } <span class="hljs-keyword">else</span> {
       x += <span class="hljs-number">1</span>; y += <span class="hljs-number">1</span>;  <span class="hljs-comment">// top right</span>
       p += dne;  <span class="hljs-comment">// update</span>
     }
-    setPixel<span class="hljs-params">(x, y)</span>; <span class="hljs-comment">// draw this new pixel</span>
+    setPixel(x, y); <span class="hljs-comment">// draw this new pixel</span>
   }
 }
 </code></pre><h3 id="flood-fill">Flood fill</h3>
@@ -342,13 +342,13 @@ setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, ro
 <li>Multiple checks</li>
 <li>Double the memory to store visited flags</li>
 </ul>
-<pre><code>floodFill<span class="hljs-params">(Polygon p, int x, int y)</span> {
-  <span class="hljs-keyword">if</span> <span class="hljs-params">(!p.onBoundary<span class="hljs-params">(x, y)</span> &amp;&amp; !p.colored<span class="hljs-params">(x, y)</span>)</span> {
-    setPixel<span class="hljs-params">(x, y)</span>;
-    floodFill<span class="hljs-params">(p, x+<span class="hljs-number">1</span>, y)</span>;  <span class="hljs-comment">// right</span>
-    floodFill<span class="hljs-params">(p, x, y+<span class="hljs-number">1</span>)</span>;  <span class="hljs-comment">// down</span>
-    floodFill<span class="hljs-params">(p, x, y-<span class="hljs-number">1</span>)</span>;  <span class="hljs-comment">// top</span>
-    floodFill<span class="hljs-params">(p, x-<span class="hljs-number">1</span>, y)</span>;  <span class="hljs-comment">// left</span>
+<pre><code>floodFill<span class="hljs-comment">(Polygon p, int x, int y)</span> {
+  <span class="hljs-keyword">if</span> <span class="hljs-comment">(!p.onBoundary(x, y)</span> &amp;&amp; !p.colored<span class="hljs-comment">(x, y)</span>) {
+    setPixel<span class="hljs-comment">(x, y)</span>;
+    floodFill<span class="hljs-comment">(p, x+1, y)</span>;  <span class="hljs-comment">// right</span>
+    floodFill<span class="hljs-comment">(p, x, y+1)</span>;  <span class="hljs-comment">// down</span>
+    floodFill<span class="hljs-comment">(p, x, y-1)</span>;  <span class="hljs-comment">// top</span>
+    floodFill<span class="hljs-comment">(p, x-1, y)</span>;  <span class="hljs-comment">// left</span>
   }
 }
 </code></pre><h3 id="scan-line">Scan line</h3>
@@ -375,13 +375,13 @@ setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, ro
 </li>
 </ul>
 <h4 id="edge-walking-trapezoid">Edge walking: trapezoid</h4>
-<pre><code>scanTrapezoid<span class="hljs-params">(xL, xR, yB, yT, dxL, dxR)</span> {
+<pre><code>scanTrapezoid(xL, xR, yB, yT, dxL, dxR) {
   <span class="hljs-comment">// xL, xR: x for left/right foot</span>
   <span class="hljs-comment">// yB, yT: y for bottom/top edge</span>
   <span class="hljs-comment">// dxL, dxR: slope for left/right edge</span>
-  <span class="hljs-keyword">for</span> <span class="hljs-params">(y: yB...yT)</span> {
-    <span class="hljs-keyword">for</span> <span class="hljs-params">(x: xL...xR)</span> {  <span class="hljs-comment">// line</span>
-      setPixel<span class="hljs-params">(x, y)</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-string">y:</span> yB...yT) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-string">x:</span> xL...xR) {  <span class="hljs-comment">// line</span>
+      setPixel(x, y);
     }
     xL += dxL; xR+= dxR; <span class="hljs-comment">// update x</span>
   }
@@ -410,4 +410,4 @@ setPixel<span class="hljs-params">(round<span class="hljs-params">(x)</span>, ro
 <li>Boundary: min and max of x and y of vertices for the triangle</li>
 <li>Traverse every pixels in the box, lit anyone inside the triangle</li>
 </ul>
-</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

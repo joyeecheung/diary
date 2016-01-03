@@ -3,7 +3,7 @@
 <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en">
-<!--<![endif]--><head><meta charset="utf-8"><title>July 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!--<![endif]--><head><meta charset="utf-8"><title>July 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
@@ -22,7 +22,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 <p>(Why <code>_strdup_</code>? Apparently VS has <code>_strdup</code>...WTF?)</p>
 <p>glm only handles simple materials(with no images), but it is really easy to use:</p>
-<pre><code class="lang-cpp">GLMmodel* model_obj = NULL;
+<pre><code class="lang-cpp">GLMmodel* model_obj = <span class="hljs-literal">NULL</span>;
 <span class="hljs-function">GLuint <span class="hljs-title">loadObjIntoList</span><span class="hljs-params">(<span class="hljs-keyword">char</span> * modelfile)</span> </span>{
     <span class="hljs-comment">// release and read</span>
     <span class="hljs-keyword">if</span> (model_obj) glmDelete(model_obj);
@@ -55,8 +55,8 @@ chooser.filter(<span class="hljs-string">"Wavefront OBJ\t*.obj\n"</span>);
 
 <span class="hljs-comment">// Show native chooser</span>
 <span class="hljs-keyword">switch</span> (chooser.show()) {
-   <span class="hljs-keyword">case</span> -<span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">"ERROR: %s\n"</span>, chooser.errmsg()); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// ERROR</span>
-   <span class="hljs-keyword">case</span>  <span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">"*** CANCEL\n"</span>); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// CANCEL</span>
+   <span class="hljs-keyword">case</span> -<span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(<span class="hljs-built_in">stderr</span>, <span class="hljs-string">"ERROR: %s\n"</span>, chooser.errmsg()); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// ERROR</span>
+   <span class="hljs-keyword">case</span>  <span class="hljs-number">1</span>: <span class="hljs-built_in">fprintf</span>(<span class="hljs-built_in">stderr</span>, <span class="hljs-string">"*** CANCEL\n"</span>); <span class="hljs-keyword">break</span>;  <span class="hljs-comment">// CANCEL</span>
    <span class="hljs-keyword">default</span>: <span class="hljs-comment">// PICKED FILE</span>
        <span class="hljs-keyword">if</span> (chooser.filename()) {
            <span class="hljs-keyword">char</span> buffer[<span class="hljs-number">2048</span>] = { <span class="hljs-number">0</span> };
@@ -69,14 +69,14 @@ chooser.filter(<span class="hljs-string">"Wavefront OBJ\t*.obj\n"</span>);
 </code></pre>
 </li>
 <li><p>To use glut with fltk, you need to use the freeglut that comes bundled inside fltk! It&#39;s pretty up-to-date though.</p>
-<pre><code class="lang-cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/gl.h&gt;</span>
-<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/glu.h&gt;</span>
-<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> &lt;FL/glut.h&gt;</span>
+<pre><code class="lang-cpp"><span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;FL/gl.h&gt;</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;FL/glu.h&gt;</span></span>
+<span class="hljs-preprocessor">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;FL/glut.h&gt;</span></span>
 </code></pre>
 </li>
 <li><p>To initialize a window:</p>
 <pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *argv[])</span> </span>{
- <span class="hljs-function">Fl_Window <span class="hljs-title">win</span><span class="hljs-params">(WIDTH, HEIGHT + MENU_HEIGHT, "OBJ Viwer")</span></span>;
+ <span class="hljs-function">Fl_Window <span class="hljs-title">win</span><span class="hljs-params">(WIDTH, HEIGHT + MENU_HEIGHT, <span class="hljs-string">"OBJ Viwer"</span>)</span></span>;
  <span class="hljs-comment">// Setup some widgets...</span>
 
  win.show(argc, argv);  <span class="hljs-comment">// things passed down from main</span>
@@ -98,4 +98,4 @@ chooser.filter(<span class="hljs-string">"Wavefront OBJ\t*.obj\n"</span>);
 </code></pre>
 </li>
 </ol>
-</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

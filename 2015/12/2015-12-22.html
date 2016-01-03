@@ -1,0 +1,111 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>December 22, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>December 22, 2015</h1></header><div class="content"><div class="diary"><h3 id="-the-evolution-of-flux-frameworks-https-medium-com-dan_abramov-the-evolution-of-flux-frameworks-6c16ad26bb31-u0mbv4juz-"><a href="https://medium.com/@dan_abramov/the-evolution-of-flux-frameworks-6c16ad26bb31#.u0mbv4juz">The Evolution of Flux Frameworks</a></h3>
+<ul>
+<li>Reducing the boilerplate of Flux is often a <strong>tradeoff</strong></li>
+<li>Actions as plain objects flowing through a central dispatcher -&gt; record and replay actions for debugging</li>
+<li>Actions type constants explicitly specified -&gt; easier to do static checking e.g. with flowing</li>
+</ul>
+<h4 id="evolution-action-creators-returns-the-dispatched-action">Evolution: Action creators returns the dispatched action</h4>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Before</span>
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addTodo</span>(<span class="hljs-params">text</span>) </span>{
+  AppDispatcher.dispatch({
+    type: ActionTypes.ADD_TODO,
+    text: text
+  });
+}
+
+<span class="hljs-comment">// after</span>
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addTodo</span>(<span class="hljs-params">text</span>) </span>{
+  <span class="hljs-keyword">return</span> {
+    type: ActionTypes.ADD_TODO,
+    text: text
+  };
+}
+</code></pre>
+<ul>
+<li>If you want to have it isomorphic, you&#39;ll have to wrap them and bind them to a dispatcher anyway</li>
+<li>This decouples the actions from the dispatcher -- the dispatcher is an <strong>implentation detail</strong>. IoC is important in Flux.</li>
+</ul>
+<p>Async actions:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addTodo</span>(<span class="hljs-params">text</span>) </span>{
+  <span class="hljs-comment">// dispatch is now a parameter</span>
+  <span class="hljs-keyword">return</span> dispatch =&gt; ({
+    dispatch({
+      type: ActionTypes.ADD_TODO,
+      text: text
+    });
+
+    API.addTodo(text).then(
+      () =&gt; dispatch({
+        type: ActionTypes.ADD_TODO_SUCCESS,
+        text: text
+      }),
+      () =&gt; dispatch({
+        type: ActionTypes.ADD_TODO_FAILURE,
+        text: text
+      })
+    );
+  });
+}
+</code></pre>
+<h4 id="evolution-making-the-stores-stateless">Evolution: making the Stores stateless</h4>
+<ul>
+<li>Stores are there to <strong>manage the states</strong>, not <strong>own the states</strong></li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-comment">// before</span>
+<span class="hljs-keyword">let</span> _todos = [];  <span class="hljs-comment">// mutable</span>
+
+<span class="hljs-comment">// inherit eventemitter</span>
+<span class="hljs-keyword">const</span> TodoStore = <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">new</span> EventEmitter(), {
+  getTodos() {
+    <span class="hljs-keyword">return</span> _todos;
+  }
+});
+
+AppDispatcher.register(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">action</span>) </span>{
+  <span class="hljs-keyword">switch</span> (action.type) {
+  <span class="hljs-keyword">case</span> ActionTypes.ADD_TODO:
+    _todos = _todos.concat([action.text]);
+    TodoStore.emitChange();
+    <span class="hljs-keyword">break</span>;
+  }
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> TodoStore;
+
+<span class="hljs-comment">// after</span>
+<span class="hljs-keyword">const</span> initialState = { todos: [] }; <span class="hljs-comment">// immutable</span>
+
+<span class="hljs-comment">// less boilerplate</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">TodoStore</span>(<span class="hljs-params">state = initialState, action</span>) </span>{
+  <span class="hljs-keyword">switch</span> (action.type) {
+  <span class="hljs-keyword">case</span> ActionTypes.ADD_TODO:
+    <span class="hljs-comment">// new state</span>
+    <span class="hljs-keyword">return</span> { todos: state.todos.concat([action.text]) };
+  <span class="hljs-keyword">default</span>:
+    <span class="hljs-keyword">return</span> state;
+}
+</code></pre>
+<ul>
+<li>The states can be held in a single big tree, but it would be an <strong>implementation detail</strong> of the dispatcher</li>
+</ul>
+<h4 id="benefits">Benefits</h4>
+<ul>
+<li>Now that stores and actions are just pure functions, you can <strong>test them in isolation</strong></li>
+<li>Hot reloading</li>
+<li>Easy transactions -- easier to build devtools, time-travelling</li>
+<li>No <code>waitFor</code> now, since it&#39;s the responsibility of the dispatcher to emit changes</li>
+<li>The dispatcher may also expose cursor-like functionality</li>
+<li>Declarative</li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

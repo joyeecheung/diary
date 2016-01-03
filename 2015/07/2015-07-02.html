@@ -3,7 +3,7 @@
 <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en">
-<!--<![endif]--><head><meta charset="utf-8"><title>July 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!--<![endif]--><head><meta charset="utf-8"><title>July 2, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
@@ -83,9 +83,9 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>P = [x, y, z, 1]T, P&#39; = [x&#39;, y&#39;, z&#39;, 1], d = [dx, dy, dz, 0]</li>
 <li>Simply [x+dx, y+dy, z+dz, 1]</li>
 <li><p>The matrix</p>
-<pre><code><span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">dx</span>
-<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-pseudo">dy</span>
-<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-pseudo">dz</span>
+<pre><code><span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> dx
+<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> dy
+<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> dz
 <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>
 </code></pre></li>
 </ul>
@@ -98,20 +98,20 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre><h4 id="around-z-axis-z-coordinate-unchanged-">Around z-axis(z coordinate unchanged)</h4>
 <p>Same as 2d, add two more identity</p>
 <p>Notice the third column/row.</p>
-<pre><code><span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span> -<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>
-<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+<pre><code><span class="hljs-built_in">cos</span>(theta) -<span class="hljs-built_in">sin</span>(theta) <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+<span class="hljs-built_in">sin</span>(theta) <span class="hljs-built_in">cos</span>(theta)  <span class="hljs-number">0</span> <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">1</span> <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">0</span> <span class="hljs-number">1</span>
 </code></pre><h4 id="around-x-or-y-axis-x-or-y-coordinate-unchanged-">Around x or y-axis(x or y coordinate unchanged)</h4>
 <p>X: notice the first column/row</p>
 <pre><code><span class="hljs-number">1</span> <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">0</span>
-<span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span> -<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span>
-<span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+<span class="hljs-number">0</span> <span class="hljs-built_in">cos</span>(theta) -<span class="hljs-built_in">sin</span>(theta) <span class="hljs-number">0</span>
+<span class="hljs-number">0</span> <span class="hljs-built_in">sin</span>(theta) <span class="hljs-built_in">cos</span>(theta)  <span class="hljs-number">0</span>
 <span class="hljs-number">0</span> <span class="hljs-number">0</span>          <span class="hljs-number">0</span>           <span class="hljs-number">1</span>
 </code></pre><p>Y: notice the second column/row, and the signs</p>
-<pre><code><span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+<pre><code><span class="hljs-built_in">cos</span>(theta)  <span class="hljs-number">0</span> <span class="hljs-built_in">sin</span>(theta)  <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>           <span class="hljs-number">1</span> <span class="hljs-number">0</span>           <span class="hljs-number">0</span>
--<span class="hljs-function"><span class="hljs-title">sin</span><span class="hljs-params">(theta)</span></span> <span class="hljs-number">0</span> <span class="hljs-function"><span class="hljs-title">cos</span><span class="hljs-params">(theta)</span></span>  <span class="hljs-number">0</span>
+-<span class="hljs-built_in">sin</span>(theta) <span class="hljs-number">0</span> <span class="hljs-built_in">cos</span>(theta)  <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>           <span class="hljs-number">0</span> <span class="hljs-number">0</span>           <span class="hljs-number">1</span>
 </code></pre><h4 id="around-some-general-axis-through-the-origin">Around some general axis through the origin</h4>
 <ul>
@@ -129,7 +129,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <p>To rotate something around its center, translate it so that the center is at the origin, then rotate it, then translate it back</p>
 <h3 id="non-rigid-body-transformation">Non-rigid Body Transformation</h3>
 <h4 id="scaling">Scaling</h4>
-<pre><code><span class="hljs-title">sx</span> <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
+<pre><code>sx <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>  sy <span class="hljs-number">0</span>  <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  sz <span class="hljs-number">0</span>
 <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>
@@ -222,27 +222,27 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </ul>
 </li>
 </ul>
-<pre><code>|<span class="hljs-string">rx ry rz 0</span>|<span class="hljs-string">1 0 0 -eyex</span>|<span class="hljs-string">   </span>|<span class="hljs-string">rx ry rz -r.vrp</span>|<span class="hljs-string">(u)
-</span>|<span class="hljs-string">ux uy uz 0</span>|<span class="hljs-string">0 1 0 -eyey</span>|<span class="hljs-string">   </span>|<span class="hljs-string">ux uy uz -u.vrp</span>|<span class="hljs-string">(v)
-</span>|<span class="hljs-string">ax ay az 0</span>|<span class="hljs-string">0 0 1 -eyez</span>|<span class="hljs-string">  =</span>|<span class="hljs-string">ax ay az -a.vrp</span>|<span class="hljs-string">(n)
-</span>|<span class="hljs-string">0  0  0  1</span>|<span class="hljs-string">0 0 0 1    </span>|<span class="hljs-string">   </span>|<span class="hljs-string">0  0  0  1     </span>|
+<pre><code>|rx ry rz <span class="hljs-number">0</span>|<span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> -eyex|   |rx ry rz -r.vrp|(u)
+|ux uy uz <span class="hljs-number">0</span>|<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> -eyey|   |ux uy uz -u.vrp|(v)
+|ax ay az <span class="hljs-number">0</span>|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> -eyez|  =|ax ay az -a.vrp|(n)
+|<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>    |   |<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>     |
 </code></pre><h4 id="view-to-world-transform-matrix">View-to-world transform matrix</h4>
 <p>E = TR</p>
-<pre><code>|<span class="hljs-string">1 0 0 eyex</span>|<span class="hljs-string">rx ux ax 0</span>|<span class="hljs-string">   </span>|<span class="hljs-string">rx ux ax eyex</span>|
-|<span class="hljs-string">0 1 0 eyey</span>|<span class="hljs-string">ry uy ay 0</span>|<span class="hljs-string">   </span>|<span class="hljs-string">ry uy ay eyey</span>|
-|<span class="hljs-string">0 0 1 eyez</span>|<span class="hljs-string">rz uz az 0</span>|<span class="hljs-string">  =</span>|<span class="hljs-string">rz uz az eyez</span>|
-|<span class="hljs-string">0 0 0 1   </span>|<span class="hljs-string">0  0  0  1</span>|<span class="hljs-string">   </span>|<span class="hljs-string">0  0  0  1   </span>|
+<pre><code>|<span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> eyex|rx ux ax <span class="hljs-number">0</span>|   |rx ux ax eyex|
+|<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> eyey|ry uy ay <span class="hljs-number">0</span>|   |ry uy ay eyey|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> eyez|rz uz az <span class="hljs-number">0</span>|  =|rz uz az eyez|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>   |<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>|   |<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>   |
 </code></pre><h3 id="orthognal-projection">Orthognal Projection</h3>
 <ol>
 <li>World-to-view(View orientation matrix)</li>
 <li>Parallel projection(make z=0)</li>
 <li>use u and v</li>
 </ol>
-<pre><code>   (2)       (1)
-|<span class="hljs-string">1 0 0 0</span>|<span class="hljs-string">ux uy uz -ru.vrp</span>|
-|<span class="hljs-string">0 1 0 0</span>|<span class="hljs-string">vx vy vz -rv.vrp</span>|
-|<span class="hljs-string">0 0 0 0</span>|<span class="hljs-string">nx ny nz -rn.vrp</span>|
-|<span class="hljs-string">0 0 0 1</span>|<span class="hljs-string">0  0  0  1      </span>|
+<pre><code>   (<span class="hljs-number">2</span>)       (<span class="hljs-number">1</span>)
+|<span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>|ux uy uz -ru.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>|vx vy vz -rv.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>|nx ny nz -rn.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>|<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>      |
 </code></pre><h3 id="perspective-projection">Perspective Projection</h3>
 <ul>
 <li>prp(in view coordinate) on the axis passing though the center of the view window(on the view plane) and parallel to n</li>
@@ -265,11 +265,11 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 <li>Perspective projection</li>
 <li>2D viewing transform(u and v)</li>
 </ul>
-<pre><code>    (3)       (2)         (1)
-|<span class="hljs-string">1 0 0   0</span>|<span class="hljs-string">1 0 0 -cx</span>|<span class="hljs-string">ux uy uz -ru.vrp</span>|
-|<span class="hljs-string">0 1 0   0</span>|<span class="hljs-string">0 1 0 -cy</span>|<span class="hljs-string">vx vy vz -rv.vrp</span>|
-|<span class="hljs-string">0 0 1   0</span>|<span class="hljs-string">0 0 1  0 </span>|<span class="hljs-string">nx ny nz -rn.vrp</span>|
-|<span class="hljs-string">0 0 1/d 0</span>|<span class="hljs-string">0 0 0  1 </span>|<span class="hljs-string">0  0  0  1      </span>|
+<pre><code>    (<span class="hljs-number">3</span>)       (<span class="hljs-number">2</span>)         (<span class="hljs-number">1</span>)
+|<span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>   <span class="hljs-number">0</span>|<span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> -cx|ux uy uz -ru.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span>   <span class="hljs-number">0</span>|<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> -cy|vx vy vz -rv.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>   <span class="hljs-number">0</span>|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>  <span class="hljs-number">0</span> |nx ny nz -rn.vrp|
+|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span>/d <span class="hljs-number">0</span>|<span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>  <span class="hljs-number">1</span> |<span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>      |
 </code></pre><h3 id="tips">Tips</h3>
 <p>The volume is made finite by specifying the front and back clipping plane</p>
 <h2 id="ch7-clipping">CH7 Clipping</h2>
@@ -584,14 +584,14 @@ For each polygon <span class="hljs-keyword">in</span> the world:
 <li>Geometric Invariant</li>
 </ul>
 <h4 id="de-casteljau">de Casteljau</h4>
-<pre><code>DeCasteljau(P, n, u) <span class="hljs-comment">{
-  for (int i = 0; i &lt;= n; ++i)
+<pre><code>DeCasteljau(P, n, u) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= n; ++i)
     Q[i] = P[i];
-  for (int k = 1; k &lt;=n; ++k)
-    for (int i = 0; i &lt;= n-k; ++i)
-      Q[i] = (1.0 - u) * Q[i] + u * Q[i+1];
-  return Q[0]
-}</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> k = <span class="hljs-number">1</span>; k &lt;=n; ++k)
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= n-k; ++i)
+      Q[i] = (<span class="hljs-number">1.0</span> - u) * Q[i] + u * Q[i+<span class="hljs-number">1</span>];
+  <span class="hljs-keyword">return</span> Q[<span class="hljs-number">0</span>]
+}
 </code></pre><h4 id="disadvantages">Disadvantages</h4>
 <ul>
 <li>Global properrty</li>
@@ -605,4 +605,4 @@ For each polygon <span class="hljs-keyword">in</span> the world:
 <li>Subdivision of surfaces</li>
 <li>Drawback: global property</li>
 </ul>
-</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

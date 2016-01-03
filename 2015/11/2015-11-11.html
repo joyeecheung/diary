@@ -3,7 +3,7 @@
 <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en">
-<!--<![endif]--><head><meta charset="utf-8"><title>November 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/css/global.css"><link rel="stylesheet" href="/diary/css/tomorrow.css"><link rel="stylesheet" href="/diary/css/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!--<![endif]--><head><meta charset="utf-8"><title>November 11, 2015</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
@@ -41,9 +41,9 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Make a little triangle for the popover:</p>
-<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.popover</span>:<span class="hljs-value">after {
+<pre><code class="lang-css"><span class="hljs-class">.popover</span><span class="hljs-pseudo">:after</span> <span class="hljs-rules">{
  <span class="hljs-comment">/* give it a size */</span>
- content: <span class="hljs-string">" "</span></span></span>;
+ <span class="hljs-rule"><span class="hljs-attribute">content</span>:<span class="hljs-value"> <span class="hljs-string">" "</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
@@ -69,7 +69,7 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> -<span class="hljs-number">7px</span></span></span>;
 
  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> white</span></span>;
-}
+}</span>
 </code></pre>
 </li>
 <li><p>For some animation:</p>
@@ -87,16 +87,16 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
 </code></pre>
 </li>
 <li><p>Now, use the <code>:hover</code> pseudo-class to make the popover show when the anchor is hovered. Note the dimension of the <code>.wrapper</code> doesn&#39;t include this popover because it&#39;s <code>position: absolute</code></p>
-<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.wrapper</span>:<span class="hljs-value">hover .popover {
- transform: <span class="hljs-function">translateY</span>(<span class="hljs-number">10px</span>)</span></span>;  <span class="hljs-comment">/* slide down a bit */</span>
+<pre><code class="lang-css"><span class="hljs-class">.wrapper</span><span class="hljs-pseudo">:hover</span> <span class="hljs-class">.popover</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">transform</span>:<span class="hljs-value"> <span class="hljs-function">translateY</span>(<span class="hljs-number">10px</span>)</span></span>;  <span class="hljs-comment">/* slide down a bit */</span>
  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">pointer-events</span>:<span class="hljs-value"> auto</span></span>;
-}
+}</span>
 </code></pre>
 </li>
 <li><p>Finally, to avoid the flicker(appearing when the use move the mouse to the space between the anchor and the popover content), make a transparent area to catch the mouse:</p>
-<pre><code class="lang-css"><span class="hljs-rule"><span class="hljs-attribute">.popover</span>:<span class="hljs-value">before {
- content: <span class="hljs-string">" "</span></span></span>;
+<pre><code class="lang-css"><span class="hljs-class">.popover</span><span class="hljs-pseudo">:before</span> <span class="hljs-rules">{
+ <span class="hljs-rule"><span class="hljs-attribute">content</span>:<span class="hljs-value"> <span class="hljs-string">" "</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">100%</span></span></span>;   <span class="hljs-comment">/* same width as the popover */</span>
  <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;  <span class="hljs-comment">/* same height as the triangle */</span>
  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
@@ -104,8 +104,8 @@ ga('send', 'pageview');</script></head><body><header class="header"><div class="
  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> -<span class="hljs-number">14px</span></span></span>;  <span class="hljs-comment">/* same as its height, to fill the whole gap */</span>
-}
+}</span>
 </code></pre>
 </li>
 </ol>
-</div></div><footer class="footer"><address class="author">Copyright &copy; <a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by <a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
