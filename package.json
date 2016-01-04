@@ -1,6 +1,6 @@
 {
   "name": "diary",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A diary generator that reads diaries written in markdown from a git submodule, and generates a static site for it",
   "main": "gulpfile.js",
   "scripts": {
@@ -33,13 +33,14 @@
     "gulp-markdown": "^1.0.0",
     "gulp-postcss": "^5.1.6",
     "gulp-sourcemaps": "^1.5.2",
+    "gulp-util": "^3.0.7",
     "highlight.js": "^8.8.0",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "merge-stream": "^0.1.7",
     "node-dir": "^0.1.10",
     "st": "^1.0.0",
-    "webpack": "^1.9.11",
+    "webpack": "^1.12.9",
     "webpack-stream": "^2.0.0"
   },
   "dependencies": {
