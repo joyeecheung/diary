@@ -1,0 +1,119 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>January 4, 2016</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>January 4, 2016</h1></header><div class="content"><div class="diary"><h2 id="software-engineering">Software Engineering</h2>
+<h3 id="-the-twelve-factor-application-http-12factor-net-"><a href="http://12factor.net/">The Twelve-Factor Application</a></h3>
+<h4 id="1-one-codebase-tracked-in-revision-control-many-deploys">1. One codebase tracked in revision control, many deploys</h4>
+<ul>
+<li>Deploys: staging, production, etc.</li>
+<li>If there are multiple codebases, it’s not an app – it’s a distributed system</li>
+<li>Multiple apps sharing the same code is a violation of twelve-factor. You should put the shared code in a library that can be managed by a <strong>dependency manager</strong></li>
+</ul>
+<h4 id="2-explicitly-declare-and-isolate-dependencies">2. Explicitly declare and isolate dependencies</h4>
+<ul>
+<li>Do not rely on implicit system-wide packages</li>
+<li>Declare all your dependencies, <strong>completely and exactly, with a manifest</strong></li>
+</ul>
+<h4 id="3-store-config-in-the-environment">3. Store config in the environment</h4>
+<ul>
+<li>Configs are likely to vary between deploys<ul>
+<li>e.g. Resource handles to DB, credentials, hostnames, etc.</li>
+</ul>
+</li>
+<li>Storing config as constants in the code is a violation of the twelve-factor - <strong>config should be strictly separated from the code</strong></li>
+<li>Storing config in a config file that won&#39;t be checked in to the revision controls is still not a good idea, because people can make mistakes, the files could be scattered, and be too language/framework-specific</li>
+<li>A simple check: can the codebase be <strong>open sourced at any moment</strong> without compromising any credentials?</li>
+<li><strong>Stores config in environment variables</strong></li>
+<li>Do not group the env-vars e.g. in <code>production</code>, <code>development</code>, because you might run out of group names when it scales up</li>
+</ul>
+<h4 id="4-treat-backing-services-as-attached-resources">4. Treat backing services as attached resources</h4>
+<ul>
+<li>The code for a twelve-factor app makes no distinction between local and third party services</li>
+<li>The backing services e.g. DB, caching system, mail server, messaging/queuing system, should be accessed via URL or info stored in the <strong>config</strong>.</li>
+<li>Changing the backing service should not trigger any modification to the code</li>
+</ul>
+<h4 id="5-strictly-separate-build-and-run-stages">5. Strictly separate build and run stages</h4>
+<ul>
+<li>The twelve-factor app uses strict separation between the <strong>build, release, and run stages</strong>. It should be impossible to change the code at runtime.</li>
+<li><strong>Build</strong>: from codebase to executable, might fetch dependencies, compile binaries, etc.</li>
+<li><strong>Release</strong>: combine build with config, resulting releases ready to be executed</li>
+<li><strong>Run</strong>: run the app by launching processes</li>
+<li>Every release should always have a unique release ID. Releases can&#39;t be mutated. They can be rollbacked.</li>
+<li>Builds can be complex, and should be initiated when new code is deployed</li>
+<li>Run should be <strong>simple and automatic</strong>(e.g. when the server reboots, when the process crashes)</li>
+</ul>
+<h4 id="6-execute-the-app-as-one-or-more-stateless-processes">6. Execute the app as one or more stateless processes</h4>
+<ul>
+<li>Twelve-factor processes are <strong>stateless and share-nothing</strong></li>
+<li>Any data that needs to persist must be stored in a stateful backing service e.g. a DB</li>
+<li>Never assumes that anything cached in memory or on disk will be available on a future request or job</li>
+<li>Sticky sessions are a violation of twelve-factor(requests from the same visitor to be routed to the <strong>same process</strong>). Use the backing services.</li>
+</ul>
+<h4 id="7-export-services-via-port-binding">7. Export services via port binding</h4>
+<ul>
+<li>The twelve-factor app is <strong>completely self-contained</strong></li>
+<li>Do not rely on runtime injection of a webserver</li>
+<li>In deployment, a routing layer handles routing requests <strong>from a public-facing hostname to the port-bound web processes</strong>.</li>
+<li>This happens in the user space -- in the app&#39;s code</li>
+</ul>
+<h4 id="8-scale-out-via-the-process-model">8. Scale out via the process model</h4>
+<ul>
+<li>In the twelve-factor app, processes are a first class citizen.</li>
+<li>Follow the unix process model for <strong>running service daemons</strong></li>
+<li>Assign each type of work to a process type</li>
+<li>Twelve-factor app processes should <strong>never daemonize or write PID files</strong>. Use tools for anything that requires you to do that.</li>
+</ul>
+<h4 id="9-maximize-robustness-with-fast-startup-and-graceful-shutdown">9. Maximize robustness with fast startup and graceful shutdown</h4>
+<ul>
+<li>The processes should strive to minimize startup time, and shut down gracefully when they receive a SIGTERM signal.</li>
+<li>Steps to <strong>graceful shutdown</strong> in web services<ul>
+<li>Stop listening on the service port (thereby refusing any new requests)</li>
+<li>Allow any current requests to finish</li>
+<li>Then exit</li>
+</ul>
+</li>
+<li>This indicates that HTTP requests are short</li>
+<li>For long-polling, the client should <strong>seamlessly attempt to reconnect</strong> when the connection is lost</li>
+<li>For worker processes, the current job should be <strong>returned to the work queue/the locks on the job should be released</strong></li>
+<li>All jobs are reentrant<ul>
+<li>Wrap the results in <strong>transaction</strong></li>
+<li>Make the operation <strong>idempotent</strong></li>
+</ul>
+</li>
+<li>Processes should also be <strong>robust against sudden death</strong></li>
+</ul>
+<h4 id="10-keep-development-staging-and-production-as-similar-as-possible">10. Keep development, staging, and production as similar as possible</h4>
+<ul>
+<li>Time gap: hours</li>
+<li>Personal gap: The one who write the code deploys the code</li>
+<li>Env gap: The dev and prod environments should be as similar as possible</li>
+<li>Do no rely on adaptors to use different backing services between development and production</li>
+</ul>
+<h4 id="11-treat-logs-as-event-streams">11. Treat logs as event streams</h4>
+<ul>
+<li>A twelve-factor app never concerns itself with routing or storage of its output stream</li>
+<li>The app just write its event stream, unbuffered, to <code>stdout</code></li>
+<li>In developement env, the developer can view this stream</li>
+<li>In staging/production, the streams will be captured and merged by the environment, routed to another desitination for viewing and archival</li>
+</ul>
+<h4 id="12-run-admin-management-tasks-as-one-off-processes">12. Run admin/management tasks as one-off processes</h4>
+<ul>
+<li>What are those processes<ul>
+<li>DB migration</li>
+<li>Console, REPL</li>
+<li>One-time scripts</li>
+</ul>
+</li>
+<li>They should be run in the env where long-running processes run</li>
+<li>They should run against a release</li>
+<li>They must be <strong>shipped with app code to avoid syncrhonization issues</strong></li>
+</ul>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>

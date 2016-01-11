@@ -1,0 +1,73 @@
+<!DOCTYPE html><!--[if lte IE 8]>
+<html lang="en" class="lte-ie8">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]--><head><meta charset="utf-8"><title>January 9, 2016</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/diary/styles/global.css"><link rel="stylesheet" href="/diary/styles/tomorrow.css"><link rel="stylesheet" href="/diary/styles/diary.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63818301-1', 'auto');
+ga('send', 'pageview');</script></head><body><header class="header"><div class="index"><a href="/diary/">Index</a></div><h1>January 9, 2016</h1></header><div class="content"><div class="diary"><h2 id="electron">Electron</h2>
+<h3 id="-singleton-pattern-in-nodejs-is-it-needed-http-stackoverflow-com-questions-13179109-singleton-pattern-in-nodejs-is-it-needed-"><a href="http://stackoverflow.com/questions/13179109/singleton-pattern-in-nodejs-is-it-needed">Singleton pattern in nodejs - is it needed?</a></h3>
+<p>Well..I decided to trust the module cache and <em>pretend</em> what I <code>require</code> is a singleton...</p>
+<h3 id="storage">Storage</h3>
+<p>Use <a href="https://github.com/simonlast/node-persist">node-persist</a> so I can get that familiar LocalStorage API(and Promise support!), but it feels rather shaky IMO(no cuncurrency guarantee, don&#39;t know if it&#39;s safe to init multiple times..) and it doesn&#39;t support those events...</p>
+<h3 id="ui">UI</h3>
+<ul>
+<li>So all things under <code>lib</code>, e.g. the crawler, the event bus, the storage, are encapsulated as Angular services</li>
+<li><p>Implement backward navigation</p>
+<pre><code class="lang-javascript"><span class="hljs-pi">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> remote = <span class="hljs-built_in">require</span>(<span class="hljs-string">'electron'</span>).remote;
+<span class="hljs-keyword">const</span> Menu = remote.Menu;
+<span class="hljs-keyword">const</span> MenuItem = remote.MenuItem;
+
+<span class="hljs-keyword">var</span> menu = <span class="hljs-keyword">new</span> Menu();
+menu.append(<span class="hljs-keyword">new</span> MenuItem({ label: <span class="hljs-string">'back'</span>, click: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> currentWindow = remote.getCurrentWindow();
+  <span class="hljs-keyword">if</span> (currentWindow.webContents.canGoBack()) {
+    currentWindow.webContents.goBack();
+  }
+}}));
+
+<span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'contextmenu'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{
+  e.preventDefault();
+  menu.popup(remote.getCurrentWindow());
+}, <span class="hljs-literal">false</span>);
+</code></pre>
+</li>
+<li><p>It&#39;s a bit difficult to circumvent about <code>templateURL</code> so I just write a little proxy to read the templates with <code>fs.readFileSync</code> and cache them on the fly(something I learned from the source code of another app, but I forgot about its name).</p>
+<pre><code class="lang-javascript"><span class="hljs-pi">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+
+<span class="hljs-keyword">let</span> cache = {};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params">viewPath</span>) </span>{
+  <span class="hljs-keyword">let</span> viewRealPath = path.resolve(__dirname + <span class="hljs-string">'/'</span> + viewPath);
+  <span class="hljs-keyword">if</span> (cache[viewRealPath]) {
+    <span class="hljs-keyword">return</span> cache[viewRealPath];
+  }
+  <span class="hljs-keyword">let</span> file = fs.readFileSync(viewRealPath, <span class="hljs-string">'utf8'</span>);
+  cache[viewRealPath] = file;
+  <span class="hljs-keyword">return</span> file;
+}
+
+<span class="hljs-built_in">module</span>.exports = {
+  __cache: cache,
+  get: get
+};
+</code></pre>
+</li>
+</ul>
+<h3 id="debugging">Debugging</h3>
+<ul>
+<li>For code on the rendering process, just use the built-in devtools</li>
+<li>For code on the main process, try VSC - it&#39;s good.</li>
+</ul>
+<h3 id="eventing">Eventing</h3>
+<p>Because I need to care about transactions, so I implement event tunnels in a really naive way(append hash for transactions to event names).</p>
+</div></div><footer class="footer"><address class="author">Copyright &copy;<a rel="author" href="https://github.com/joyeecheung" class="author-name">Joyee Cheung</a>-<a href="https://github.com/joyeecheung/my-tech-diary" class="source-repo">Source</a></address><p>Generated by<a href="https://github.com/joyeecheung/diary" class="site-repo">Joyee Cheung&#39;s diary generator</a></p></footer></body></html>
