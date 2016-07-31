@@ -27,7 +27,8 @@ function getFirstAndLastFile(files) {
 
   return {
     first: sorted[0],
-    last: sorted[sorted.length - 1]
+    last: sorted[sorted.length - 1],
+    files: sorted.join(','),
   };
 }
 
