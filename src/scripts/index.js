@@ -11,8 +11,10 @@ window.addEventListener('load', function() {
   var picker = new Pikaday({
     onSelect: function(date) {
       var time = moment(date);
-      window.location.href += time.format('YYYY/MM/YYYY-MM-DD') + '.html';
-      // a bug of pikaday whose fix is still not released
+      if ( enableDates.indexOf(time.format('YYYY-MM-DD')) > -1 ) {
+        window.location.href += '/' + time.format('YYYY/MM/YYYY-MM-DD') + '.html';
+        // a bug of pikaday whose fix is still not released
+      }
     },
     i18n: {
         previousMonth : '&lt;&lt;',
