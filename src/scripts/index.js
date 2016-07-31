@@ -6,6 +6,7 @@ window.addEventListener('load', function() {
   var calendar = document.getElementById('calendar');
   var lastDate = new Date(calendar.getAttribute('data-last-date'));
   var firstDate = new Date(calendar.getAttribute('data-first-date'));
+  var enableDates = calendar.getAttribute('data-dates').split(',');
 
   var picker = new Pikaday({
     onSelect: function(date) {
@@ -21,7 +22,11 @@ window.addEventListener('load', function() {
         weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
     },
     minDate: firstDate,
-    maxDate: lastDate
+    maxDate: lastDate,
+    disableDayFn: function(date) {
+      date = moment(date).format('YYYY-MM-DD');
+      return enableDates.indexOf(date) === -1;
+    }
   });
 
   calendar.appendChild(picker.el);
